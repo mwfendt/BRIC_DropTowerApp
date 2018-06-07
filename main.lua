@@ -6,7 +6,6 @@
 
 -- Hide device status bar
 display.setStatusBar( display.HiddenStatusBar )
-
 -- Require libraries/plugins
 local widget = require( "widget" )
 
@@ -112,6 +111,21 @@ local bkg = display.newImageRect( "images/DropTowerDiagram.png", gW, gH )
 bkg.x = display.contentCenterX
 bkg.y = display.contentCenterY
 
+--declaration of handler for BaylorLogo button
+local function handleBaylorEvent(event)
+
+	if("ended" == event.phase) then 
+		system.openURL("https://www.baylor.edu")
+	end
+end
+
+local function handleBricEvent(event)
+
+	if("ended" == event.phase) then
+		system.openURL("https://www.baylor.edu/bric")
+	end
+end
+
 --decelration container button
 decelButton = widget.newButton(
 	{
@@ -187,3 +201,39 @@ decelZoomed = display.newImageRect("images/DecelContainer.jpg", gW, gH)
 decelZoomed.x = display.contentCenterX
 decelZoomed.y = display.contentCenterY
 decelZoomed.isVisible = false
+		
+-- baylor button
+local baylorButton = widget.newButton(
+	{
+		id = "BaylorLogo",
+		defaultFile = "images/BaylorGreen.png",
+		overFile = "images/BaylorGreen.png",
+		onEvent = handleBaylorEvent,
+	})
+	
+baylorButton.x = display.contentCenterX / 2
+baylorButton.width = display.contentCenterX
+baylorButton.y = gH * 0.086 * 0.5
+baylorButton.height = gH * 0.086
+
+-- bric button 
+local bricButton = widget.newButton(
+	{
+		id = "BRICLogo",
+		defaultFile = "images/BRICWhite.png",
+		overFile = "images/BRICWhite.png",
+		onEvent = handleBricEvent,
+	})
+	
+bricButton.x = display.contentCenterX * 1.5
+bricButton.width = display.contentCenterX
+bricButton.y = gH * 0.086 * 0.5
+bricButton.height = gH * 0.086
+
+
+
+	
+
+
+
+
