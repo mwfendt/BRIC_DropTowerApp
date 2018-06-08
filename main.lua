@@ -32,6 +32,10 @@ local sectionButtonHandler = function( event )
 			--go to zoomed decelration chamber state
 			appState = 4
 			decelZoomed.isVisible = true
+		elseif(event.target.id == "ExperimentButton") then
+			--go to Experiment Menu
+			appState = 5
+			expCapsule.isVisible = true
 		end
 		
 		--if the appState has been changed, disable all buttons on this screen
@@ -63,6 +67,9 @@ local screenButtonHandler = function ( event )
 	elseif (appState == 4) then
 		decelZoomed.isVisible = false
 		appState = 0
+	elseif(appState == 5) then 
+		expCapsule.isVisible = false
+		appState = 0
 	end
 	if(appState == 0) then
 		--if the appState brings you back to the main menu, enable the main menu buttons
@@ -78,12 +85,14 @@ local function handleBaylorEvent(event)
 	end
 end
 
+--delaration of handler for BricLogo button
 local function handleBricEvent(event)
 
 	if("ended" == event.phase) then
 		system.openURL("https://www.baylor.edu/bric")
 	end
 end
+
 
 -----------------
 -- ACTUAL CODE --
@@ -101,6 +110,7 @@ appState = 0
 -- 2 - Close-up of netting
 -- 3 - Close-up of winch
 -- 4 - Close-up of deceleration container
+-- 5 - Experiment State 
 
 --the screen-sized button can't be invisible in order for it to work, so it needs to be behind everything else
 screenSizedButton = widget.newButton(
@@ -201,6 +211,12 @@ decelZoomed = display.newImageRect("images/DecelContainer.jpg", gW, gH)
 decelZoomed.x = display.contentCenterX
 decelZoomed.y = display.contentCenterY
 decelZoomed.isVisible = false
+
+--experiment capsule container image
+expCapsule = display.newImageRect("images/DropCapsule2.jpg", gW, gH)
+expCapsule.x = display.contentCenterX
+expCapsule.y = display.contentCenterY
+expCapsule.isVisible = false
 		
 -- baylor button
 local baylorButton = widget.newButton(
@@ -229,3 +245,34 @@ local bricButton = widget.newButton(
 		height = gH * 0.086
 	})
 mainMenuButtons:insert(bricButton)
+
+-- experimentButton 
+local experimentButton = widget.newButton(
+	{
+		id = "ExperimentButton",
+		defaultFile = "images/DropCapsule2.jpg",
+		overFile = "images/DropCapsule2.jpg",
+		onRelease = sectionButtonHandler,
+		x = display.contentCenterX * 1.5,
+		width = gH * 0.125,
+		y = gH - (gH * 0.1),
+		height = gH * 0.125
+	})
+mainMenuButtons:insert(experimentButton)
+
+local experimentTextOptions = 
+	{
+		text = "Start your own experiment!",
+		x = display.contentCenterX * 1.5,
+		align = center,
+		y = gH - (gH * 0.025),
+		font = native.systemFont,
+		fontSize = 12
+	}
+
+local experimentText = display.newText(experimentTextOptions)
+experimentText:setFillColor(0,0,0,1)
+mainMenuButtons:insert(experimentText)
+
+
+
