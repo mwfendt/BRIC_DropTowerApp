@@ -37,10 +37,7 @@ local sectionButtonHandler = function( event )
 		--if the appState has been changed, disable all buttons on this screen
 		if(appState ~= 0) then
 			--turning buttons invisible also deactivates them, and is actually the ideal way to deactivate them
-			decelButton.isVisible = false
-			netButton.isVisible = false
-			capsuleButton.isVisible = false
-			winchButton.isVisible = false
+			mainMenuButtons.isVisible = false;
 		end
 	else
 		--do nothing, report that handler fired when it shouldn't have
@@ -69,10 +66,22 @@ local screenButtonHandler = function ( event )
 	end
 	if(appState == 0) then
 		--if the appState brings you back to the main menu, enable the main menu buttons
-		decelButton.isVisible = true
-		netButton.isVisible = true
-		capsuleButton.isVisible = true
-		winchButton.isVisible = true
+		mainMenuButtons.isVisible = true
+	end
+end
+
+--declaration of handler for BaylorLogo button
+local function handleBaylorEvent(event)
+
+	if("ended" == event.phase) then 
+		system.openURL("https://www.baylor.edu")
+	end
+end
+
+local function handleBricEvent(event)
+
+	if("ended" == event.phase) then
+		system.openURL("https://www.baylor.edu/bric")
 	end
 end
 
@@ -93,7 +102,7 @@ appState = 0
 -- 3 - Close-up of winch
 -- 4 - Close-up of deceleration container
 
-
+--the screen-sized button can't be invisible in order for it to work, so it needs to be behind everything else
 screenSizedButton = widget.newButton(
 	{
 		id = "screen",
@@ -111,20 +120,7 @@ local bkg = display.newImageRect( "images/DropTowerDiagram.png", gW, gH )
 bkg.x = display.contentCenterX
 bkg.y = display.contentCenterY
 
---declaration of handler for BaylorLogo button
-local function handleBaylorEvent(event)
-
-	if("ended" == event.phase) then 
-		system.openURL("https://www.baylor.edu")
-	end
-end
-
-local function handleBricEvent(event)
-
-	if("ended" == event.phase) then
-		system.openURL("https://www.baylor.edu/bric")
-	end
-end
+mainMenuButtons = display.newGroup()
 
 --decelration container button
 decelButton = widget.newButton(
@@ -138,6 +134,7 @@ decelButton = widget.newButton(
 		fillColor = { default={ 1,0,0,0.25 }, over={ 1,0,0,0.5 } },
 		onRelease = sectionButtonHandler
 	})
+mainMenuButtons:insert(decelButton)	
 	
 --netting button
 netButton = widget.newButton(
@@ -151,7 +148,8 @@ netButton = widget.newButton(
 		fillColor = { default={ 0,1,0,0.25 }, over={ 0,1,0,0.5 } },
 		onRelease = sectionButtonHandler
 	})
-
+mainMenuButtons:insert(netButton)
+	
 --drop capsule button	
 capsuleButton = widget.newButton(
 	{
@@ -164,7 +162,8 @@ capsuleButton = widget.newButton(
 		fillColor = { default={ 0,0,1,0.25 }, over={ 0,0,1,0.5 } },
 		onRelease = sectionButtonHandler
 	})
-	
+mainMenuButtons:insert(capsuleButton)
+
 --winch button	
 winchButton = widget.newButton(
 	{
@@ -177,7 +176,8 @@ winchButton = widget.newButton(
 		fillColor = { default={ 1,1,0,0.25 }, over={ 1,1,0,0.5 } },
 		onRelease = sectionButtonHandler
 	})
-	
+mainMenuButtons:insert(winchButton)
+
 --zoomed drop capsule image
 dropCapZoomed = display.newImageRect("images/DropCapsule.jpg", gW, gH)
 dropCapZoomed.x = display.contentCenterX
@@ -209,12 +209,12 @@ local baylorButton = widget.newButton(
 		defaultFile = "images/BaylorGreen.png",
 		overFile = "images/BaylorGreen.png",
 		onEvent = handleBaylorEvent,
+		x = display.contentCenterX / 2,
+		width = display.contentCenterX,
+		y = gH * 0.086 * 0.5,
+		height = gH * 0.086
 	})
-	
-baylorButton.x = display.contentCenterX / 2
-baylorButton.width = display.contentCenterX
-baylorButton.y = gH * 0.086 * 0.5
-baylorButton.height = gH * 0.086
+mainMenuButtons:insert(baylorButton)
 
 -- bric button 
 local bricButton = widget.newButton(
@@ -223,17 +223,9 @@ local bricButton = widget.newButton(
 		defaultFile = "images/BRICWhite.png",
 		overFile = "images/BRICWhite.png",
 		onEvent = handleBricEvent,
+		x = display.contentCenterX * 1.5,
+		width = display.contentCenterX,
+		y = gH * 0.086 * 0.5,
+		height = gH * 0.086
 	})
-	
-bricButton.x = display.contentCenterX * 1.5
-bricButton.width = display.contentCenterX
-bricButton.y = gH * 0.086 * 0.5
-bricButton.height = gH * 0.086
-
-
-
-	
-
-
-
-
+mainMenuButtons:insert(bricButton)
