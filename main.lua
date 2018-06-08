@@ -19,19 +19,19 @@ local sectionButtonHandler = function( event )
 		if(event.target.id == "DropCapsule") then
 			--go to zoomed drop capsule state
 			appState = 1
-			dropCapZoomed.isVisible = true
+			capsuleGroup.isVisible = true
 		elseif (event.target.id == "Netting") then
 			--go to zoomed netting state
 			appState = 2
-			netZoomed.isVisible = true
+			nettingGroup.isVisible = true
 		elseif (event.target.id == "Winch") then
 			--go to zoomed winch state
 			appState = 3
-			winchZoomed.isVisible = true
+			winchGroup.isVisible = true
 		elseif (event.target.id == "DecelContainer") then
 			--go to zoomed decelration chamber state
 			appState = 4
-			decelZoomed.isVisible = true
+			decelGroup.isVisible = true
 		elseif(event.target.id == "ExperimentButton") then
 			--go to Experiment Menu
 			appState = 5
@@ -54,18 +54,18 @@ local screenButtonHandler = function ( event )
 	print("Screen Button Press")
 	if(appState == 1) then
 		--dismiss drop capsule zoomed image
-		dropCapZoomed.isVisible = false
+		capsuleGroup.isVisible = false
 		appState = 0
 	elseif (appState == 2) then
 		--dismiss net zoomed image
-		netZoomed.isVisible = false
+		nettingGroup.isVisible = false
 		appState = 0
 	elseif (appState == 3) then
 		--dismiss winch zoomed image
-		winchZoomed.isVisible = false
+		winchGroup.isVisible = false
 		appState = 0
 	elseif (appState == 4) then
-		decelZoomed.isVisible = false
+		decelGroup.isVisible = false
 		appState = 0
 	elseif(appState == 5) then 
 		expCapsule.isVisible = false
@@ -130,7 +130,19 @@ local bkg = display.newImageRect( "images/DropTowerDiagram.png", gW, gH )
 bkg.x = display.contentCenterX
 bkg.y = display.contentCenterY
 
+------------------------------
+-- DECLARING DISPLAY GROUPS --
+--      ORDER MATTERS!      --
+------------------------------
 mainMenuButtons = display.newGroup()
+capsuleGroup = display.newGroup()
+capsuleGroup.isVisible = false
+nettingGroup = display.newGroup()
+nettingGroup.isVisible = false;
+winchGroup = display.newGroup()
+winchGroup.isVisible = false;
+decelGroup = display.newGroup()
+decelGroup.isVisible = false;
 
 --decelration container button
 decelButton = widget.newButton(
@@ -188,29 +200,133 @@ winchButton = widget.newButton(
 	})
 mainMenuButtons:insert(winchButton)
 
+-- drop capsule display group --
 --zoomed drop capsule image
 dropCapZoomed = display.newImageRect("images/DropCapsule.jpg", gW, gH)
 dropCapZoomed.x = display.contentCenterX
 dropCapZoomed.y = display.contentCenterY
-dropCapZoomed.isVisible = false
+--rectangle to display text on
+dropCapTextBkg = display.newRect(gW * 0.5, gH * 0.125, gW, gH * 0.25)
+dropCapTextBkg:setFillColor(1,1,1,0.85)
+--text to display (shrink until it fits in the box)
+local i = 31
+repeat
+	if(dropCapText ~= nil) then
+		dropCapText:removeSelf()
+	end
+	i = i - 1
+	dropCapText = display.newText(
+		{
+			text="The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly, but gets faster each minute after you hear this signal. [beep] A single lap should be completed each time you hear this sound. [ding] Remember to run in a straight line, and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark, get ready, start.",
+			x=dropCapTextBkg.x,
+			y=dropCapTextBkg.y, --change to align top?
+			width=dropCapTextBkg.width,
+			font=native.systemFont,
+			fontSize=i,
+			align="center"
+		})
+until dropCapText.height <= dropCapTextBkg.height or i == 1
+dropCapText:setFillColor(0,0,0,1)
+--insert all into group
+capsuleGroup:insert(dropCapZoomed)
+capsuleGroup:insert(dropCapTextBkg)
+capsuleGroup:insert(dropCapText)
 
+-- netting display group --
 --zoomed netting image
 netZoomed = display.newImageRect("images/Netting.jpg", gW, gH)
 netZoomed.x = display.contentCenterX
 netZoomed.y = display.contentCenterY
-netZoomed.isVisible = false
+--rectangle to display text on
+nettingTextBkg = display.newRect(gW * 0.5, gH * 0.125, gW, gH * 0.25)
+nettingTextBkg:setFillColor(1,1,1,0.85)
+--text to display (shrink until it fits in the box)
+i = 31
+repeat
+	if(nettingText ~= nil) then
+		nettingText:removeSelf()
+	end
+	i = i - 1
+	nettingText = display.newText(
+		{
+			text="Did you ever hear the tragedy of Darth Plagueis The Wise? I thought not. It’s not a story the Jedi would tell you. It’s a Sith legend. Darth Plagueis was a Dark Lord of the Sith, so powerful and so wise he could use the Force to influence the midichlorians to create life… He had such a knowledge of the dark side that he could even keep the ones he cared about from dying. The dark side of the Force is a pathway to many abilities some consider to be unnatural. He became so powerful… the only thing he was afraid of was losing his power, which eventually, of course, he did. Unfortunately, he taught his apprentice everything he knew, then his apprentice killed him in his sleep. Ironic. He could save others from death, but not himself.",
+			x=nettingTextBkg.x,
+			y=nettingTextBkg.y,
+			width=nettingTextBkg.width,
+			font=native.systemFont,
+			fontSize=i,
+			align="center"
+		})
+until nettingText.height <= nettingTextBkg.height or i == 1
+nettingText:setFillColor(0,0,0,1)
+--insert all into group
+nettingGroup:insert(netZoomed)
+nettingGroup:insert(nettingTextBkg)
+nettingGroup:insert(nettingText)
 
+-- winch display group --
 --zoomed winch image
 winchZoomed = display.newImageRect("images/Winch.jpg",gW, gH)
 winchZoomed.x = display.contentCenterX
 winchZoomed.y = display.contentCenterY
-winchZoomed.isVisible = false
+--rectangle to display text on
+winchTextBkg = display.newRect(gW * 0.5, gH * 0.125, gW, gH * 0.25)
+winchTextBkg:setFillColor(1,1,1,0.85)
+--text to display (shrink until it fits in the box)
+i = 31
+repeat
+	if(winchText ~= nil) then
+		winchText:removeSelf()
+	end
+	i = i - 1
+	winchText = display.newText(
+		{
+			text="Something shorter",
+			x=winchTextBkg.x,
+			y=winchTextBkg.y,
+			width=winchTextBkg.width,
+			font=native.systemFont,
+			fontSize=i,
+			align="center"
+		})
+until winchText.height <= winchTextBkg.height or i == 1
+winchText:setFillColor(0,0,0,1)
+--insert all into group
+winchGroup:insert(winchZoomed)
+winchGroup:insert(winchTextBkg)
+winchGroup:insert(winchText)
 
+-- decel chamber display group --
 --zoomed deceleration container image
 decelZoomed = display.newImageRect("images/DecelContainer.jpg", gW, gH)
 decelZoomed.x = display.contentCenterX
 decelZoomed.y = display.contentCenterY
-decelZoomed.isVisible = false
+--rectangle to display text on
+decelTextBkg = display.newRect(gW * 0.5, gH * 0.875, gW, gH * 0.25)
+decelTextBkg:setFillColor(1,1,1,0.85)
+--text to display (shrink until it fits in the box)
+i = 31
+repeat
+	if(decelText ~= nil) then
+		decelText:removeSelf()
+	end
+	i = i - 1
+	decelText = display.newText(
+		{
+			text="Something kind of in the middle; long enough for a couple lines at 30 but not enough to knock it down.",
+			x=decelTextBkg.x,
+			y=decelTextBkg.y,
+			width=decelTextBkg.width,
+			font=native.systemFont,
+			fontSize=i,
+			align="center"
+		})
+until decelText.height <= decelTextBkg.height or i == 1
+decelText:setFillColor(0,0,0,1)
+--insert all into group
+decelGroup:insert(decelZoomed)
+decelGroup:insert(decelTextBkg)
+decelGroup:insert(decelText)
 
 --experiment capsule container image
 expCapsule = display.newImageRect("images/DropCapsule2.jpg", gW, gH)
@@ -273,6 +389,3 @@ local experimentTextOptions =
 local experimentText = display.newText(experimentTextOptions)
 experimentText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(experimentText)
-
-
-
