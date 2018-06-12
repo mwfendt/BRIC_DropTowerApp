@@ -14,6 +14,7 @@ local widget = require( "widget" )
 ---------------------
 --handles button presses for the various sections of the drop tower
 local sectionButtonHandler = function( event )
+	animFrames = 10
 	if(appState == 0) then
 		--figure out which section to display then display it
 		if(event.target.id == "DropCapsule") then
@@ -35,7 +36,7 @@ local sectionButtonHandler = function( event )
 		elseif(event.target.id == "ExperimentButton") then
 			--go to Experiment Menu
 			appState = 5
-			expCapsule.isVisible = true
+			experimentGroup.isVisible = true
 		end
 		
 		--if the appState has been changed, disable all buttons on this screen
@@ -51,7 +52,6 @@ end
 
 --handles button presses for the full-screen button
 local screenButtonHandler = function ( event )
-	print("Screen Button Press")
 	if(appState == 1) then
 		--dismiss drop capsule zoomed image
 		capsuleGroup.isVisible = false
@@ -68,7 +68,7 @@ local screenButtonHandler = function ( event )
 		decelGroup.isVisible = false
 		appState = 0
 	elseif(appState == 5) then 
-		expCapsule.isVisible = false
+		experimentGroup.isVisible = false
 		appState = 0
 	end
 	if(appState == 0) then
@@ -101,6 +101,9 @@ end
 --get global height and width
 local gH = display.contentHeight
 local gW = display.contentWidth
+
+--animFrames should be 0 when no animation is happening
+animFrames = 0
 
 --set state
 appState = 0
@@ -138,11 +141,13 @@ mainMenuButtons = display.newGroup()
 capsuleGroup = display.newGroup()
 capsuleGroup.isVisible = false
 nettingGroup = display.newGroup()
-nettingGroup.isVisible = false;
+nettingGroup.isVisible = false
 winchGroup = display.newGroup()
-winchGroup.isVisible = false;
+winchGroup.isVisible = false
 decelGroup = display.newGroup()
-decelGroup.isVisible = false;
+decelGroup.isVisible = false
+experimentGroup = display.newGroup()
+experimentGroup.isVisible = false
 
 --decelration container button
 decelButton = widget.newButton(
@@ -332,7 +337,7 @@ decelGroup:insert(decelText)
 expCapsule = display.newImageRect("images/DropCapsule2.jpg", gW, gH)
 expCapsule.x = display.contentCenterX
 expCapsule.y = display.contentCenterY
-expCapsule.isVisible = false
+experimentGroup:insert(expCapsule)
 		
 -- baylor button
 local baylorButton = widget.newButton(
@@ -389,3 +394,65 @@ local experimentTextOptions =
 local experimentText = display.newText(experimentTextOptions)
 experimentText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(experimentText)
+
+function capsuleGroup:enterFrame (event)
+	if(animFrames > 0 and appState == 1) then
+		--print("animFrames: " .. animFrames)
+		animFrames = animFrames - 1
+		local newScale = 1 - (animFrames * 0.1)
+		self.xScale = newScale
+		self.yScale = newScale
+		self.x = display.contentCenterX * (1-newScale)
+		self.y = display.contentCenterY * (1-newScale)
+	end
+end
+function winchGroup:enterFrame (event)
+	if(animFrames > 0 and appState == 3) then
+		--print("animFrames: " .. animFrames)
+		animFrames = animFrames - 1
+		local newScale = 1 - (animFrames * 0.1)
+		self.xScale = newScale
+		self.yScale = newScale
+		self.x = display.contentCenterX * (1-newScale)
+		self.y = display.contentCenterY * (1-newScale)
+	end
+end
+function nettingGroup:enterFrame (event)
+	if(animFrames > 0 and appState == 2) then
+		--print("animFrames: " .. animFrames)
+		animFrames = animFrames - 1
+		local newScale = 1 - (animFrames * 0.1)
+		self.xScale = newScale
+		self.yScale = newScale
+		self.x = display.contentCenterX * (1-newScale)
+		self.y = display.contentCenterY * (1-newScale)
+	end
+end
+function decelGroup:enterFrame (event)
+	if(animFrames > 0 and appState == 4) then
+		--print("animFrames: " .. animFrames)
+		animFrames = animFrames - 1
+		local newScale = 1 - (animFrames * 0.1)
+		self.xScale = newScale
+		self.yScale = newScale
+		self.x = display.contentCenterX * (1-newScale)
+		self.y = display.contentCenterY * (1-newScale)
+	end
+end
+function experimentGroup:enterFrame (event)
+	if(animFrames > 0 and appState == 5) then
+		--print("animFrames: " .. animFrames)
+		animFrames = animFrames - 1
+		local newScale = 1 - (animFrames * 0.1)
+		self.xScale = newScale
+		self.yScale = newScale
+		self.x = display.contentCenterX * (1-newScale)
+		self.y = display.contentCenterY * (1-newScale)
+	end
+end
+
+Runtime:addEventListener( "enterFrame", capsuleGroup )
+Runtime:addEventListener( "enterFrame", nettingGroup )
+Runtime:addEventListener( "enterFrame", winchGroup )
+Runtime:addEventListener( "enterFrame", decelGroup )
+Runtime:addEventListener( "enterFrame", experimentGroup )
