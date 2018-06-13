@@ -12,10 +12,21 @@ local widget = require( "widget" )
 ---------------------
 -- BUTTON HANDLERS --
 ---------------------
+
+local function endVideo()
+	if (video ~= nil) then
+		video:removeSelf()
+		video = nil
+	end
+	stopVidButton.isVisible = false
+end
+
 --handles button presses for the various sections of the drop tower
 local sectionButtonHandler = function( event )
 	animFrames = 10
 	if(appState == 0) then
+		--display the video button
+		--videoGroup.isVisible = true
 		--figure out which section to display then display it
 		if(event.target.id == "DropCapsule") then
 			--go to zoomed drop capsule state
@@ -52,28 +63,33 @@ end
 
 --handles button presses for the full-screen button
 local screenButtonHandler = function ( event )
-	if(appState == 1) then
-		--dismiss drop capsule zoomed image
-		capsuleGroup.isVisible = false
-		appState = 0
-	elseif (appState == 2) then
-		--dismiss net zoomed image
-		nettingGroup.isVisible = false
-		appState = 0
-	elseif (appState == 3) then
-		--dismiss winch zoomed image
-		winchGroup.isVisible = false
-		appState = 0
-	elseif (appState == 4) then
-		decelGroup.isVisible = false
-		appState = 0
-	elseif(appState == 5) then 
-		experimentGroup.isVisible = false
-		appState = 0
-	end
-	if(appState == 0) then
-		--if the appState brings you back to the main menu, enable the main menu buttons
-		mainMenuButtons.isVisible = true
+	if(video ~= nil) then
+		endVideo()
+	else
+		videoGroup.isVisible = false
+		if(appState == 1) then
+			--dismiss drop capsule zoomed image
+			capsuleGroup.isVisible = false
+			appState = 0
+		elseif (appState == 2) then
+			--dismiss net zoomed image
+			nettingGroup.isVisible = false
+			appState = 0
+		elseif (appState == 3) then
+			--dismiss winch zoomed image
+			winchGroup.isVisible = false
+			appState = 0
+		elseif (appState == 4) then
+			decelGroup.isVisible = false
+			appState = 0
+		elseif(appState == 5) then 
+			experimentGroup.isVisible = false
+			appState = 0
+		end
+		if(appState == 0) then
+			--if the appState brings you back to the main menu, enable the main menu buttons
+			mainMenuButtons.isVisible = true
+		end
 	end
 end
 
@@ -93,14 +109,60 @@ local function handleBricEvent(event)
 	end
 end
 
+local function videoListener (event)
+	if(event.errorCode) then
+		print("ERROR: " .. event.errorMessage)
+		native.showAlert("ERROR!", event.errorMessage, {"OK"})
+	else
+		if ("ready" == event.phase) then
+			--video ready, start playing it
+			video:play()
+		elseif ("ended" == event.phase) then
+			--video is over, close it
+			endVideo()
+		end
+	end
+end
 
+local function handleVideo(event)
+	if(appState == 0) then
+		print("WARNING: handleVideo called when appState was 0")
+	elseif (appState == 1) then
+		stopVidButton.isVisible = true
+		video = native.newVideo(gW * 0.5, gH * 0.5, gW, gW * 0.75)
+		video:load( "videos/PlaceholderVid1.mp4")
+		video:addEventListener( "video", videoListener )
+	elseif (appState == 2) then
+		stopVidButton.isVisible = true
+		video = native.newVideo(gW * 0.5, gH * 0.5, gW, gW * 0.75)
+		video:load( "videos/PlaceholderVid2.mp4")
+		video:addEventListener( "video", videoListener )
+	elseif (appState == 3) then
+		stopVidButton.isVisible = true
+		video = native.newVideo(gW * 0.5, gH * 0.5, gW, gW * 0.75)
+		video:load( "videos/PlaceholderVid3.mp4")
+		video:addEventListener( "video", videoListener )
+	elseif (appState == 4) then
+		stopVidButton.isVisible = true
+		video = native.newVideo(gW * 0.5, gH * 0.5, gW, gW * 0.75)
+		video:load( "videos/PlaceholderVid4.mp4")
+		video:addEventListener( "video", videoListener )
+	elseif (appState == 5) then
+		stopVidButton.isVisible = true
+		video = native.newVideo(gW * 0.5, gH * 0.5, gW, gW * 0.75)
+		video:load( "videos/PlaceholderVid5.mp4")
+		video:addEventListener( "video", videoListener )
+	else
+		print("WARNING: No video for appstate "..appstate.." (yet)")
+	end
+end
 -----------------
 -- ACTUAL CODE --
 -----------------
 
 --get global height and width
-local gH = display.contentHeight
-local gW = display.contentWidth
+gH = display.contentHeight
+gW = display.contentWidth
 
 --animFrames should be 0 when no animation is happening
 animFrames = 0
@@ -148,6 +210,11 @@ decelGroup = display.newGroup()
 decelGroup.isVisible = false
 experimentGroup = display.newGroup()
 experimentGroup.isVisible = false
+videoGroup = display.newGroup()
+videoGroup.isVisible = false
+
+-- videos jump to the front no matter when they're declared, but declare last to remind ourselves
+video = nil
 
 --decelration container button
 decelButton = widget.newButton(
@@ -307,7 +374,7 @@ decelZoomed = display.newImageRect("images/DecelContainer.jpg", gW, gH)
 decelZoomed.x = display.contentCenterX
 decelZoomed.y = display.contentCenterY
 --rectangle to display text on
-decelTextBkg = display.newRect(gW * 0.5, gH * 0.875, gW, gH * 0.25)
+decelTextBkg = display.newRect(gW * 0.5, gH * 0.125, gW, gH * 0.25)
 decelTextBkg:setFillColor(1,1,1,0.85)
 --text to display (shrink until it fits in the box)
 i = 31
@@ -332,6 +399,42 @@ decelText:setFillColor(0,0,0,1)
 decelGroup:insert(decelZoomed)
 decelGroup:insert(decelTextBkg)
 decelGroup:insert(decelText)
+
+--video play button group
+--"Play video" button
+playVidButton = widget.newButton(
+	{
+		id = "VidPlay",
+		x = gW * 0.125,
+		y = gH * 0.975,
+		width = gW * 0.250,
+		height = gH * 0.050,
+		shape = "rectangle",
+		fillColor = { default={ .75,.75,.75,1 }, over={ 1,1,1,1 } },
+		font = native.systemFont,
+		fontSize = 12,
+		label = "Play Video",
+		labelColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
+		onRelease = handleVideo
+	})
+stopVidButton = widget.newButton(
+	{
+		id = "VidStop",
+		x = gW * 0.5,
+		y = gH * 0.5,
+		width = gW,
+		height = gH,
+		shape = "rectangle",
+		fillColor = { default={ 0,0,0,.85 }, over={ 0,0,0,.85 } },
+		font = native.systemFont,
+		fontSize = 20,
+		label = "Loading...",
+		labelColor = { default={ 1,1,1,1 }, over={ 1,1,1,1 } },
+		onRelease = endVideo
+	})
+stopVidButton.isVisible = false
+videoGroup:insert(playVidButton)
+videoGroup:insert(stopVidButton)
 
 --experiment capsule container image
 expCapsule = display.newImageRect("images/DropCapsule2.jpg", gW, gH)
@@ -404,6 +507,9 @@ function capsuleGroup:enterFrame (event)
 		self.yScale = newScale
 		self.x = display.contentCenterX * (1-newScale)
 		self.y = display.contentCenterY * (1-newScale)
+		if(animFrames == 0) then
+			videoGroup.isVisible = true
+		end
 	end
 end
 function winchGroup:enterFrame (event)
@@ -415,6 +521,9 @@ function winchGroup:enterFrame (event)
 		self.yScale = newScale
 		self.x = display.contentCenterX * (1-newScale)
 		self.y = display.contentCenterY * (1-newScale)
+		if(animFrames == 0) then
+			videoGroup.isVisible = true
+		end
 	end
 end
 function nettingGroup:enterFrame (event)
@@ -426,6 +535,9 @@ function nettingGroup:enterFrame (event)
 		self.yScale = newScale
 		self.x = display.contentCenterX * (1-newScale)
 		self.y = display.contentCenterY * (1-newScale)
+		if(animFrames == 0) then
+			videoGroup.isVisible = true
+		end
 	end
 end
 function decelGroup:enterFrame (event)
@@ -437,6 +549,9 @@ function decelGroup:enterFrame (event)
 		self.yScale = newScale
 		self.x = display.contentCenterX * (1-newScale)
 		self.y = display.contentCenterY * (1-newScale)
+		if(animFrames == 0) then
+			videoGroup.isVisible = true
+		end
 	end
 end
 function experimentGroup:enterFrame (event)
@@ -448,6 +563,9 @@ function experimentGroup:enterFrame (event)
 		self.yScale = newScale
 		self.x = display.contentCenterX * (1-newScale)
 		self.y = display.contentCenterY * (1-newScale)
+		if(animFrames == 0) then
+			videoGroup.isVisible = true
+		end
 	end
 end
 
