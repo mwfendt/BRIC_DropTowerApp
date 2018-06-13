@@ -386,6 +386,12 @@ decelGroup:insert(decelZoomed)
 decelGroup:insert(decelTextBkg)
 decelGroup:insert(decelText)
 
+
+--experiment capsule container background 
+expBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
+expBkg:setFillColor(1,1,1,1)
+experimentGroup:insert(expBkg)
+
 --video play button group
 --"Play video" button
 playVidButton = widget.newButton(
@@ -423,10 +429,28 @@ videoGroup:insert(playVidButton)
 videoGroup:insert(stopVidButton)
 
 --experiment capsule container image
-expCapsule = display.newImageRect("images/DropCapsule2.jpg", gW, gH)
-expCapsule.x = display.contentCenterX
+
+expCapsule = display.newImageRect("images/DropCapsule2.jpg", gW / 2, gH / 2)
+expCapsule.x = display.contentCenterX / 2
 expCapsule.y = display.contentCenterY
 experimentGroup:insert(expCapsule)
+
+expMenuButtonTop = display.newRect(gW * 0.5, gH * 0.125, gW * 0.9, gH * 0.20)
+expMenuButtonTop:setFillColor(0.1,0.4,0.9,0.85)
+experimentGroup:insert(expMenuButtonTop)
+
+
+expMenuButtonBot = display.newRect(gW * 0.5, gH * 0.875, gW * 0.9, gH * 0.20)
+expMenuButtonBot:setFillColor(1,1,0,0.85)
+experimentGroup:insert(expMenuButtonBot)
+
+
+--top border image
+borderImage = display.newImageRect("images/radialGradient3.png", (gW/2), (gH /10))
+borderImage.x = display.contentCenterX
+borderImage.y = display.contentCenterY / 10
+mainMenuButtons:insert(borderImage)
+
 		
 -- baylor button
 local baylorButton = widget.newButton(
@@ -437,7 +461,7 @@ local baylorButton = widget.newButton(
 		onEvent = handleBaylorEvent,
 		x = display.contentCenterX / 2,
 		width = display.contentCenterX,
-		y = gH * 0.086 * 0.5,
+		y = gH - (gH * 0.086 * 0.5),
 		height = gH * 0.086
 	})
 mainMenuButtons:insert(baylorButton)
@@ -451,7 +475,8 @@ local bricButton = widget.newButton(
 		onEvent = handleBricEvent,
 		x = display.contentCenterX * 1.5,
 		width = display.contentCenterX,
-		y = gH * 0.086 * 0.5,
+
+		y = gH - (gH * 0.086 * 0.5),
 		height = gH * 0.086
 	})
 mainMenuButtons:insert(bricButton)
@@ -463,31 +488,53 @@ local experimentButton = widget.newButton(
 		defaultFile = "images/DropCapsule2.jpg",
 		overFile = "images/DropCapsule2.jpg",
 		onRelease = sectionButtonHandler,
-		x = display.contentCenterX * 1.5,
+
+		x = display.contentCenterX * 1.60,
 		width = gH * 0.125,
-		y = gH - (gH * 0.1),
+
+		y = gH - (gH * 0.19),
 		height = gH * 0.125
 	})
 mainMenuButtons:insert(experimentButton)
 
+-- options for text below experiment button
 local experimentTextOptions = 
 	{
 		text = "Start your own experiment!",
-		x = display.contentCenterX * 1.5,
+
+		x = display.contentCenterX * 1.60,
 		align = center,
-		y = gH - (gH * 0.025),
+
+		y = gH - (gH * 0.11),
+		font = native.systemFont,
+		fontSize = 10
+	}
+	
+-- options for text in the header border
+local headerTextOptions = 
+	{
+		text = " Learn about Microgravity\nusing Baylor's Drop Tower!",
+		x = display.contentCenterX,
+		align = center,
+		y = gH / 20,
 		font = native.systemFont,
 		fontSize = 12
 	}
 
+--create and insert the text into the main menu
 local experimentText = display.newText(experimentTextOptions)
 experimentText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(experimentText)
+
+local headerText = display.newText(headerTextOptions)
+headerText:setFillColor(0,0,0,1)
+mainMenuButtons:insert(headerText)
 
 
 -- Enter Frame functions (handle animation) --
 function capsuleGroup:enterFrame (event)
 	if(animFrames > 0 and appState == 1) then
+
 		animFrames = animFrames - 1
 		local newScale = 1 - (animFrames * 0.1)
 		self.xScale = newScale
@@ -501,6 +548,7 @@ function capsuleGroup:enterFrame (event)
 end
 function winchGroup:enterFrame (event)
 	if(animFrames > 0 and appState == 3) then
+
 		animFrames = animFrames - 1
 		local newScale = 1 - (animFrames * 0.1)
 		self.xScale = newScale
@@ -514,6 +562,7 @@ function winchGroup:enterFrame (event)
 end
 function nettingGroup:enterFrame (event)
 	if(animFrames > 0 and appState == 2) then
+
 		animFrames = animFrames - 1
 		local newScale = 1 - (animFrames * 0.1)
 		self.xScale = newScale
@@ -527,6 +576,7 @@ function nettingGroup:enterFrame (event)
 end
 function decelGroup:enterFrame (event)
 	if(animFrames > 0 and appState == 4) then
+
 		animFrames = animFrames - 1
 		local newScale = 1 - (animFrames * 0.1)
 		self.xScale = newScale
@@ -540,6 +590,7 @@ function decelGroup:enterFrame (event)
 end
 function experimentGroup:enterFrame (event)
 	if(animFrames > 0 and appState == 5) then
+
 		animFrames = animFrames - 1
 		local newScale = 1 - (animFrames * 0.1)
 		self.xScale = newScale
@@ -551,6 +602,7 @@ function experimentGroup:enterFrame (event)
 		end
 	end
 end
+
 
 Runtime:addEventListener( "enterFrame", capsuleGroup )
 Runtime:addEventListener( "enterFrame", nettingGroup )
