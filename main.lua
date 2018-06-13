@@ -63,33 +63,29 @@ end
 
 --handles button presses for the full-screen button
 local screenButtonHandler = function ( event )
-	if(video ~= nil) then
-		endVideo()
-	else
-		videoGroup.isVisible = false
-		if(appState == 1) then
-			--dismiss drop capsule zoomed image
-			capsuleGroup.isVisible = false
-			appState = 0
-		elseif (appState == 2) then
-			--dismiss net zoomed image
-			nettingGroup.isVisible = false
-			appState = 0
-		elseif (appState == 3) then
-			--dismiss winch zoomed image
-			winchGroup.isVisible = false
-			appState = 0
-		elseif (appState == 4) then
-			decelGroup.isVisible = false
-			appState = 0
-		elseif(appState == 5) then 
-			experimentGroup.isVisible = false
-			appState = 0
-		end
-		if(appState == 0) then
-			--if the appState brings you back to the main menu, enable the main menu buttons
-			mainMenuButtons.isVisible = true
-		end
+	videoGroup.isVisible = false
+	if(appState == 1) then
+		--dismiss drop capsule zoomed image
+		capsuleGroup.isVisible = false
+		appState = 0
+	elseif (appState == 2) then
+		--dismiss net zoomed image
+		nettingGroup.isVisible = false
+		appState = 0
+	elseif (appState == 3) then
+		--dismiss winch zoomed image
+		winchGroup.isVisible = false
+		appState = 0
+	elseif (appState == 4) then
+		decelGroup.isVisible = false
+		appState = 0
+	elseif(appState == 5) then 
+		experimentGroup.isVisible = false
+		appState = 0
+	end
+	if(appState == 0) then
+		--if the appState brings you back to the main menu, enable the main menu buttons
+		mainMenuButtons.isVisible = true
 	end
 end
 
@@ -127,30 +123,10 @@ end
 local function handleVideo(event)
 	if(appState == 0) then
 		print("WARNING: handleVideo called when appState was 0")
-	elseif (appState == 1) then
+	elseif (appState >= 1 and appState <= 5) then
 		stopVidButton.isVisible = true
 		video = native.newVideo(gW * 0.5, gH * 0.5, gW, gW * 0.75)
-		video:load( "videos/PlaceholderVid1.mp4")
-		video:addEventListener( "video", videoListener )
-	elseif (appState == 2) then
-		stopVidButton.isVisible = true
-		video = native.newVideo(gW * 0.5, gH * 0.5, gW, gW * 0.75)
-		video:load( "videos/PlaceholderVid2.mp4")
-		video:addEventListener( "video", videoListener )
-	elseif (appState == 3) then
-		stopVidButton.isVisible = true
-		video = native.newVideo(gW * 0.5, gH * 0.5, gW, gW * 0.75)
-		video:load( "videos/PlaceholderVid3.mp4")
-		video:addEventListener( "video", videoListener )
-	elseif (appState == 4) then
-		stopVidButton.isVisible = true
-		video = native.newVideo(gW * 0.5, gH * 0.5, gW, gW * 0.75)
-		video:load( "videos/PlaceholderVid4.mp4")
-		video:addEventListener( "video", videoListener )
-	elseif (appState == 5) then
-		stopVidButton.isVisible = true
-		video = native.newVideo(gW * 0.5, gH * 0.5, gW, gW * 0.75)
-		video:load( "videos/PlaceholderVid5.mp4")
+		video:load( "videos/PlaceholderVid" ..appState.. ".mp4")
 		video:addEventListener( "video", videoListener )
 	else
 		print("WARNING: No video for appstate "..appstate.." (yet)")
@@ -226,6 +202,8 @@ decelButton = widget.newButton(
 		height = gH * 0.172,
 		shape = "rectangle",
 		fillColor = { default={ 1,0,0,0.25 }, over={ 1,0,0,0.5 } },
+		--strokeColor = { default={ 1,0,0 }, over={ 1,0,0 } },
+		--strokeWidth = 1,
 		onRelease = sectionButtonHandler
 	})
 mainMenuButtons:insert(decelButton)	
@@ -240,6 +218,8 @@ netButton = widget.newButton(
 		height = gH * 0.278,
 		shape = "rectangle",
 		fillColor = { default={ 0,1,0,0.25 }, over={ 0,1,0,0.5 } },
+		--strokeColor = { default={ 0,1,0 }, over={ 0,1,0 } },
+		--strokeWidth = 1,
 		onRelease = sectionButtonHandler
 	})
 mainMenuButtons:insert(netButton)
@@ -254,8 +234,12 @@ capsuleButton = widget.newButton(
 		height = gH * 0.132,
 		shape = "rectangle",
 		fillColor = { default={ 0,0,1,0.25 }, over={ 0,0,1,0.5 } },
+		--strokeColor = { default={ 0, 0, 1 }, over={ 0, 0, 1 } },
+		--strokeWidth = 1,
 		onRelease = sectionButtonHandler
 	})
+--capsuleButton:setStrokeColor(0,0,1,1)
+--capsuleButton.strokeWidth = 20
 mainMenuButtons:insert(capsuleButton)
 
 --winch button	
@@ -268,6 +252,8 @@ winchButton = widget.newButton(
 		height = gH * 0.086,
 		shape = "rectangle",
 		fillColor = { default={ 1,1,0,0.25 }, over={ 1,1,0,0.5 } },
+		--strokeColor = { default={ 1,1,0 }, over={ 1,1,0 } },
+		--strokeWidth = 1,
 		onRelease = sectionButtonHandler
 	})
 mainMenuButtons:insert(winchButton)
@@ -498,9 +484,10 @@ local experimentText = display.newText(experimentTextOptions)
 experimentText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(experimentText)
 
+
+-- Enter Frame functions (handle animation) --
 function capsuleGroup:enterFrame (event)
 	if(animFrames > 0 and appState == 1) then
-		--print("animFrames: " .. animFrames)
 		animFrames = animFrames - 1
 		local newScale = 1 - (animFrames * 0.1)
 		self.xScale = newScale
@@ -514,7 +501,6 @@ function capsuleGroup:enterFrame (event)
 end
 function winchGroup:enterFrame (event)
 	if(animFrames > 0 and appState == 3) then
-		--print("animFrames: " .. animFrames)
 		animFrames = animFrames - 1
 		local newScale = 1 - (animFrames * 0.1)
 		self.xScale = newScale
@@ -528,7 +514,6 @@ function winchGroup:enterFrame (event)
 end
 function nettingGroup:enterFrame (event)
 	if(animFrames > 0 and appState == 2) then
-		--print("animFrames: " .. animFrames)
 		animFrames = animFrames - 1
 		local newScale = 1 - (animFrames * 0.1)
 		self.xScale = newScale
@@ -542,7 +527,6 @@ function nettingGroup:enterFrame (event)
 end
 function decelGroup:enterFrame (event)
 	if(animFrames > 0 and appState == 4) then
-		--print("animFrames: " .. animFrames)
 		animFrames = animFrames - 1
 		local newScale = 1 - (animFrames * 0.1)
 		self.xScale = newScale
@@ -556,7 +540,6 @@ function decelGroup:enterFrame (event)
 end
 function experimentGroup:enterFrame (event)
 	if(animFrames > 0 and appState == 5) then
-		--print("animFrames: " .. animFrames)
 		animFrames = animFrames - 1
 		local newScale = 1 - (animFrames * 0.1)
 		self.xScale = newScale
