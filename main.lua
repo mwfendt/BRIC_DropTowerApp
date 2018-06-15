@@ -132,6 +132,15 @@ local function handleVideo(event)
 		print("WARNING: No video for appstate "..appstate.." (yet)")
 	end
 end
+
+local function handleMicroGravEvent(event)
+	if("ended" == event.phase) then	
+		microGravText.text = "Microgravity is everything"
+		microGravText.x = gW * 0.5
+		microGravText.y = gH * 0.125
+		 
+	end
+end 
 -----------------
 -- ACTUAL CODE --
 -----------------
@@ -428,30 +437,25 @@ stopVidButton.isVisible = false
 videoGroup:insert(playVidButton)
 videoGroup:insert(stopVidButton)
 
---experiment capsule container image
-
-expCapsule = display.newImageRect("images/DropCapsule2.jpg", gW / 2, gH / 2)
-expCapsule.x = display.contentCenterX / 2
-expCapsule.y = display.contentCenterY
-experimentGroup:insert(expCapsule)
-
-expMenuButtonTop = display.newRect(gW * 0.5, gH * 0.125, gW * 0.9, gH * 0.20)
-expMenuButtonTop:setFillColor(0.1,0.4,0.9,0.85)
-experimentGroup:insert(expMenuButtonTop)
-
-
-expMenuButtonBot = display.newRect(gW * 0.5, gH * 0.875, gW * 0.9, gH * 0.20)
-expMenuButtonBot:setFillColor(1,1,0,0.85)
-experimentGroup:insert(expMenuButtonBot)
-
-
 --top border image
 borderImage = display.newImageRect("images/radialGradient3.png", (gW/2), (gH /10))
 borderImage.x = display.contentCenterX
 borderImage.y = display.contentCenterY / 10
 mainMenuButtons:insert(borderImage)
 
+--experiment capsule container image
+
+expCapsule = display.newImageRect("images/DropCapsule2.jpg", gW / 2, gH / 2)
+expCapsule.x = display.contentCenterX / 2
+expCapsule.y = display.contentCenterY
+experimentGroup:insert(expCapsule)
 		
+--experimentPage images
+
+secondsSection = display.newRect(display.contentCenterX * 1.45, display.contentCenterY, gW / 2.25, gH / 2.5)
+secondsSection:setFillColor(0,.85,0,1)
+experimentGroup:insert(secondsSection)
+
 -- baylor button
 local baylorButton = widget.newButton(
 	{
@@ -497,6 +501,35 @@ local experimentButton = widget.newButton(
 	})
 mainMenuButtons:insert(experimentButton)
 
+--buttons on the experiment page
+expPageButtonTop = widget.newButton(
+	{
+		id = "Top Button",
+		x = gW * 0.5,
+		y = gH * 0.125,
+		width = gW * 0.9, 
+		height = gH * 0.20,
+		shape = "rectangle",
+		fillColor = { default={ 0.1,0.4,0.9,0.85 }, over={ 0.15,0.5,1,1 } },
+		onRelease = handleMicroGravEvent
+	})
+experimentGroup:insert(expPageButtonTop)
+
+expPageButtonBottom = widget.newButton(
+	{
+
+		id = "Bottom Button",
+		x = gW * 0.5,
+		y = gH * 0.875,
+		width = gW * 0.9, 
+		height = gH * 0.20,
+		shape = "rectangle",
+		fillColor = { default={ 0.95,0.95,0,0.85 }, over={ 1,1,0,1 } },
+	})
+experimentGroup:insert(expPageButtonBottom)
+
+
+
 -- options for text below experiment button
 local experimentTextOptions = 
 	{
@@ -520,7 +553,7 @@ local headerTextOptions =
 		font = native.systemFont,
 		fontSize = 12
 	}
-
+	
 --create and insert the text into the main menu
 local experimentText = display.newText(experimentTextOptions)
 experimentText:setFillColor(0,0,0,1)
@@ -530,6 +563,48 @@ local headerText = display.newText(headerTextOptions)
 headerText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(headerText)
 
+--create the text for the experiment page 
+microGravTextOptions = 
+	{
+		text = "What is microgravity?",
+		x = gW * 0.5,
+		y = gH * 0.125,
+		align = center,
+		font = native.systemFont,
+		fontSize = 20
+	}
+	
+startExperimentTextOptions = 
+	{
+		text = "Create an experiment!",
+		x = gW * 0.5,
+		y = gH * 0.875,
+		align = center,
+		font = native.systemFont,
+		fontSize = 20
+	}
+
+secondsTextOptions = 
+	{
+		text = "1.5 Seconds... That seems short!\n\n What else is 1.5 seconds long?",
+		x = display.contentCenterX * 1.45,
+		y = display.contentCenterY * 0.70,
+		align = center,
+		font = native.systemFont,
+		fontSize = 12
+	}
+	
+microGravText = display.newText(microGravTextOptions)
+microGravText:setFillColor(0,0,0,1)
+experimentGroup:insert(microGravText)
+
+startExperimentText = display.newText(startExperimentTextOptions)
+startExperimentText:setFillColor(0,0,0,1)
+experimentGroup:insert(startExperimentText)
+
+secondsText = display.newText(secondsTextOptions)
+secondsText:setFillColor(0,0,0,1)
+experimentGroup:insert(secondsText)
 
 -- Enter Frame functions (handle animation) --
 function capsuleGroup:enterFrame (event)
@@ -597,9 +672,6 @@ function experimentGroup:enterFrame (event)
 		self.yScale = newScale
 		self.x = display.contentCenterX * (1-newScale)
 		self.y = display.contentCenterY * (1-newScale)
-		if(animFrames == 0) then
-			videoGroup.isVisible = true
-		end
 	end
 end
 
