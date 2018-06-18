@@ -63,7 +63,7 @@ local sectionButtonHandler = function( event )
 			--go to Experiment Menu
 			appState = 5
 			experimentGroup.isVisible = true
-			video = native.newVideo(gW * 1.45, display.contentCenterY * 1.05, gW / 2.35, gH / 2.6)
+			video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * 1.20, gW / 2.5, gH / 3.5)
 			video:load("videos/ExperimentPageVid.mp4")
 			video:addEventListener("video", videoListener)
 		end
@@ -142,7 +142,6 @@ local function handleMicroGravEvent(event)
 		microGravText.text = "Microgravity is everything"
 		microGravText.x = gW * 0.5
 		microGravText.y = gH * 0.125
-		 
 	end
 end 
 -----------------
@@ -570,7 +569,8 @@ microGravTextOptions =
 		text = "What is microgravity?",
 		x = gW * 0.5,
 		y = gH * 0.125,
-		align = center,
+		width = gW * 0.8,
+		align = "center",
 		font = native.systemFont,
 		fontSize = 20
 	}
@@ -580,19 +580,22 @@ startExperimentTextOptions =
 		text = "Create an experiment!",
 		x = gW * 0.5,
 		y = gH * 0.875,
-		align = center,
+		width = gW * 0.8, 
+		align = "center",
 		font = native.systemFont,
 		fontSize = 20
 	}
 
 secondsTextOptions = 
 	{
-		text = "1.5 Seconds... That seems short!\n\n What else is 1.5 seconds long?",
+		text = "1.5 Seconds... That seems short! What else is 1.5 seconds long?",
 		x = display.contentCenterX * 1.45,
-		y = display.contentCenterY * 0.70,
-		align = center,
+		y = display.contentCenterY * 0.725,
+		width = gW / 2.35,
+		height = gH / 10,
+		align = "center",
 		font = native.systemFont,
-		fontSize = 12
+		fontSize = 10
 	}
 	
 microGravText = display.newText(microGravTextOptions)
