@@ -21,6 +21,21 @@ local function endVideo()
 	stopVidButton.isVisible = false
 end
 
+local function videoListener (event)
+	if(event.errorCode) then
+		print("ERROR: " .. event.errorMessage)
+		native.showAlert("ERROR!", event.errorMessage, {"OK"})
+	else
+		if ("ready" == event.phase) then
+			--video ready, start playing it
+			video:play()
+		elseif ("ended" == event.phase) then
+			--video is over, close it
+			endVideo()
+		end
+	end
+end
+
 --handles button presses for the various sections of the drop tower
 local sectionButtonHandler = function( event )
 	animFrames = 10
@@ -48,6 +63,9 @@ local sectionButtonHandler = function( event )
 			--go to Experiment Menu
 			appState = 5
 			experimentGroup.isVisible = true
+			video = native.newVideo(gW * 1.45, display.contentCenterY * 1.05, gW / 2.35, gH / 2.6)
+			video:load("videos/ExperimentPageVid.mp4")
+			video:addEventListener("video", videoListener)
 		end
 		
 		--if the appState has been changed, disable all buttons on this screen
@@ -80,6 +98,7 @@ local screenButtonHandler = function ( event )
 		decelGroup.isVisible = false
 		appState = 0
 	elseif(appState == 5) then 
+		endVideo()
 		experimentGroup.isVisible = false
 		appState = 0
 	end
@@ -102,21 +121,6 @@ local function handleBricEvent(event)
 
 	if("ended" == event.phase) then
 		system.openURL("https://www.baylor.edu/bric")
-	end
-end
-
-local function videoListener (event)
-	if(event.errorCode) then
-		print("ERROR: " .. event.errorMessage)
-		native.showAlert("ERROR!", event.errorMessage, {"OK"})
-	else
-		if ("ready" == event.phase) then
-			--video ready, start playing it
-			video:play()
-		elseif ("ended" == event.phase) then
-			--video is over, close it
-			endVideo()
-		end
 	end
 end
 
@@ -534,10 +538,7 @@ experimentGroup:insert(expPageButtonBottom)
 local experimentTextOptions = 
 	{
 		text = "Start your own experiment!",
-
 		x = display.contentCenterX * 1.60,
-		align = center,
-
 		y = gH - (gH * 0.11),
 		font = native.systemFont,
 		fontSize = 10
@@ -548,7 +549,7 @@ local headerTextOptions =
 	{
 		text = " Learn about Microgravity\nusing Baylor's Drop Tower!",
 		x = display.contentCenterX,
-		align = center,
+		align = "center",
 		y = gH / 20,
 		font = native.systemFont,
 		fontSize = 12
