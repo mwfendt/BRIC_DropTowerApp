@@ -441,7 +441,7 @@ videoGroup:insert(playVidButton)
 videoGroup:insert(stopVidButton)
 
 --top border image
-borderImage = display.newImageRect("images/radialGradient3.png", (gW/2), (gH /10))
+borderImage = display.newImageRect("images/darkGreen.png", (gW), (gH /10))
 borderImage.x = display.contentCenterX
 borderImage.y = display.contentCenterY / 10
 mainMenuButtons:insert(borderImage)
@@ -520,7 +520,6 @@ experimentGroup:insert(expPageButtonTop)
 
 expPageButtonBottom = widget.newButton(
 	{
-
 		id = "Bottom Button",
 		x = gW * 0.5,
 		y = gH * 0.875,
@@ -531,27 +530,28 @@ expPageButtonBottom = widget.newButton(
 	})
 experimentGroup:insert(expPageButtonBottom)
 
-
-
 -- options for text below experiment button
 local experimentTextOptions = 
 	{
 		text = "Start your own experiment!",
 		x = display.contentCenterX * 1.60,
-		y = gH - (gH * 0.11),
+		y = gH - (gH * 0.10),
 		font = native.systemFont,
-		fontSize = 10
+		fontSize = 8,
+		align = "center",
+		width = gH * 0.15,
+		height = gH * 0.05
 	}
 	
 -- options for text in the header border
 local headerTextOptions = 
 	{
-		text = " Learn about Microgravity\nusing Baylor's Drop Tower!",
+		text = " Learn about Microgravity using Baylor's Drop Tower!",
 		x = display.contentCenterX,
 		align = "center",
 		y = gH / 20,
 		font = native.systemFont,
-		fontSize = 12
+		fontSize = 13
 	}
 	
 --create and insert the text into the main menu
@@ -560,7 +560,6 @@ experimentText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(experimentText)
 
 local headerText = display.newText(headerTextOptions)
-headerText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(headerText)
 
 --create the text for the experiment page 
@@ -609,6 +608,41 @@ experimentGroup:insert(startExperimentText)
 secondsText = display.newText(secondsTextOptions)
 secondsText:setFillColor(0,0,0,1)
 experimentGroup:insert(secondsText)
+
+-- repairButton
+local repairButton = widget.newButton(
+	{
+		id = "RepairButton",
+		defaultFile = "images/wrench.jpg",
+		overFile = "images/wrench.jpg",
+		
+		x = display.contentCenterX * 0.30,
+		width = gH * 0.125,
+		y = gH - (gH * 0.19),
+		height = gH * 0.125,
+	})
+mainMenuButtons:insert(repairButton)
+
+--main menu repair text
+
+local repairTextOptions = 
+	{
+		text = "Think you know enough to repair the drop tower?",
+		x = display.contentCenterX * 0.30,
+		y = gH - (gH * 0.10),
+		font = native.systemFont,
+		fontSize = 8,
+		align = "center",
+		width = gH * 0.15,
+		height = gH * 0.05
+	}
+	
+repairText = display.newText(repairTextOptions)
+repairText:setFillColor(0,0,0,1)
+mainMenuButtons:insert(repairText)
+
+
+
 
 -- Enter Frame functions (handle animation) --
 function capsuleGroup:enterFrame (event)
