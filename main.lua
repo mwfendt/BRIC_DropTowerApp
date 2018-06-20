@@ -66,6 +66,9 @@ local sectionButtonHandler = function( event )
 			video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * 1.20, gW / 2.5, gH / 3.0)
 			video:load("videos/ExperimentPageVid.mp4")
 			video:addEventListener("video", videoListener)
+		elseif(event.target.id == "RepairButtontton") then
+			appState = 6
+			fixItGroup.isVisible = true
 		end
 		
 		--if the appState has been changed, disable all buttons on this screen
@@ -100,6 +103,9 @@ local screenButtonHandler = function ( event )
 	elseif(appState == 5) then 
 		endVideo()
 		experimentGroup.isVisible = false
+		appState = 0
+	elseif(appState == 6) then
+		fixItGroup.isVisible = false
 		appState = 0
 	end
 	if(appState == 0) then
@@ -163,7 +169,8 @@ appState = 0
 -- 2 - Close-up of netting
 -- 3 - Close-up of winch
 -- 4 - Close-up of deceleration container
--- 5 - Experiment State 
+-- 5 - Experiment State
+-- 6 - Fix-it main page
 
 --the screen-sized button can't be invisible in order for it to work, so it needs to be behind everything else
 screenSizedButton = widget.newButton(
@@ -200,6 +207,11 @@ experimentGroup = display.newGroup()
 experimentGroup.isVisible = false
 videoGroup = display.newGroup()
 videoGroup.isVisible = false
+--import the fixIt group
+fixIt = require( "fixit" )
+--fixIt:makeDisplay()
+--display.getCurrentStage():insert( fixIt.dGroup )
+--fixIt.dGroup.isVisible = false
 
 -- videos jump to the front no matter when they're declared, but declare last to remind ourselves
 video = nil
@@ -661,7 +673,7 @@ local repairButton = widget.newButton(
 		id = "RepairButton",
 		defaultFile = "images/wrench.jpg",
 		overFile = "images/wrench.jpg",
-		
+		onRelease = sectionButtonHandler,
 		x = display.contentCenterX * 0.30,
 		width = gH * 0.125,
 		y = gH - (gH * 0.19),
