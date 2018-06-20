@@ -441,10 +441,56 @@ videoGroup:insert(playVidButton)
 videoGroup:insert(stopVidButton)
 
 --top border image
-borderImage = display.newImageRect("images/darkGreen.png", (gW), (gH /10))
-borderImage.x = display.contentCenterX
-borderImage.y = display.contentCenterY / 10
-mainMenuButtons:insert(borderImage)
+
+borderRect = display.newRect(display.contentCenterX, display.contentCenterY / 10,  (gW), (gH /10))
+borderRect:setFillColor(0,.188,.082, 1)
+mainMenuButtons:insert(borderRect)
+
+--click to learn more box && accompanying text
+
+learnRect = display.newRect(display.contentCenterX * .20, display.contentCenterY * .85, display.contentCenterX * .40, gH / 10)
+learnRect:setFillColor(0,0,0,0)
+learnRect:setStrokeColor(1,1,0)
+learnRect.strokeWidth = 3
+mainMenuButtons:insert(learnRect)
+
+local learnTextOptions = 
+	{
+		text = "Click on a section to learn more!",
+		x = display.contentCenterX * .20,
+		y = display.contentCenterY * .92,
+		font = native.systemFont,
+		fontSize = 7,
+		align = "center",
+		width = display.contentCenterX * .30,
+		height = gH / 11
+	}
+	
+learnText = display.newText(learnTextOptions)
+learnText:setFillColor(0,0,0,1)
+mainMenuButtons:insert(learnText)
+	
+--What is a drop tower? button
+
+dropTowerButton = widget.newButton(
+	{
+		id = "DropTowerButton",
+		x = display.contentCenterX * 1.80,
+		y = display.contentCenterY * .85,
+		width = display.contentCenterX * .40,
+		height = gH / 10,
+		shape = "rectangle",
+		fillColor = { default={ 0,0,0,0}, over={0,0,0,0} },
+		font = native.systemFont,
+		fontSize = 7,
+		label = "What is a drop tower?",
+		align = "center",
+		labelColor = {default= {0,0,0,1}, over = {0,0,0,1}},
+		strokeColor = { default={ 1,1,0 }, over={ 1,1,0 } },
+		strokeWidth = 3,
+	})
+mainMenuButtons:insert(dropTowerButton)
+
 
 --experiment capsule container image
 
