@@ -66,8 +66,10 @@ local sectionButtonHandler = function( event )
 			video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * 1.20, gW / 2.5, gH / 3.0)
 			video:load("videos/ExperimentPageVid.mp4")
 			video:addEventListener("video", videoListener)
-		elseif(event.target.id == "RepairButtontton") then
-			appState = 6
+		elseif(event.target.id == "RepairButton") then
+			--go to fixit
+			--appState = 6
+			animFrames = 0
 			fixItGroup.isVisible = true
 		end
 		
@@ -104,9 +106,9 @@ local screenButtonHandler = function ( event )
 		endVideo()
 		experimentGroup.isVisible = false
 		appState = 0
-	elseif(appState == 6) then
-		fixItGroup.isVisible = false
-		appState = 0
+	--elseif(appState == 6) then
+		--fixItGroup.isVisible = false
+		--appState = 0
 	end
 	if(appState == 0) then
 		--if the appState brings you back to the main menu, enable the main menu buttons
@@ -209,9 +211,10 @@ videoGroup = display.newGroup()
 videoGroup.isVisible = false
 --import the fixIt group
 fixIt = require( "fixit" )
---fixIt:makeDisplay()
---display.getCurrentStage():insert( fixIt.dGroup )
---fixIt.dGroup.isVisible = false
+fixIt:makeDisplay()
+display.getCurrentStage():insert( fixIt.dGroup )
+fixItGroup = fixIt.dGroup
+fixItGroup.isVisible = false
 
 -- videos jump to the front no matter when they're declared, but declare last to remind ourselves
 video = nil
