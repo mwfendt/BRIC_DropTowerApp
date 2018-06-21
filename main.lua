@@ -72,12 +72,14 @@ local sectionButtonHandler = function( event )
 			animFrames = 0
 			fixItGroup.isVisible = true
 		end
-		
+	elseif(appState == 5) then
+		appState = 6
+		experimentGroup.isVisible = false
+		createExpGroup.isVisible = true
 		--if the appState has been changed, disable all buttons on this screen
-		if(appState ~= 0) then
+	elseif(appState ~= 0) then
 			--turning buttons invisible also deactivates them, and is actually the ideal way to deactivate them
 			mainMenuButtons.isVisible = false;
-		end
 	else
 		--do nothing, report that handler fired when it shouldn't have
 		print("WARNING: Button \"" .. event.target.id .. "\" fired when it shouldn't have")
@@ -106,9 +108,10 @@ local screenButtonHandler = function ( event )
 		endVideo()
 		experimentGroup.isVisible = false
 		appState = 0
-	--elseif(appState == 6) then
-		--fixItGroup.isVisible = false
-		--appState = 0
+	elseif(appState == 6) then
+		createExpGroup.isVisible = false
+		experimentGroup.isVisible = true
+		appState = 5
 	end
 	if(appState == 0) then
 		--if the appState brings you back to the main menu, enable the main menu buttons
@@ -172,7 +175,7 @@ appState = 0
 -- 3 - Close-up of winch
 -- 4 - Close-up of deceleration container
 -- 5 - Experiment State
--- 6 - Fix-it main page
+-- 6 - Create Experiment 
 
 --the screen-sized button can't be invisible in order for it to work, so it needs to be behind everything else
 screenSizedButton = widget.newButton(
@@ -207,6 +210,8 @@ decelGroup = display.newGroup()
 decelGroup.isVisible = false
 experimentGroup = display.newGroup()
 experimentGroup.isVisible = false
+createExpGroup = display.newGroup()
+createExpGroup.isVisible = false
 videoGroup = display.newGroup()
 videoGroup.isVisible = false
 --import the fixIt group
@@ -588,6 +593,7 @@ expPageButtonBottom = widget.newButton(
 		height = gH * 0.20,
 		shape = "rectangle",
 		fillColor = { default={ 0.95,0.95,0,0.85 }, over={ 1,1,0,1 } },
+		onRelease = sectionButtonHandler
 	})
 experimentGroup:insert(expPageButtonBottom)
 
@@ -702,8 +708,167 @@ repairText = display.newText(repairTextOptions)
 repairText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(repairText)
 
+--Create an Experiment page Buttons
 
+createBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
+createBkg:setFillColor(.3, .5, .9, 1)
+createExpGroup:insert(createBkg)
 
+whatDrop = widget.newButton(
+	{
+		x = display.contentCenterX, 
+		y = display.contentCenterY * .20,
+		width = gW * .75, 
+		height = display.contentCenterY * .25,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={.75,.75,.75,1}},
+		strokeColor = {default={ .25 , .25, .25, 1}, over={ .25,.25,.25, 1 } },
+		strokeWidth = 3,
+		label = "What do you want to drop?",
+		font = native.systemFont,
+		fontSize = 16,
+		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}}
+	})
+createExpGroup:insert(whatDrop)
+
+drop1 = widget.newButton(
+	{
+		x = display.contentCenterX * 0.5, 
+		y = display.contentCenterY * .50,
+		width = gW * .15,
+		height = gW * .15,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
+		strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
+	})
+createExpGroup:insert(drop1)
+
+drop2 = widget.newButton(
+	{
+		x = display.contentCenterX, 
+		y = display.contentCenterY * .50,
+		width = gW * .15,
+		height = gW * .15,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
+		strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
+	})
+createExpGroup:insert(drop2)
+
+drop3 = widget.newButton(
+	{
+		x = display.contentCenterX * 1.5, 
+		y = display.contentCenterY * .50,
+		width = gW * .15,
+		height = gW * .15,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
+		strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
+	})
+createExpGroup:insert(drop3)
+
+box = display.newImageRect("images/boxtemp.jpg", gW * .125, gW * .125)
+box.x = display.contentCenterX * .50
+box.y = display.contentCenterY * .50
+createExpGroup:insert(box)
+
+nosign = display.newImageRect("images/nosign.png", gW * .125, gW * .125)
+nosign.x = display.contentCenterX
+nosign.y = display.contentCenterY * .50
+createExpGroup:insert(nosign)
+
+candle = display.newImageRect("images/candle.png", gW * .125, gW * .125)
+candle.x = display.contentCenterX * 1.5
+candle.y = display.contentCenterY * .50
+createExpGroup:insert(candle)
+
+whatHappen = widget.newButton(
+	{
+		x = display.contentCenterX, 
+		y = display.contentCenterY * .85,
+		width = gW * .75, 
+		height = display.contentCenterY * .25,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={.75,.75,.75,1}},
+		strokeColor = {default={ .25 , .25, .25, 1}, over={ .25,.25,.25, 1 } },
+		strokeWidth = 3,
+		label = "What do you think will happen?",
+		font = native.systemFont,
+		fontSize = 16,
+		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}}
+	})
+createExpGroup:insert(whatHappen)
+
+happen1 = widget.newButton(
+	{
+		x = display.contentCenterX * 0.3, 
+		y = display.contentCenterY * 1.15,
+		width = gW * .30,
+		height = gW * .15,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
+		strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
+	})
+createExpGroup:insert(happen1)
+
+happen2 = widget.newButton(
+	{
+		x = display.contentCenterX, 
+		y = display.contentCenterY * 1.15,
+		width = gW * .30,
+		height = gW * .15,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
+		strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
+	})
+createExpGroup:insert(happen2)
+
+happen3 = widget.newButton(
+	{
+		x = display.contentCenterX * 1.7, 
+		y = display.contentCenterY * 1.15,
+		width = gW * .30,
+		height = gW * .15,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
+		strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
+	})
+createExpGroup:insert(happen3)
+
+runExperiment = widget.newButton(
+	{
+		id = "Run Experiment Button",
+		x = gW * 0.5,
+		y = gH * 0.7625,
+		width = gW * 0.9, 
+		height = gH * 0.20,
+		shape = "rectangle",
+		fillColor = { default={ 0.95,0.95,0,0.85 }, over={ 1,1,0,1 } },
+		label = "Run Experiment",
+		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
+		font = native.systemFont,
+		fontSize = 15,
+	})
+createExpGroup:insert(runExperiment)
+
+backBar = widget.newButton(
+	{
+		id = "Back Bar",
+		x = display.contentCenterX,
+		y = gH * 0.95,
+		width = gW,
+		height = gH * 0.075,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
+		strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
+		strokeWidth = 3,
+		label = "Back",
+		font = native.systemFont,
+		fontSize = 16,
+		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
+		onRelease = screenButtonHandler
+	})
+createExpGroup:insert(backBar)
 
 -- Enter Frame functions (handle animation) --
 function capsuleGroup:enterFrame (event)
