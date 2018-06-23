@@ -30,15 +30,19 @@ function enterState(num)
 	elseif (num == 1) then
 		probButtonsGroup.isVisible = true
 		backButtonGroup.isVisible = true
+		winchProblemGroup.isVisible = true
 	elseif (num == 2) then
 		probButtonsGroup.isVisible = true
 		backButtonGroup.isVisible = true
+		capsuleProblemGroup.isVisible = true
 	elseif (num == 3) then
 		probButtonsGroup.isVisible = true
 		backButtonGroup.isVisible = true
+		nettingProblemGroup.isVisible = true
 	elseif (num == 4) then
 		probButtonsGroup.isVisible = true
 		backButtonGroup.isVisible = true
+		decelProblemGroup.isVisible = true
 	else
 		print("Unknown State: " .. num)
 	end
@@ -50,15 +54,19 @@ function exitState(num)
 	elseif (num == 1) then
 		probButtonsGroup.isVisible = false
 		backButtonGroup.isVisible = false
+		winchProblemGroup.isVisible = false
 	elseif (num == 2) then
 		probButtonsGroup.isVisible = false
 		backButtonGroup.isVisible = false
+		capsuleProblemGroup.isVisible = false
 	elseif (num == 3) then
 		probButtonsGroup.isVisible = false
 		backButtonGroup.isVisible = false
+		nettingProblemGroup.isVisible = false
 	elseif (num == 4) then
 		probButtonsGroup.isVisible = false
 		backButtonGroup.isVisible = false
+		decelProblemGroup.isVisible = false
 	else
 		print("Unknown State: " .. num)
 	end
@@ -79,11 +87,49 @@ function buttonHandler(event)
 		exitFixit()
 	elseif(event.target.id == "PlayGame") then
 		fixitState = math.random(1,4) --select a random state between 1 and 4
+		--fixitState = 2
 		print("Randomly chosen state: " .. fixitState)
 	elseif(event.target.id == "Back") then
 		if(fixitState >= 1 and fixitState <= 4) then
 			fixitState = 0
 		end
+	elseif(event.target.id == "Darkener") then
+		incorrectGroup.isVisible = false
+	elseif(event.target.id == "WinchGuess") then
+		if(fixitState == 1) then
+			--correct guess
+			correctGroup.isVisible = true
+		else
+			--incorrect guess
+			incorrectGroup.isVisible = true
+		end
+	elseif(event.target.id == "CapsuleGuess") then
+		if(fixitState == 2) then
+			--correct guess
+			correctGroup.isVisible = true
+		else
+			--incorrect guess
+			incorrectGroup.isVisible = true
+		end
+	elseif(event.target.id == "NettingGuess") then
+		if(fixitState == 3) then
+			--correct guess
+			correctGroup.isVisible = true
+		else
+			--incorrect guess
+			incorrectGroup.isVisible = true
+		end
+	elseif(event.target.id == "DecelGuess") then
+		if(fixitState == 4) then
+			--correct guess
+			correctGroup.isVisible = true
+		else
+			--incorrect guess
+			incorrectGroup.isVisible = true
+		end
+	elseif(event.target.id == "CDarkener") then
+		correctGroup.isVisible = false
+		fixitState = fixitState + 4
 	else
 		print("Unknown button: ".. event.target.id)
 	end
@@ -97,6 +143,12 @@ function M:makeDisplay()
 	titleGroup = display.newGroup()
 	probButtonsGroup = display.newGroup()
 	backButtonGroup = display.newGroup()
+	winchProblemGroup = display.newGroup()
+	capsuleProblemGroup = display.newGroup()
+	nettingProblemGroup = display.newGroup()
+	decelProblemGroup = display.newGroup()
+	incorrectGroup = display.newGroup()
+	correctGroup = display.newGroup()
 	--make background rectangle
 	local bkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
 	bkg:setFillColor(0.3, 0.5, 0.9, 1)
@@ -369,16 +421,214 @@ function M:makeDisplay()
 	backButtonGroup:insert(backButton)
 	backButtonGroup.isVisible = false
 	
+	-------------------
+	-- WINCH PROBLEM --
+	-------------------
+	--create problem description text, resizing to fit box
+	i = 25
+	repeat
+		if(winchProbText ~= nil) then
+			winchProbText:removeSelf()
+		end
+		i = i - 1
+		winchProbText = display.newText(
+			{
+				text="The drop capsule cannot be raised to its starting height.",
+				x=probTextBox.x,
+				y=probTextBox.y,
+				width=probTextBox.width - 6, --keep inside the lines
+				font=native.systemFont,
+				fontSize=i,
+				align="center"
+			})
+	until winchProbText.height <= probTextBox.height or i == 1
+	winchProbText:setFillColor(0,0,0,1)
+	--insert into group
+	winchProblemGroup:insert(winchProbText)
+	winchProblemGroup.isVisible = false
+	
+	---------------------
+	-- CAPSULE PROBLEM --
+	---------------------
+	--create problem description text, resizing to fit box
+	i = 25
+	repeat
+		if(capsuleProbText ~= nil) then
+			capsuleProbText:removeSelf()
+		end
+		i = i - 1
+		capsuleProbText = display.newText(
+			{
+				text="The drop capsule launch was initiated ten minutes ago, but the capsule has not yet fallen.",
+				x=probTextBox.x,
+				y=probTextBox.y,
+				width=probTextBox.width - 6, --keep inside the lines
+				font=native.systemFont,
+				fontSize=i,
+				align="center"
+			})
+	until capsuleProbText.height <= probTextBox.height or i == 1
+	capsuleProbText:setFillColor(0,0,0,1)
+	--insert into group
+	capsuleProblemGroup:insert(capsuleProbText)
+	capsuleProblemGroup.isVisible = false
+	
+	---------------------
+	-- NETTING PROBLEM --
+	---------------------
+	--create problem description text, resizing to fit box
+	i = 25
+	repeat
+		if(nettingProbText ~= nil) then
+			nettingProbText:removeSelf()
+		end
+		i = i - 1
+		nettingProbText = display.newText(
+			{
+				text="There is a thick metal cord that appears to have fallen into the drop chamber.",
+				x=probTextBox.x,
+				y=probTextBox.y,
+				width=probTextBox.width - 6, --keep inside the lines
+				font=native.systemFont,
+				fontSize=i,
+				align="center"
+			})
+	until nettingProbText.height <= probTextBox.height or i == 1
+	nettingProbText:setFillColor(0,0,0,1)
+	--insert into group
+	nettingProblemGroup:insert(nettingProbText)
+	nettingProblemGroup.isVisible = false
+	
+	--------------------------
+	-- DECELERATION PROBLEM --
+	--------------------------
+	--create problem description text, resizing to fit box
+	i = 25
+	repeat
+		if(decelProbText ~= nil) then
+			decelProbText:removeSelf()
+		end
+		i = i - 1
+		decelProbText = display.newText(
+			{
+				text="The drop capsule decelerates far too rapidly for the safety of the experiments inside.",
+				x=probTextBox.x,
+				y=probTextBox.y,
+				width=probTextBox.width - 6, --keep inside the lines
+				font=native.systemFont,
+				fontSize=i,
+				align="center"
+			})
+	until decelProbText.height <= probTextBox.height or i == 1
+	decelProbText:setFillColor(0,0,0,1)
+	--insert into group
+	decelProblemGroup:insert(decelProbText)
+	decelProblemGroup.isVisible = false
+	
+	----------------------------
+	-- INCORRECT ANSWER POPUP --
+	----------------------------
+	darkenerButton = widget.newButton(
+		{
+			id = "Darkener",
+			x = display.contentCenterX,
+			y = display.contentCenterY,
+			width = gW,
+			height = gH,
+			shape = "rectangle",
+			fillColor = { default={ 0,0,0,0.85 }, over={ 0,0,0,0.85 } },
+			onRelease = buttonHandler
+		})
+	--create box for text to appear on
+	incorrectBox = display.newRect(display.contentCenterX, display.contentCenterY, gW * 0.8, gH * 0.25)
+	incorrectBox:setFillColor(1, 1, 1, 1)
+	incorrectBox.strokeWidth = 3
+	incorrectBox:setStrokeColor(1,0,0,1)
+	--create text and shrink to box
+	i = 31
+	repeat
+		if(incorrectText ~= nil) then
+			incorrectText:removeSelf()
+		end
+		i = i - 1
+		incorrectText = display.newText(
+			{
+				text="Whoops!\nThat's not quite right. Try again!",
+				x=incorrectBox.x,
+				y=incorrectBox.y,
+				width=incorrectBox.width - 6, --keep inside the lines
+				font=native.systemFont,
+				fontSize=i,
+				align="center"
+			})
+	until incorrectText.height <= incorrectBox.height or i == 1
+	incorrectText:setFillColor(1,0,0,1)
+	--insert into group
+	incorrectGroup:insert(darkenerButton)
+	incorrectGroup:insert(incorrectBox)
+	incorrectGroup:insert(incorrectText)
+	incorrectGroup.isVisible = false
+	
+	--------------------------
+	-- CORRECT ANSWER POPUP --
+	--------------------------
+	correctDarkenerButton = widget.newButton(
+		{
+			id = "CDarkener",
+			x = display.contentCenterX,
+			y = display.contentCenterY,
+			width = gW,
+			height = gH,
+			shape = "rectangle",
+			fillColor = { default={ 0,0,0,0.85 }, over={ 0,0,0,0.85 } },
+			onRelease = buttonHandler
+		})
+	--create box for text to appear on
+	correctBox = display.newRect(display.contentCenterX, display.contentCenterY, gW * 0.8, gH * 0.25)
+	correctBox:setFillColor(1, 1, 1, 1)
+	correctBox.strokeWidth = 3
+	correctBox:setStrokeColor(0,.8,0,1)
+	--create text and shrink to box
+	i = 31
+	repeat
+		if(correctText ~= nil) then
+			correctText:removeSelf()
+		end
+		i = i - 1
+		correctText = display.newText(
+			{
+				text="Good job!\nTap to continue.",
+				x=correctBox.x,
+				y=correctBox.y,
+				width=correctBox.width - 6, --keep inside the lines
+				font=native.systemFont,
+				fontSize=i,
+				align="center"
+			})
+	until correctText.height <= correctBox.height or i == 1
+	correctText:setFillColor(0,0.8,0,1)
+	--insert into group
+	correctGroup:insert(correctDarkenerButton)
+	correctGroup:insert(correctBox)
+	correctGroup:insert(correctText)
+	correctGroup.isVisible = false
+	
 	--insert objects into the major display group
 	dGroup:insert(backgroundButton)
 	dGroup:insert(bkg)
 	dGroup:insert(titleGroup)
 	dGroup:insert(probButtonsGroup)
 	dGroup:insert(backButtonGroup)
+	dGroup:insert(winchProblemGroup)
+	dGroup:insert(capsuleProblemGroup)
+	dGroup:insert(nettingProblemGroup)
+	dGroup:insert(decelProblemGroup)
+	dGroup:insert(incorrectGroup)
+	dGroup:insert(correctGroup)
 	
 	--set object variables (so they can be accessed elsewhere)
 	self.dGroup = dGroup
-	self.titleGroup = titleGroup
+	--self.titleGroup = titleGroup
 end
 
 return M
