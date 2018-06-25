@@ -63,7 +63,7 @@ local sectionButtonHandler = function( event )
 			--go to Experiment Menu
 			appState = 5
 			experimentGroup.isVisible = true
-			video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * 1.20, gW / 2.5, gH / 3.0)
+			video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * 1.025, display.contentCenterX * .6, display.contentCenterY * .5)
 			video:load("videos/ExperimentPageVid.mp4")
 			video:addEventListener("video", videoListener)
 		elseif(event.target.id == "RepairButton") then
