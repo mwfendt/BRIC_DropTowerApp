@@ -76,6 +76,9 @@ local sectionButtonHandler = function( event )
 		appState = 6
 		experimentGroup.isVisible = false
 		createExpGroup.isVisible = true
+		if(video ~= nil) then
+			endVideo()
+		end
 		--if the appState has been changed, disable all buttons on this screen
 	elseif(appState ~= 0) then
 			--turning buttons invisible also deactivates them, and is actually the ideal way to deactivate them
@@ -938,7 +941,6 @@ function experimentGroup:enterFrame (event)
 		self.y = display.contentCenterY * (1-newScale)
 	end
 end
-
 
 Runtime:addEventListener( "enterFrame", capsuleGroup )
 Runtime:addEventListener( "enterFrame", nettingGroup )

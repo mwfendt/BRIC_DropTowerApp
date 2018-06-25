@@ -43,6 +43,18 @@ function enterState(num)
 		probButtonsGroup.isVisible = true
 		backButtonGroup.isVisible = true
 		decelProblemGroup.isVisible = true
+	elseif (num == 5) then
+		backButtonGroup.isVisible = true
+		winchGameGroup.isVisible = true
+	elseif (num == 6) then
+		backButtonGroup.isVisible = true
+		capsuleGameGroup.isVisible = true
+	elseif (num == 7) then
+		backButtonGroup.isVisible = true
+		nettingGameGroup.isVisible = true
+	elseif (num == 8) then
+		backButtonGroup.isVisible = true
+		decelGameGroup.isVisible = true
 	else
 		print("Unknown State: " .. num)
 	end
@@ -67,6 +79,18 @@ function exitState(num)
 		probButtonsGroup.isVisible = false
 		backButtonGroup.isVisible = false
 		decelProblemGroup.isVisible = false
+	elseif (num == 5) then
+		backButtonGroup.isVisible = false
+		winchGameGroup.isVisible = false
+	elseif (num == 6) then
+		backButtonGroup.isVisible = false
+		capsuleGameGroup.isVisible = false
+	elseif (num == 7) then
+		backButtonGroup.isVisible = false
+		nettingGameGroup.isVisible = false
+	elseif (num == 8) then
+		backButtonGroup.isVisible = false
+		decelGameGroup.isVisible = false
 	else
 		print("Unknown State: " .. num)
 	end
@@ -86,11 +110,11 @@ function buttonHandler(event)
 	if(event.target.id == "BackLarge") then
 		exitFixit()
 	elseif(event.target.id == "PlayGame") then
-		fixitState = math.random(1,4) --select a random state between 1 and 4
-		--fixitState = 2
+		--fixitState = math.random(1,4) --select a random state between 1 and 4
+		fixitState = 1
 		print("Randomly chosen state: " .. fixitState)
 	elseif(event.target.id == "Back") then
-		if(fixitState >= 1 and fixitState <= 4) then
+		if(fixitState >= 1 and fixitState <= 8) then
 			fixitState = 0
 		end
 	elseif(event.target.id == "Darkener") then
@@ -130,6 +154,25 @@ function buttonHandler(event)
 	elseif(event.target.id == "CDarkener") then
 		correctGroup.isVisible = false
 		fixitState = fixitState + 4
+	elseif(event.target.id == "WinchDrag") then
+		if(event.phase == "began" or event.phase == "moved") then
+			event.target.x = event.x
+			event.target.y = event.y
+		elseif (event.phase == "ended") then
+			--drag released, check if it's inside the range
+			if(event.target.x >= winchGameTarget.x - winchGameTarget.width and event.target.x <= winchGameTarget.x + winchGameTarget.width and event.target.y >= winchGameTarget.y - winchGameTarget.height and event.target.y <= winchGameTarget.y + winchGameTarget.height) then
+				--success
+				winchDragButton.x = winchGameTarget.x
+				winchDragButton.y = winchGameTarget.y
+				winGroup.isVisible = true
+			end
+			--return to original position
+			winchDragButton.x = gW* 0.311
+			winchDragButton.y = gH * 0.828
+		end
+	elseif(event.target.id == "WDarkener") then
+		winGroup.isVisible = false
+		fixitState = 0
 	else
 		print("Unknown button: ".. event.target.id)
 	end
@@ -149,6 +192,11 @@ function M:makeDisplay()
 	decelProblemGroup = display.newGroup()
 	incorrectGroup = display.newGroup()
 	correctGroup = display.newGroup()
+	winchGameGroup = display.newGroup()
+	capsuleGameGroup = display.newGroup()
+	nettingGameGroup = display.newGroup()
+	decelGameGroup = display.newGroup()
+	winGroup = display.newGroup()
 	--make background rectangle
 	local bkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
 	bkg:setFillColor(0.3, 0.5, 0.9, 1)
@@ -340,6 +388,7 @@ function M:makeDisplay()
 			fontSize = 18,
 			label = "Deceleration\nChamber",
 			labelColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
+			labelAligh = "center",
 			strokeColor = { default={ .25,.25,.25 }, over={ 0.5,0.5,0.5 } },
 			strokeWidth = 3,
 			onRelease = buttonHandler
@@ -613,16 +662,123 @@ function M:makeDisplay()
 	correctGroup:insert(correctText)
 	correctGroup.isVisible = false
 	
-	--insert objects into the major display group
+	--------------------
+	-- WINCH MINIGAME --
+	--------------------
+	--background
+	winchBkg = display.newImageRect( "images/WinchGame.jpg", gW, gH )
+	winchBkg.x = display.contentCenterX
+	winchBkg.y = display.contentCenterY
+	--target rectangle
+	winchGameTarget = display.newRect(0.446 * gW, 0.471 * gH, 0.137 * gW, 0.156 * gH)
+	winchGameTarget:setFillColor(0,0,0,0)
+	winchGameTarget.strokeWidth = 5
+	winchGameTarget:setStrokeColor(0,1,0,1)
+	--click and drag button
+	winchDragButton = widget.newButton(
+		{
+			id = "WinchDrag",
+			x = gW* 0.311,
+			y = gH * 0.828,
+			width = gW * 0.137,
+			height = gH * 0.156,
+			--shape = "rectangle",
+			defaultFile = "images/WinchFuse.png",
+			strokeColor = { default={ 0,1,0 }, over={ 0.5,1,0.5 } },
+			strokeWidth = 5,
+			onEvent = buttonHandler
+		})
+	--text display box
+	winchTextBox = display.newRect(display.contentCenterX, gH * 0.125, gW * 0.95, gH * 0.2)
+	winchTextBox:setFillColor(1, 1, 1, 1)
+	winchTextBox.strokeWidth = 3
+	winchTextBox:setStrokeColor(0,0,0,1)
+	--create text (size to fit box)
+	i = 31
+	repeat
+		if(winchGameText ~= nil) then
+			winchGameText:removeSelf()
+		end
+		i = i - 1
+		winchGameText = display.newText(
+			{
+				text="A fuse has blown in the winch controls! Drag the new fuse in to place to replace it.",
+				x=winchTextBox.x,
+				y=winchTextBox.y,
+				width=winchTextBox.width - 6, --keep inside the lines
+				font=native.systemFont,
+				fontSize=i,
+				align="center"
+			})
+	until winchGameText.height <= winchTextBox.height - 6 or i == 1
+	winchGameText:setFillColor(0,0,0,1)
+	--insert objects into group
+	winchGameGroup:insert(winchBkg)
+	winchGameGroup:insert(winchGameTarget)
+	winchGameGroup:insert(winchDragButton)
+	winchGameGroup:insert(winchTextBox)
+	winchGameGroup:insert(winchGameText)
+	winchGameGroup.isVisible = false
+	
+	---------------------
+	-- GAME WIN SCREEN --
+	---------------------
+	--background darkener
+	winDarkenerButton = widget.newButton(
+		{
+			id = "WDarkener",
+			x = display.contentCenterX,
+			y = display.contentCenterY,
+			width = gW,
+			height = gH,
+			shape = "rectangle",
+			fillColor = { default={ 0,0,0,0.85 }, over={ 0,0,0,0.85 } },
+			onRelease = buttonHandler
+		})
+	winBox = display.newRect(display.contentCenterX, display.contentCenterY, gW * 0.8, gH * 0.25)
+	winBox:setFillColor(1, 1, 1, 1)
+	winBox.strokeWidth = 3
+	winBox:setStrokeColor(0,.8,0,1)
+	--create text and shrink to box
+	i = 31
+	repeat
+		if(winText ~= nil) then
+			winText:removeSelf()
+		end
+		i = i - 1
+		winText = display.newText(
+			{
+				text="Congratulations! You fixed the drop tower!\nTap to continue.",
+				x=winBox.x,
+				y=winBox.y,
+				width=winBox.width - 6, --keep inside the lines
+				font=native.systemFont,
+				fontSize=i,
+				align="center"
+			})
+	until winText.height <= winBox.height or i == 1
+	winText:setFillColor(0,0.8,0,1)
+	--insert objects into group
+	winGroup:insert(winDarkenerButton)
+	winGroup:insert(winBox)
+	winGroup:insert(winText)
+	winGroup.isVisible = false
+	
+	--insert subgroups into the major display group
 	dGroup:insert(backgroundButton)
 	dGroup:insert(bkg)
 	dGroup:insert(titleGroup)
 	dGroup:insert(probButtonsGroup)
-	dGroup:insert(backButtonGroup)
 	dGroup:insert(winchProblemGroup)
 	dGroup:insert(capsuleProblemGroup)
 	dGroup:insert(nettingProblemGroup)
 	dGroup:insert(decelProblemGroup)
+	dGroup:insert(winchGameGroup)
+	dGroup:insert(capsuleGameGroup)
+	dGroup:insert(nettingGameGroup)
+	dGroup:insert(decelGameGroup)
+	dGroup:insert(backButtonGroup)
+	dGroup:insert(winGroup)
 	dGroup:insert(incorrectGroup)
 	dGroup:insert(correctGroup)
 	
