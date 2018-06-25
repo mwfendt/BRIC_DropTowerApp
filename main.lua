@@ -74,7 +74,7 @@ local sectionButtonHandler = function( event )
 		elseif(event.target.id == "DropTowerButton") then
 			--go to Drop Tower Info
 			appState = 7
-			video = native.newVideo(gW * 0.5, gH * 0.5, gW, gW * 0.75)
+			video = native.newVideo(gW * 0.5, gH * 0.475, gW, gW * 0.75)
 			video:load("videos/PlaceholderVid5.mp4")
 			video:addEventListener("video", videoListener)
 			dropTowerGroup.isVisible = true
@@ -928,7 +928,7 @@ bricInfo = widget.newButton(
 	{
 		id = "BRIC Info",
 		x = gW * 0.5,
-		y = gH * 0.75,
+		y = gH * 0.8,
 		width = gW * 0.9, 
 		height = gH * 0.20,
 		shape = "rectangle",
@@ -940,7 +940,7 @@ bricInfoOptions =
 	{
 		text = "The Baylor Research and Innovation Collaborative (BRIC) is the flagship project for the Central Texas Technology and Research Park, an initiative by organizations and higher educational institutions in Central Texas to develop, promote and market science and engineering technologies, university research and advanced technology training and workforce development.",
 		x = gW * 0.5,
-		y = gH * 0.75,
+		y = gH * 0.8,
 		width = gW * 0.8,
 		align = "center",
 		font = native.systemFont,
