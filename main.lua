@@ -894,7 +894,25 @@ createExpGroup:insert(backBar)
 infoBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
 infoBkg:setFillColor(.3, .5, .9, 1)
 dropTowerGroup:insert(infoBkg)
-dropTowerGroup:insert(backBar)
+
+backBar2 = widget.newButton(
+	{
+		id = "Back Bar",
+		x = display.contentCenterX,
+		y = gH * 0.95,
+		width = gW,
+		height = gH * 0.075,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
+		strokeColor = {default={ .25 , .25, .25, 1}, over={ .5,.5,.5, 1 } },
+		strokeWidth = 3,
+		label = "Back",
+		font = native.systemFont,
+		fontSize = 16,
+		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
+		onRelease = screenButtonHandler
+	})
+dropTowerGroup:insert(backBar2)
 
 towerInfoText = widget.newButton(
 	{
