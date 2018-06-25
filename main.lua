@@ -71,6 +71,13 @@ local sectionButtonHandler = function( event )
 			--appState = 6
 			animFrames = 0
 			fixItGroup.isVisible = true
+		elseif(event.target.id == "DropTowerButton") then
+			--go to Drop Tower Info
+			appState = 7
+			video = native.newVideo(gW * 0.5, gH * 0.5, gW, gW * 0.75)
+			video:load("videos/PlaceholderVid5.mp4")
+			video:addEventListener("video", videoListener)
+			dropTowerGroup.isVisible = true
 		end
 	elseif(appState == 5) then
 		appState = 6
@@ -116,6 +123,10 @@ local screenButtonHandler = function ( event )
 		createExpGroup.isVisible = false
 		experimentGroup.isVisible = true
 		appState = 5
+	elseif(appState == 7) then
+		endVideo()
+		dropTowerGroup.isVisible = false
+		appState = 0
 	end
 	if(appState == 0) then
 		--if the appState brings you back to the main menu, enable the main menu buttons
@@ -180,6 +191,7 @@ appState = 0
 -- 4 - Close-up of deceleration container
 -- 5 - Experiment State
 -- 6 - Create Experiment 
+-- 7 - Drop Tower Information
 
 --the screen-sized button can't be invisible in order for it to work, so it needs to be behind everything else
 screenSizedButton = widget.newButton(
@@ -224,6 +236,8 @@ fixIt:makeDisplay()
 display.getCurrentStage():insert( fixIt.dGroup )
 fixItGroup = fixIt.dGroup
 fixItGroup.isVisible = false
+dropTowerGroup = display.newGroup()
+dropTowerGroup.isVisible = false
 
 -- videos jump to the front no matter when they're declared, but declare last to remind ourselves
 video = nil
@@ -504,7 +518,7 @@ dropTowerButton = widget.newButton(
 		width = display.contentCenterX * .40,
 		height = gH / 10,
 		shape = "rectangle",
-		fillColor = { default={ 0,0,0,0}, over={0,0,0,0} },
+		fillColor = { default={ 0,0,0,0.01}, over={0,0,0,0.01} },
 		font = native.systemFont,
 		fontSize = 7,
 		label = "What is a drop tower?",
@@ -512,6 +526,7 @@ dropTowerButton = widget.newButton(
 		labelColor = {default= {0,0,0,1}, over = {0,0,0,1}},
 		strokeColor = { default={ 1,1,0 }, over={ 1,1,0 } },
 		strokeWidth = 3,
+		onRelease = sectionButtonHandler
 	})
 mainMenuButtons:insert(dropTowerButton)
 
@@ -864,7 +879,7 @@ backBar = widget.newButton(
 		height = gH * 0.075,
 		shape = "rectangle",
 		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
-		strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
+		strokeColor = {default={ .25 , .25, .25, 1}, over={ .5,.5,.5, 1 } },
 		strokeWidth = 3,
 		label = "Back",
 		font = native.systemFont,
@@ -873,6 +888,68 @@ backBar = widget.newButton(
 		onRelease = screenButtonHandler
 	})
 createExpGroup:insert(backBar)
+
+-- What is a drop tower? Page
+
+infoBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
+infoBkg:setFillColor(.3, .5, .9, 1)
+dropTowerGroup:insert(infoBkg)
+dropTowerGroup:insert(backBar)
+
+towerInfoText = widget.newButton(
+	{
+		id = "Info Text",
+		x = gW * 0.5,
+		y = gH * 0.125,
+		width = gW * 0.9, 
+		height = gH * 0.20,
+		shape = "rectangle",
+		fillColor = { default={ .75, .75, .75, 1 }, over={ 0.15,0.5,1,1 } },
+	})
+dropTowerGroup:insert(towerInfoText)
+
+
+towerTextOptions = 
+	{
+		text = "In physics and materials science, a drop tower or drop tube is a structure used to produce a controlled period of weightlessness for an object under study. Air bags, polystyrene pellets, and magnetic or mechanical brakes are sometimes used to arrest the fall of the experimental payload.",
+		x = gW * 0.5,
+		y = gH * 0.125,
+		width = gW * 0.8,
+		align = "center",
+		font = native.systemFont,
+		fontSize = 12
+	}
+	
+towerText = display.newText(towerTextOptions)
+towerText:setFillColor(0,0,0,1)
+dropTowerGroup:insert(towerText)
+
+bricInfo = widget.newButton(
+	{
+		id = "BRIC Info",
+		x = gW * 0.5,
+		y = gH * 0.75,
+		width = gW * 0.9, 
+		height = gH * 0.20,
+		shape = "rectangle",
+		fillColor = { default={ .75, .75, .75, 1 }, over={ 0.15,0.5,1,1 } },
+	})
+dropTowerGroup:insert(bricInfo)
+
+bricInfoOptions = 
+	{
+		text = "The Baylor Research and Innovation Collaborative (BRIC) is the flagship project for the Central Texas Technology and Research Park, an initiative by organizations and higher educational institutions in Central Texas to develop, promote and market science and engineering technologies, university research and advanced technology training and workforce development.",
+		x = gW * 0.5,
+		y = gH * 0.75,
+		width = gW * 0.8,
+		align = "center",
+		font = native.systemFont,
+		fontSize = 12
+	}
+
+bricText = display.newText(bricInfoOptions)
+bricText:setFillColor(0,0,0,1)
+dropTowerGroup:insert(bricText)
 
 -- Enter Frame functions (handle animation) --
 function capsuleGroup:enterFrame (event)
