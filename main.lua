@@ -123,6 +123,9 @@ local screenButtonHandler = function ( event )
 		createExpGroup.isVisible = false
 		experimentGroup.isVisible = true
 		appState = 5
+		video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * 1.025, display.contentCenterX * .6, display.contentCenterY * .5)
+		video:load("videos/ExperimentPageVid.mp4")
+		video:addEventListener("video", videoListener)
 	elseif(appState == 7) then
 		endVideo()
 		dropTowerGroup.isVisible = false
