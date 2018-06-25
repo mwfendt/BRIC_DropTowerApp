@@ -27,6 +27,10 @@ local M = {}
 function enterState(num)
 	if(num == 0) then
 		titleGroup.isVisible = true
+		-- RESET GAMES --
+		--winch game
+		winchDragButton.x = gW* 0.311
+		winchDragButton.y = gH * 0.828
 	elseif (num == 1) then
 		probButtonsGroup.isVisible = true
 		backButtonGroup.isVisible = true
@@ -118,42 +122,55 @@ function buttonHandler(event)
 			fixitState = 0
 		end
 	elseif(event.target.id == "Darkener") then
-		incorrectGroup.isVisible = false
+		if(incorrectGroup.animFrames == 0) then
+			incorrectGroup.animFrames = -20
+			--incorrectGroup.isVisible = false
+		end
 	elseif(event.target.id == "WinchGuess") then
 		if(fixitState == 1) then
 			--correct guess
 			correctGroup.isVisible = true
+			correctGroup.animFrames = 20
 		else
 			--incorrect guess
 			incorrectGroup.isVisible = true
+			incorrectGroup.animFrames = 20
 		end
 	elseif(event.target.id == "CapsuleGuess") then
 		if(fixitState == 2) then
 			--correct guess
 			correctGroup.isVisible = true
+			correctGroup.animFrames = 20
 		else
 			--incorrect guess
 			incorrectGroup.isVisible = true
+			incorrectGroup.animFrames = 20
 		end
 	elseif(event.target.id == "NettingGuess") then
 		if(fixitState == 3) then
 			--correct guess
 			correctGroup.isVisible = true
+			correctGroup.animFrames = 20
 		else
 			--incorrect guess
 			incorrectGroup.isVisible = true
+			incorrectGroup.animFrames = 20
 		end
 	elseif(event.target.id == "DecelGuess") then
 		if(fixitState == 4) then
 			--correct guess
 			correctGroup.isVisible = true
+			correctGroup.animFrames = 20
 		else
 			--incorrect guess
 			incorrectGroup.isVisible = true
+			incorrectGroup.animFrames = 20
 		end
 	elseif(event.target.id == "CDarkener") then
-		correctGroup.isVisible = false
-		fixitState = fixitState + 4
+		if(correctGroup.animFrames == 0) then
+			correctGroup.isVisible = false
+			fixitState = fixitState + 4
+		end
 	elseif(event.target.id == "WinchDrag") then
 		if(event.phase == "began" or event.phase == "moved") then
 			event.target.x = event.x
@@ -165,14 +182,18 @@ function buttonHandler(event)
 				winchDragButton.x = winchGameTarget.x
 				winchDragButton.y = winchGameTarget.y
 				winGroup.isVisible = true
+				winGroup.animFrames = 20
+			else
+				--return to original position
+				winchDragButton.x = gW* 0.311
+				winchDragButton.y = gH * 0.828
 			end
-			--return to original position
-			winchDragButton.x = gW* 0.311
-			winchDragButton.y = gH * 0.828
 		end
 	elseif(event.target.id == "WDarkener") then
-		winGroup.isVisible = false
-		fixitState = 0
+		if(winGroup.animFrames == 0) then
+			winGroup.isVisible = false
+			fixitState = 0
+		end
 	else
 		print("Unknown button: ".. event.target.id)
 	end
@@ -534,7 +555,7 @@ function M:makeDisplay()
 		i = i - 1
 		nettingProbText = display.newText(
 			{
-				text="There is a thick metal cord that appears to have fallen into the drop chamber.",
+				text="The gate to the cage is closed, but the system is showing that it is still open, so the drop cannot be initiatied.",
 				x=probTextBox.x,
 				y=probTextBox.y,
 				width=probTextBox.width - 6, --keep inside the lines
@@ -617,6 +638,20 @@ function M:makeDisplay()
 	incorrectGroup:insert(incorrectBox)
 	incorrectGroup:insert(incorrectText)
 	incorrectGroup.isVisible = false
+	incorrectGroup.alpha = 0.01
+	--set up fade in animation
+	incorrectGroup.animFrames = 0
+	function incorrectGroup:enterFrame(event)
+		if(self.animFrames > 0) then
+			self.animFrames = self.animFrames - 1
+			self.alpha = 1 - (self.animFrames * 0.05)
+		elseif(self.animFrames < 0) then
+			self.animFrames = self.animFrames + 1
+			self.alpha = (self.animFrames * -0.05)
+		end
+	end
+	Runtime:addEventListener( "enterFrame", incorrectGroup )
+	
 	
 	--------------------------
 	-- CORRECT ANSWER POPUP --
@@ -661,6 +696,15 @@ function M:makeDisplay()
 	correctGroup:insert(correctBox)
 	correctGroup:insert(correctText)
 	correctGroup.isVisible = false
+	--set up fade in animation
+	correctGroup.animFrames = 0
+	function correctGroup:enterFrame(event)
+		if(self.animFrames > 0) then
+			self.animFrames = self.animFrames - 1
+			self.alpha = 1 - (self.animFrames * 0.05)
+		end
+	end
+	Runtime:addEventListener( "enterFrame", correctGroup )
 	
 	--------------------
 	-- WINCH MINIGAME --
@@ -763,6 +807,16 @@ function M:makeDisplay()
 	winGroup:insert(winBox)
 	winGroup:insert(winText)
 	winGroup.isVisible = false
+	winGroup.alpha = 0.01
+	--set up fade in animation
+	winGroup.animFrames = 0
+	function winGroup:enterFrame(event)
+		if(self.animFrames > 0) then
+			self.animFrames = self.animFrames - 1
+			self.alpha = 1 - (self.animFrames * 0.05)
+		end
+	end
+	Runtime:addEventListener( "enterFrame", winGroup )
 	
 	--insert subgroups into the major display group
 	dGroup:insert(backgroundButton)
