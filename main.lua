@@ -328,7 +328,7 @@ repeat
 	i = i - 1
 	dropCapText = display.newText(
 		{
-			text="The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly, but gets faster each minute after you hear this signal. [beep] A single lap should be completed each time you hear this sound. [ding] Remember to run in a straight line, and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark, get ready, start.",
+			text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
 			x=dropCapTextBkg.x,
 			y=dropCapTextBkg.y, --change to align top?
 			width=dropCapTextBkg.width,
@@ -360,7 +360,7 @@ repeat
 	i = i - 1
 	nettingText = display.newText(
 		{
-			text="Did you ever hear the tragedy of Darth Plagueis The Wise? I thought not. It’s not a story the Jedi would tell you. It’s a Sith legend. Darth Plagueis was a Dark Lord of the Sith, so powerful and so wise he could use the Force to influence the midichlorians to create life… He had such a knowledge of the dark side that he could even keep the ones he cared about from dying. The dark side of the Force is a pathway to many abilities some consider to be unnatural. He became so powerful… the only thing he was afraid of was losing his power, which eventually, of course, he did. Unfortunately, he taught his apprentice everything he knew, then his apprentice killed him in his sleep. Ironic. He could save others from death, but not himself.",
+			text="This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. ",
 			x=nettingTextBkg.x,
 			y=nettingTextBkg.y,
 			width=nettingTextBkg.width,
@@ -632,7 +632,7 @@ local experimentTextOptions =
 		height = gH * 0.05
 	}
 	
--- options for text in the header border
+--[[ options for text in the header border
 local headerTextOptions = 
 	{
 		text = " Learn about Microgravity using Baylor's Drop Tower!",
@@ -641,14 +641,32 @@ local headerTextOptions =
 		y = gH / 20,
 		font = native.systemFont,
 		fontSize = 13
-	}
+	}--]]
 	
 --create and insert the text into the main menu
 local experimentText = display.newText(experimentTextOptions)
 experimentText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(experimentText)
 
-local headerText = display.newText(headerTextOptions)
+
+i = 51
+repeat
+	if(headerText ~= nil) then
+		headerText:removeSelf()
+	end
+	i = i - 1
+	headerText = display.newText(
+		{
+			text = " Learn about Microgravity using Baylor's Drop Tower!",
+			x = display.contentCenterX,
+			align = "center",
+			y = gH / 20,
+			font = native.systemFont,
+			fontSize = i
+		})
+until headerText.width <= gW * .97 or i == 1
+print(i)
+headerText:setFillColor(1,1,1,1)
 mainMenuButtons:insert(headerText)
 
 --create the text for the experiment page 
