@@ -80,12 +80,13 @@ local sectionButtonHandler = function( event )
 			endVideo()
 		end
 		--if the appState has been changed, disable all buttons on this screen
-	elseif(appState ~= 0) then
-			--turning buttons invisible also deactivates them, and is actually the ideal way to deactivate them
-			mainMenuButtons.isVisible = false;
 	else
 		--do nothing, report that handler fired when it shouldn't have
 		print("WARNING: Button \"" .. event.target.id .. "\" fired when it shouldn't have")
+	end
+	if(appState ~= 0) then
+		--turning buttons invisible also deactivates them, and is actually the ideal way to deactivate them
+		mainMenuButtons.isVisible = false
 	end
 end
 
