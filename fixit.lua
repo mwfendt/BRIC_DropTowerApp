@@ -838,7 +838,6 @@ function M:makeDisplay()
 	
 	--set object variables (so they can be accessed elsewhere)
 	self.dGroup = dGroup
-	--self.titleGroup = titleGroup
 end
 
 return M

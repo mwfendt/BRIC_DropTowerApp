@@ -40,25 +40,23 @@ end
 local sectionButtonHandler = function( event )
 	animFrames = 10
 	if(appState == 0) then
-		--display the video button
-		--videoGroup.isVisible = true
 		--figure out which section to display then display it
 		if(event.target.id == "DropCapsule") then
 			--go to zoomed drop capsule state
 			appState = 1
-			capsuleGroup.isVisible = true
+			capsuleInfo:reveal()
 		elseif (event.target.id == "Netting") then
 			--go to zoomed netting state
 			appState = 2
-			nettingGroup.isVisible = true
+			nettingInfo:reveal()
 		elseif (event.target.id == "Winch") then
 			--go to zoomed winch state
 			appState = 3
-			winchGroup.isVisible = true
+			winchInfo:reveal()
 		elseif (event.target.id == "DecelContainer") then
 			--go to zoomed decelration chamber state
 			appState = 4
-			decelGroup.isVisible = true
+			decelInfo:reveal()
 		elseif(event.target.id == "ExperimentButton") then
 			--go to Experiment Menu
 			appState = 5
@@ -100,22 +98,7 @@ end
 --handles button presses for the full-screen button
 local screenButtonHandler = function ( event )
 	videoGroup.isVisible = false
-	if(appState == 1) then
-		--dismiss drop capsule zoomed image
-		capsuleGroup.isVisible = false
-		appState = 0
-	elseif (appState == 2) then
-		--dismiss net zoomed image
-		nettingGroup.isVisible = false
-		appState = 0
-	elseif (appState == 3) then
-		--dismiss winch zoomed image
-		winchGroup.isVisible = false
-		appState = 0
-	elseif (appState == 4) then
-		decelGroup.isVisible = false
-		appState = 0
-	elseif(appState == 5) then 
+	if(appState == 5) then 
 		endVideo()
 		experimentGroup.isVisible = false
 		appState = 0
@@ -219,14 +202,24 @@ bkg.y = display.contentCenterY
 --      ORDER MATTERS!      --
 ------------------------------
 mainMenuButtons = display.newGroup()
-capsuleGroup = display.newGroup()
-capsuleGroup.isVisible = false
-nettingGroup = display.newGroup()
-nettingGroup.isVisible = false
-winchGroup = display.newGroup()
-winchGroup.isVisible = false
-decelGroup = display.newGroup()
-decelGroup.isVisible = false
+--import capsule group
+capsuleInfo = require("capsule")
+capsuleInfo:makeDisplay()
+display:getCurrentStage():insert(capsuleInfo.dGroup)
+--import winch group
+winchInfo = require("winch")
+winchInfo:makeDisplay()
+display:getCurrentStage():insert(winchInfo.dGroup)
+--import netting group
+nettingInfo = require("netting")
+nettingInfo:makeDisplay()
+display:getCurrentStage():insert(nettingInfo.dGroup)
+--import deceleration chamber group
+decelInfo = require("decel")
+decelInfo:makeDisplay()
+display:getCurrentStage():insert(decelInfo.dGroup)
+
+--other groups
 experimentGroup = display.newGroup()
 experimentGroup.isVisible = false
 createExpGroup = display.newGroup()
@@ -239,6 +232,7 @@ fixIt:makeDisplay()
 display.getCurrentStage():insert( fixIt.dGroup )
 fixItGroup = fixIt.dGroup
 fixItGroup.isVisible = false
+
 dropTowerGroup = display.newGroup()
 dropTowerGroup.isVisible = false
 
@@ -291,8 +285,6 @@ capsuleButton = widget.newButton(
 		--strokeWidth = 1,
 		onRelease = sectionButtonHandler
 	})
---capsuleButton:setStrokeColor(0,0,1,1)
---capsuleButton.strokeWidth = 20
 mainMenuButtons:insert(capsuleButton)
 
 --winch button	
@@ -310,135 +302,6 @@ winchButton = widget.newButton(
 		onRelease = sectionButtonHandler
 	})
 mainMenuButtons:insert(winchButton)
-
--- drop capsule display group --
---zoomed drop capsule image
-dropCapZoomed = display.newImageRect("images/DropCapsule.jpg", gW, gH)
-dropCapZoomed.x = display.contentCenterX
-dropCapZoomed.y = display.contentCenterY
---rectangle to display text on
-dropCapTextBkg = display.newRect(gW * 0.5, gH * 0.125, gW, gH * 0.25)
-dropCapTextBkg:setFillColor(1,1,1,0.85)
---text to display (shrink until it fits in the box)
-local i = 31
-repeat
-	if(dropCapText ~= nil) then
-		dropCapText:removeSelf()
-	end
-	i = i - 1
-	dropCapText = display.newText(
-		{
-			text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-			x=dropCapTextBkg.x,
-			y=dropCapTextBkg.y, --change to align top?
-			width=dropCapTextBkg.width,
-			font=native.systemFont,
-			fontSize=i,
-			align="center"
-		})
-until dropCapText.height <= dropCapTextBkg.height or i == 1
-dropCapText:setFillColor(0,0,0,1)
---insert all into group
-capsuleGroup:insert(dropCapZoomed)
-capsuleGroup:insert(dropCapTextBkg)
-capsuleGroup:insert(dropCapText)
-
--- netting display group --
---zoomed netting image
-netZoomed = display.newImageRect("images/Netting.jpg", gW, gH)
-netZoomed.x = display.contentCenterX
-netZoomed.y = display.contentCenterY
---rectangle to display text on
-nettingTextBkg = display.newRect(gW * 0.5, gH * 0.125, gW, gH * 0.25)
-nettingTextBkg:setFillColor(1,1,1,0.85)
---text to display (shrink until it fits in the box)
-i = 31
-repeat
-	if(nettingText ~= nil) then
-		nettingText:removeSelf()
-	end
-	i = i - 1
-	nettingText = display.newText(
-		{
-			text="This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. ",
-			x=nettingTextBkg.x,
-			y=nettingTextBkg.y,
-			width=nettingTextBkg.width,
-			font=native.systemFont,
-			fontSize=i,
-			align="center"
-		})
-until nettingText.height <= nettingTextBkg.height or i == 1
-nettingText:setFillColor(0,0,0,1)
---insert all into group
-nettingGroup:insert(netZoomed)
-nettingGroup:insert(nettingTextBkg)
-nettingGroup:insert(nettingText)
-
--- winch display group --
---zoomed winch image
-winchZoomed = display.newImageRect("images/Winch.jpg",gW, gH)
-winchZoomed.x = display.contentCenterX
-winchZoomed.y = display.contentCenterY
---rectangle to display text on
-winchTextBkg = display.newRect(gW * 0.5, gH * 0.125, gW, gH * 0.25)
-winchTextBkg:setFillColor(1,1,1,0.85)
---text to display (shrink until it fits in the box)
-i = 31
-repeat
-	if(winchText ~= nil) then
-		winchText:removeSelf()
-	end
-	i = i - 1
-	winchText = display.newText(
-		{
-			text="Something shorter",
-			x=winchTextBkg.x,
-			y=winchTextBkg.y,
-			width=winchTextBkg.width,
-			font=native.systemFont,
-			fontSize=i,
-			align="center"
-		})
-until winchText.height <= winchTextBkg.height or i == 1
-winchText:setFillColor(0,0,0,1)
---insert all into group
-winchGroup:insert(winchZoomed)
-winchGroup:insert(winchTextBkg)
-winchGroup:insert(winchText)
-
--- decel chamber display group --
---zoomed deceleration container image
-decelZoomed = display.newImageRect("images/DecelContainer.jpg", gW, gH)
-decelZoomed.x = display.contentCenterX
-decelZoomed.y = display.contentCenterY
---rectangle to display text on
-decelTextBkg = display.newRect(gW * 0.5, gH * 0.125, gW, gH * 0.25)
-decelTextBkg:setFillColor(1,1,1,0.85)
---text to display (shrink until it fits in the box)
-i = 31
-repeat
-	if(decelText ~= nil) then
-		decelText:removeSelf()
-	end
-	i = i - 1
-	decelText = display.newText(
-		{
-			text="Something kind of in the middle; long enough for a couple lines at 30 but not enough to knock it down.",
-			x=decelTextBkg.x,
-			y=decelTextBkg.y,
-			width=decelTextBkg.width,
-			font=native.systemFont,
-			fontSize=i,
-			align="center"
-		})
-until decelText.height <= decelTextBkg.height or i == 1
-decelText:setFillColor(0,0,0,1)
---insert all into group
-decelGroup:insert(decelZoomed)
-decelGroup:insert(decelTextBkg)
-decelGroup:insert(decelText)
-
 
 --experiment capsule container background 
 expBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
@@ -632,22 +495,10 @@ local experimentTextOptions =
 		height = gH * 0.05
 	}
 	
---[[ options for text in the header border
-local headerTextOptions = 
-	{
-		text = " Learn about Microgravity using Baylor's Drop Tower!",
-		x = display.contentCenterX,
-		align = "center",
-		y = gH / 20,
-		font = native.systemFont,
-		fontSize = 13
-	}--]]
-	
 --create and insert the text into the main menu
 local experimentText = display.newText(experimentTextOptions)
 experimentText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(experimentText)
-
 
 i = 51
 repeat
@@ -991,62 +842,6 @@ bricText:setFillColor(0,0,0,1)
 dropTowerGroup:insert(bricText)
 
 -- Enter Frame functions (handle animation) --
-function capsuleGroup:enterFrame (event)
-	if(animFrames > 0 and appState == 1) then
-
-		animFrames = animFrames - 1
-		local newScale = 1 - (animFrames * 0.1)
-		self.xScale = newScale
-		self.yScale = newScale
-		self.x = display.contentCenterX * (1-newScale)
-		self.y = display.contentCenterY * (1-newScale)
-		if(animFrames == 0) then
-			videoGroup.isVisible = true
-		end
-	end
-end
-function winchGroup:enterFrame (event)
-	if(animFrames > 0 and appState == 3) then
-
-		animFrames = animFrames - 1
-		local newScale = 1 - (animFrames * 0.1)
-		self.xScale = newScale
-		self.yScale = newScale
-		self.x = display.contentCenterX * (1-newScale)
-		self.y = display.contentCenterY * (1-newScale)
-		if(animFrames == 0) then
-			videoGroup.isVisible = true
-		end
-	end
-end
-function nettingGroup:enterFrame (event)
-	if(animFrames > 0 and appState == 2) then
-
-		animFrames = animFrames - 1
-		local newScale = 1 - (animFrames * 0.1)
-		self.xScale = newScale
-		self.yScale = newScale
-		self.x = display.contentCenterX * (1-newScale)
-		self.y = display.contentCenterY * (1-newScale)
-		if(animFrames == 0) then
-			videoGroup.isVisible = true
-		end
-	end
-end
-function decelGroup:enterFrame (event)
-	if(animFrames > 0 and appState == 4) then
-
-		animFrames = animFrames - 1
-		local newScale = 1 - (animFrames * 0.1)
-		self.xScale = newScale
-		self.yScale = newScale
-		self.x = display.contentCenterX * (1-newScale)
-		self.y = display.contentCenterY * (1-newScale)
-		if(animFrames == 0) then
-			videoGroup.isVisible = true
-		end
-	end
-end
 function experimentGroup:enterFrame (event)
 	if(animFrames > 0 and appState == 5) then
 
@@ -1059,8 +854,4 @@ function experimentGroup:enterFrame (event)
 	end
 end
 
-Runtime:addEventListener( "enterFrame", capsuleGroup )
-Runtime:addEventListener( "enterFrame", nettingGroup )
-Runtime:addEventListener( "enterFrame", winchGroup )
-Runtime:addEventListener( "enterFrame", decelGroup )
 Runtime:addEventListener( "enterFrame", experimentGroup )
