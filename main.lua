@@ -38,7 +38,7 @@ end
 
 --handles button presses for the various sections of the drop tower
 local sectionButtonHandler = function( event )
-	animFrames = 10
+	--animFrames = 10
 	if(appState == 0) then
 		--figure out which section to display then display it
 		if(event.target.id == "DropCapsule") then
@@ -60,10 +60,11 @@ local sectionButtonHandler = function( event )
 		elseif(event.target.id == "ExperimentButton") then
 			--go to Experiment Menu
 			appState = 5
-			experimentGroup.isVisible = true
-			video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * 1.025, display.contentCenterX * .6, display.contentCenterY * .5)
-			video:load("videos/ExperimentPageVid.mp4")
-			video:addEventListener("video", videoListener)
+			--experimentGroup.isVisible = true
+			experimentPage:reveal()
+			--video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * 1.025, display.contentCenterX * .6, display.contentCenterY * .5)
+			--video:load("videos/ExperimentPageVid.mp4")
+			--video:addEventListener("video", videoListener)
 		elseif(event.target.id == "RepairButton") then
 			--go to fixit
 			--appState = 6
@@ -72,18 +73,20 @@ local sectionButtonHandler = function( event )
 		elseif(event.target.id == "DropTowerButton") then
 			--go to Drop Tower Info
 			appState = 7
-			video = native.newVideo(gW * 0.5, gH * 0.475, gW, gW * 0.75)
-			video:load("videos/PlaceholderVid5.mp4")
-			video:addEventListener("video", videoListener)
-			dropTowerGroup.isVisible = true
+			dropInfoPage:reveal()
+			--video = native.newVideo(gW * 0.5, gH * 0.475, gW, gW * 0.75)
+			--video:load("videos/PlaceholderVid5.mp4")
+			--video:addEventListener("video", videoListener)
+			--dropTowerGroup.isVisible = true
+			
 		end
 	elseif(appState == 5) then
 		appState = 6
 		experimentGroup.isVisible = false
 		createExpGroup.isVisible = true
-		if(video ~= nil) then
-			endVideo()
-		end
+		--if(video ~= nil) then
+			--endVideo()
+		--end
 		--if the appState has been changed, disable all buttons on this screen
 	else
 		--do nothing, report that handler fired when it shouldn't have
@@ -99,9 +102,9 @@ end
 local screenButtonHandler = function ( event )
 	videoGroup.isVisible = false
 	if(appState == 5) then 
-		endVideo()
-		experimentGroup.isVisible = false
-		appState = 0
+		--endVideo()
+		--experimentGroup.isVisible = false
+		--appState = 0
 	elseif(appState == 6) then
 		createExpGroup.isVisible = false
 		experimentGroup.isVisible = true
@@ -110,9 +113,9 @@ local screenButtonHandler = function ( event )
 		video:load("videos/ExperimentPageVid.mp4")
 		video:addEventListener("video", videoListener)
 	elseif(appState == 7) then
-		endVideo()
-		dropTowerGroup.isVisible = false
-		appState = 0
+		--endVideo()
+		--dropTowerGroup.isVisible = false
+		--appState = 0
 	end
 	if(appState == 0) then
 		--if the appState brings you back to the main menu, enable the main menu buttons
@@ -149,13 +152,6 @@ local function handleVideo(event)
 	end
 end
 
-local function handleMicroGravEvent(event)
-	if("ended" == event.phase) then	
-		microGravText.text = "Microgravity is everything"
-		microGravText.x = gW * 0.5
-		microGravText.y = gH * 0.125
-	end
-end 
 -----------------
 -- ACTUAL CODE --
 -----------------
@@ -220,21 +216,23 @@ decelInfo:makeDisplay()
 display:getCurrentStage():insert(decelInfo.dGroup)
 
 --other groups
-experimentGroup = display.newGroup()
-experimentGroup.isVisible = false
-createExpGroup = display.newGroup()
-createExpGroup.isVisible = false
 videoGroup = display.newGroup()
 videoGroup.isVisible = false
 --import the fixIt group
 fixIt = require( "fixit" )
 fixIt:makeDisplay()
-display.getCurrentStage():insert( fixIt.dGroup )
+display:getCurrentStage():insert( fixIt.dGroup )
 fixItGroup = fixIt.dGroup
 fixItGroup.isVisible = false
+--import the experiment page group
+experimentPage = require("experiment")
+experimentPage:makeDisplay()
+display:getCurrentStage():insert(experimentPage.dGroup)
 
-dropTowerGroup = display.newGroup()
-dropTowerGroup.isVisible = false
+
+dropInfoPage = require("dropinfo")
+dropInfoPage:makeDisplay()
+display:getCurrentStage():insert(dropInfoPage.dGroup)
 
 -- videos jump to the front no matter when they're declared, but declare last to remind ourselves
 video = nil
@@ -302,11 +300,6 @@ winchButton = widget.newButton(
 		onRelease = sectionButtonHandler
 	})
 mainMenuButtons:insert(winchButton)
-
---experiment capsule container background 
-expBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
-expBkg:setFillColor(1,1,1,1)
-experimentGroup:insert(expBkg)
 
 --video play button group
 --"Play video" button
@@ -396,20 +389,6 @@ dropTowerButton = widget.newButton(
 	})
 mainMenuButtons:insert(dropTowerButton)
 
-
---experiment capsule container image
-
-expCapsule = display.newImageRect("images/DropCapsule2.jpg", gW / 2, gH / 2)
-expCapsule.x = display.contentCenterX / 2
-expCapsule.y = display.contentCenterY
-experimentGroup:insert(expCapsule)
-		
---experimentPage images
-
-secondsSection = display.newRect(display.contentCenterX * 1.45, display.contentCenterY, gW / 2.25, gH / 2.5)
-secondsSection:setFillColor(0,.85,0,1)
-experimentGroup:insert(secondsSection)
-
 -- baylor button
 local baylorButton = widget.newButton(
 	{
@@ -455,33 +434,6 @@ local experimentButton = widget.newButton(
 	})
 mainMenuButtons:insert(experimentButton)
 
---buttons on the experiment page
-expPageButtonTop = widget.newButton(
-	{
-		id = "Top Button",
-		x = gW * 0.5,
-		y = gH * 0.125,
-		width = gW * 0.9, 
-		height = gH * 0.20,
-		shape = "rectangle",
-		fillColor = { default={ 0.1,0.4,0.9,0.85 }, over={ 0.15,0.5,1,1 } },
-		onRelease = handleMicroGravEvent
-	})
-experimentGroup:insert(expPageButtonTop)
-
-expPageButtonBottom = widget.newButton(
-	{
-		id = "Bottom Button",
-		x = gW * 0.5,
-		y = gH * 0.875,
-		width = gW * 0.9, 
-		height = gH * 0.20,
-		shape = "rectangle",
-		fillColor = { default={ 0.95,0.95,0,0.85 }, over={ 1,1,0,1 } },
-		onRelease = sectionButtonHandler
-	})
-experimentGroup:insert(expPageButtonBottom)
-
 -- options for text below experiment button
 local experimentTextOptions = 
 	{
@@ -520,53 +472,6 @@ print(i)
 headerText:setFillColor(1,1,1,1)
 mainMenuButtons:insert(headerText)
 
---create the text for the experiment page 
-microGravTextOptions = 
-	{
-		text = "What is microgravity?",
-		x = gW * 0.5,
-		y = gH * 0.125,
-		width = gW * 0.8,
-		align = "center",
-		font = native.systemFont,
-		fontSize = 20
-	}
-	
-startExperimentTextOptions = 
-	{
-		text = "Create an experiment!",
-		x = gW * 0.5,
-		y = gH * 0.875,
-		width = gW * 0.8, 
-		align = "center",
-		font = native.systemFont,
-		fontSize = 20
-	}
-
-secondsTextOptions = 
-	{
-		text = "1.5 Seconds... That seems short! What else is 1.5 seconds long?",
-		x = display.contentCenterX * 1.45,
-		y = display.contentCenterY * 0.725,
-		width = gW / 2.35,
-		height = gH / 10,
-		align = "center",
-		font = native.systemFont,
-		fontSize = 10
-	}
-	
-microGravText = display.newText(microGravTextOptions)
-microGravText:setFillColor(0,0,0,1)
-experimentGroup:insert(microGravText)
-
-startExperimentText = display.newText(startExperimentTextOptions)
-startExperimentText:setFillColor(0,0,0,1)
-experimentGroup:insert(startExperimentText)
-
-secondsText = display.newText(secondsTextOptions)
-secondsText:setFillColor(0,0,0,1)
-experimentGroup:insert(secondsText)
-
 -- repairButton
 local repairButton = widget.newButton(
 	{
@@ -598,260 +503,3 @@ local repairTextOptions =
 repairText = display.newText(repairTextOptions)
 repairText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(repairText)
-
---Create an Experiment page Buttons
-
-createBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
-createBkg:setFillColor(.3, .5, .9, 1)
-createExpGroup:insert(createBkg)
-
-whatDrop = widget.newButton(
-	{
-		x = display.contentCenterX, 
-		y = display.contentCenterY * .20,
-		width = gW * .75, 
-		height = display.contentCenterY * .25,
-		shape = "rectangle",
-		fillColor = {default={.75, .75, .75, 1}, over={.75,.75,.75,1}},
-		strokeColor = {default={ .25 , .25, .25, 1}, over={ .25,.25,.25, 1 } },
-		strokeWidth = 3,
-		label = "What do you want to drop?",
-		font = native.systemFont,
-		fontSize = 16,
-		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}}
-	})
-createExpGroup:insert(whatDrop)
-
-drop1 = widget.newButton(
-	{
-		x = display.contentCenterX * 0.5, 
-		y = display.contentCenterY * .50,
-		width = gW * .15,
-		height = gW * .15,
-		shape = "rectangle",
-		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
-		strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
-	})
-createExpGroup:insert(drop1)
-
-drop2 = widget.newButton(
-	{
-		x = display.contentCenterX, 
-		y = display.contentCenterY * .50,
-		width = gW * .15,
-		height = gW * .15,
-		shape = "rectangle",
-		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
-		strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
-	})
-createExpGroup:insert(drop2)
-
-drop3 = widget.newButton(
-	{
-		x = display.contentCenterX * 1.5, 
-		y = display.contentCenterY * .50,
-		width = gW * .15,
-		height = gW * .15,
-		shape = "rectangle",
-		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
-		strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
-	})
-createExpGroup:insert(drop3)
-
-box = display.newImageRect("images/boxtemp.jpg", gW * .125, gW * .125)
-box.x = display.contentCenterX * .50
-box.y = display.contentCenterY * .50
-createExpGroup:insert(box)
-
-nosign = display.newImageRect("images/nosign.png", gW * .125, gW * .125)
-nosign.x = display.contentCenterX
-nosign.y = display.contentCenterY * .50
-createExpGroup:insert(nosign)
-
-candle = display.newImageRect("images/candle.png", gW * .125, gW * .125)
-candle.x = display.contentCenterX * 1.5
-candle.y = display.contentCenterY * .50
-createExpGroup:insert(candle)
-
-whatHappen = widget.newButton(
-	{
-		x = display.contentCenterX, 
-		y = display.contentCenterY * .85,
-		width = gW * .75, 
-		height = display.contentCenterY * .25,
-		shape = "rectangle",
-		fillColor = {default={.75, .75, .75, 1}, over={.75,.75,.75,1}},
-		strokeColor = {default={ .25 , .25, .25, 1}, over={ .25,.25,.25, 1 } },
-		strokeWidth = 3,
-		label = "What do you think will happen?",
-		font = native.systemFont,
-		fontSize = 16,
-		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}}
-	})
-createExpGroup:insert(whatHappen)
-
-happen1 = widget.newButton(
-	{
-		x = display.contentCenterX * 0.3, 
-		y = display.contentCenterY * 1.15,
-		width = gW * .30,
-		height = gW * .15,
-		shape = "rectangle",
-		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
-		strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
-	})
-createExpGroup:insert(happen1)
-
-happen2 = widget.newButton(
-	{
-		x = display.contentCenterX, 
-		y = display.contentCenterY * 1.15,
-		width = gW * .30,
-		height = gW * .15,
-		shape = "rectangle",
-		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
-		strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
-	})
-createExpGroup:insert(happen2)
-
-happen3 = widget.newButton(
-	{
-		x = display.contentCenterX * 1.7, 
-		y = display.contentCenterY * 1.15,
-		width = gW * .30,
-		height = gW * .15,
-		shape = "rectangle",
-		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
-		strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
-	})
-createExpGroup:insert(happen3)
-
-runExperiment = widget.newButton(
-	{
-		id = "Run Experiment Button",
-		x = gW * 0.5,
-		y = gH * 0.7625,
-		width = gW * 0.9, 
-		height = gH * 0.20,
-		shape = "rectangle",
-		fillColor = { default={ 0.95,0.95,0,0.85 }, over={ 1,1,0,1 } },
-		label = "Run Experiment",
-		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
-		font = native.systemFont,
-		fontSize = 15,
-	})
-createExpGroup:insert(runExperiment)
-
-backBar = widget.newButton(
-	{
-		id = "Back Bar",
-		x = display.contentCenterX,
-		y = gH * 0.95,
-		width = gW,
-		height = gH * 0.075,
-		shape = "rectangle",
-		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
-		strokeColor = {default={ .25 , .25, .25, 1}, over={ .5,.5,.5, 1 } },
-		strokeWidth = 3,
-		label = "Back",
-		font = native.systemFont,
-		fontSize = 16,
-		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
-		onRelease = screenButtonHandler
-	})
-createExpGroup:insert(backBar)
-
--- What is a drop tower? Page
-
-infoBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
-infoBkg:setFillColor(.3, .5, .9, 1)
-dropTowerGroup:insert(infoBkg)
-
-backBar2 = widget.newButton(
-	{
-		id = "Back Bar",
-		x = display.contentCenterX,
-		y = gH * 0.95,
-		width = gW,
-		height = gH * 0.075,
-		shape = "rectangle",
-		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
-		strokeColor = {default={ .25 , .25, .25, 1}, over={ .5,.5,.5, 1 } },
-		strokeWidth = 3,
-		label = "Back",
-		font = native.systemFont,
-		fontSize = 16,
-		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
-		onRelease = screenButtonHandler
-	})
-dropTowerGroup:insert(backBar2)
-
-towerInfoText = widget.newButton(
-	{
-		id = "Info Text",
-		x = gW * 0.5,
-		y = gH * 0.125,
-		width = gW * 0.9, 
-		height = gH * 0.20,
-		shape = "rectangle",
-		fillColor = { default={ .75, .75, .75, 1 }, over={ 0.15,0.5,1,1 } },
-	})
-dropTowerGroup:insert(towerInfoText)
-
-
-towerTextOptions = 
-	{
-		text = "In physics and materials science, a drop tower or drop tube is a structure used to produce a controlled period of weightlessness for an object under study. Air bags, polystyrene pellets, and magnetic or mechanical brakes are sometimes used to arrest the fall of the experimental payload.",
-		x = gW * 0.5,
-		y = gH * 0.125,
-		width = gW * 0.8,
-		align = "center",
-		font = native.systemFont,
-		fontSize = 12
-	}
-	
-towerText = display.newText(towerTextOptions)
-towerText:setFillColor(0,0,0,1)
-dropTowerGroup:insert(towerText)
-
-bricInfo = widget.newButton(
-	{
-		id = "BRIC Info",
-		x = gW * 0.5,
-		y = gH * 0.8,
-		width = gW * 0.9, 
-		height = gH * 0.20,
-		shape = "rectangle",
-		fillColor = { default={ .75, .75, .75, 1 }, over={ 0.15,0.5,1,1 } },
-	})
-dropTowerGroup:insert(bricInfo)
-
-bricInfoOptions = 
-	{
-		text = "The Baylor Research and Innovation Collaborative (BRIC) is the flagship project for the Central Texas Technology and Research Park, an initiative by organizations and higher educational institutions in Central Texas to develop, promote and market science and engineering technologies, university research and advanced technology training and workforce development.",
-		x = gW * 0.5,
-		y = gH * 0.8,
-		width = gW * 0.8,
-		align = "center",
-		font = native.systemFont,
-		fontSize = 12
-	}
-
-bricText = display.newText(bricInfoOptions)
-bricText:setFillColor(0,0,0,1)
-dropTowerGroup:insert(bricText)
-
--- Enter Frame functions (handle animation) --
-function experimentGroup:enterFrame (event)
-	if(animFrames > 0 and appState == 5) then
-
-		animFrames = animFrames - 1
-		local newScale = 1 - (animFrames * 0.1)
-		self.xScale = newScale
-		self.yScale = newScale
-		self.x = display.contentCenterX * (1-newScale)
-		self.y = display.contentCenterY * (1-newScale)
-	end
-end
-
-Runtime:addEventListener( "enterFrame", experimentGroup )
