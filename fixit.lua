@@ -24,41 +24,43 @@ local fixitState = 0
 
 local M = {}
 
+local animFrames = 0
+
 function enterState(num)
 	if(num == 0) then
-		titleGroup.isVisible = true
+		M.titleGroup.isVisible = true
 		-- RESET GAMES --
 		--winch game
-		winchDragButton.x = gW* 0.311
+		winchDragButton.x = gW * 0.311
 		winchDragButton.y = gH * 0.828
 	elseif (num == 1) then
-		probButtonsGroup.isVisible = true
-		backButtonGroup.isVisible = true
-		winchProblemGroup.isVisible = true
+		M.probButtonsGroup.isVisible = true
+		M.backButtonGroup.isVisible = true
+		M.winchProblemGroup.isVisible = true
 	elseif (num == 2) then
-		probButtonsGroup.isVisible = true
-		backButtonGroup.isVisible = true
-		capsuleProblemGroup.isVisible = true
+		M.probButtonsGroup.isVisible = true
+		M.backButtonGroup.isVisible = true
+		M.capsuleProblemGroup.isVisible = true
 	elseif (num == 3) then
-		probButtonsGroup.isVisible = true
-		backButtonGroup.isVisible = true
-		nettingProblemGroup.isVisible = true
+		M.probButtonsGroup.isVisible = true
+		M.backButtonGroup.isVisible = true
+		M.nettingProblemGroup.isVisible = true
 	elseif (num == 4) then
-		probButtonsGroup.isVisible = true
-		backButtonGroup.isVisible = true
-		decelProblemGroup.isVisible = true
+		M.probButtonsGroup.isVisible = true
+		M.backButtonGroup.isVisible = true
+		M.decelProblemGroup.isVisible = true
 	elseif (num == 5) then
-		backButtonGroup.isVisible = true
-		winchGameGroup.isVisible = true
+		M.backButtonGroup.isVisible = true
+		M.winchGameGroup.isVisible = true
 	elseif (num == 6) then
-		backButtonGroup.isVisible = true
-		capsuleGameGroup.isVisible = true
+		M.backButtonGroup.isVisible = true
+		M.capsuleGameGroup.isVisible = true
 	elseif (num == 7) then
-		backButtonGroup.isVisible = true
-		nettingGameGroup.isVisible = true
+		M.backButtonGroup.isVisible = true
+		M.nettingGameGroup.isVisible = true
 	elseif (num == 8) then
-		backButtonGroup.isVisible = true
-		decelGameGroup.isVisible = true
+		M.backButtonGroup.isVisible = true
+		M.decelGameGroup.isVisible = true
 	else
 		print("Unknown State: " .. num)
 	end
@@ -66,35 +68,35 @@ end
 
 function exitState(num)
 	if(num == 0) then
-		titleGroup.isVisible = false
+		M.titleGroup.isVisible = false
 	elseif (num == 1) then
-		probButtonsGroup.isVisible = false
-		backButtonGroup.isVisible = false
-		winchProblemGroup.isVisible = false
+		M.probButtonsGroup.isVisible = false
+		M.backButtonGroup.isVisible = false
+		M.winchProblemGroup.isVisible = false
 	elseif (num == 2) then
-		probButtonsGroup.isVisible = false
-		backButtonGroup.isVisible = false
-		capsuleProblemGroup.isVisible = false
+		M.probButtonsGroup.isVisible = false
+		M.backButtonGroup.isVisible = false
+		M.capsuleProblemGroup.isVisible = false
 	elseif (num == 3) then
-		probButtonsGroup.isVisible = false
-		backButtonGroup.isVisible = false
-		nettingProblemGroup.isVisible = false
+		M.probButtonsGroup.isVisible = false
+		M.backButtonGroup.isVisible = false
+		M.nettingProblemGroup.isVisible = false
 	elseif (num == 4) then
-		probButtonsGroup.isVisible = false
-		backButtonGroup.isVisible = false
-		decelProblemGroup.isVisible = false
+		M.probButtonsGroup.isVisible = false
+		M.backButtonGroup.isVisible = false
+		M.decelProblemGroup.isVisible = false
 	elseif (num == 5) then
-		backButtonGroup.isVisible = false
-		winchGameGroup.isVisible = false
+		M.backButtonGroup.isVisible = false
+		M.winchGameGroup.isVisible = false
 	elseif (num == 6) then
-		backButtonGroup.isVisible = false
-		capsuleGameGroup.isVisible = false
+		M.backButtonGroup.isVisible = false
+		M.capsuleGameGroup.isVisible = false
 	elseif (num == 7) then
-		backButtonGroup.isVisible = false
-		nettingGameGroup.isVisible = false
+		M.backButtonGroup.isVisible = false
+		M.nettingGameGroup.isVisible = false
 	elseif (num == 8) then
-		backButtonGroup.isVisible = false
-		decelGameGroup.isVisible = false
+		M.backButtonGroup.isVisible = false
+		M.decelGameGroup.isVisible = false
 	else
 		print("Unknown State: " .. num)
 	end
@@ -105,7 +107,8 @@ function exitFixit()
 	exitState(fixitState)
 	fixitState = 0
 	enterState(fixitState)
-	dGroup.isVisible = false
+	--M.dGroup.isVisible = false
+	animFrames = -10
 end
 
 --handle button presses
@@ -122,53 +125,53 @@ function buttonHandler(event)
 			fixitState = 0
 		end
 	elseif(event.target.id == "Darkener") then
-		if(incorrectGroup.animFrames == 0) then
-			incorrectGroup.animFrames = -20
+		if(M.incorrectGroup.animFrames == 0) then
+			M.incorrectGroup.animFrames = -20
 			--incorrectGroup.isVisible = false
 		end
 	elseif(event.target.id == "WinchGuess") then
 		if(fixitState == 1) then
 			--correct guess
-			correctGroup.isVisible = true
-			correctGroup.animFrames = 20
+			M.correctGroup.isVisible = true
+			M.correctGroup.animFrames = 20
 		else
 			--incorrect guess
-			incorrectGroup.isVisible = true
-			incorrectGroup.animFrames = 20
+			M.incorrectGroup.isVisible = true
+			M.incorrectGroup.animFrames = 20
 		end
 	elseif(event.target.id == "CapsuleGuess") then
 		if(fixitState == 2) then
 			--correct guess
-			correctGroup.isVisible = true
-			correctGroup.animFrames = 20
+			M.correctGroup.isVisible = true
+			M.correctGroup.animFrames = 20
 		else
 			--incorrect guess
-			incorrectGroup.isVisible = true
-			incorrectGroup.animFrames = 20
+			M.incorrectGroup.isVisible = true
+			M.incorrectGroup.animFrames = 20
 		end
 	elseif(event.target.id == "NettingGuess") then
 		if(fixitState == 3) then
 			--correct guess
-			correctGroup.isVisible = true
-			correctGroup.animFrames = 20
+			M.correctGroup.isVisible = true
+			M.correctGroup.animFrames = 20
 		else
 			--incorrect guess
-			incorrectGroup.isVisible = true
-			incorrectGroup.animFrames = 20
+			M.incorrectGroup.isVisible = true
+			M.incorrectGroup.animFrames = 20
 		end
 	elseif(event.target.id == "DecelGuess") then
 		if(fixitState == 4) then
 			--correct guess
-			correctGroup.isVisible = true
-			correctGroup.animFrames = 20
+			M.correctGroup.isVisible = true
+			M.correctGroup.animFrames = 20
 		else
 			--incorrect guess
-			incorrectGroup.isVisible = true
-			incorrectGroup.animFrames = 20
+			M.incorrectGroup.isVisible = true
+			M.incorrectGroup.animFrames = 20
 		end
 	elseif(event.target.id == "CDarkener") then
-		if(correctGroup.animFrames == 0) then
-			correctGroup.isVisible = false
+		if(M.correctGroup.animFrames == 0) then
+			M.correctGroup.isVisible = false
 			fixitState = fixitState + 4
 		end
 	elseif(event.target.id == "WinchDrag") then
@@ -181,8 +184,8 @@ function buttonHandler(event)
 				--success
 				winchDragButton.x = winchGameTarget.x
 				winchDragButton.y = winchGameTarget.y
-				winGroup.isVisible = true
-				winGroup.animFrames = 20
+				M.winGroup.isVisible = true
+				M.winGroup.animFrames = 20
 			else
 				--return to original position
 				winchDragButton.x = gW* 0.311
@@ -190,8 +193,8 @@ function buttonHandler(event)
 			end
 		end
 	elseif(event.target.id == "WDarkener") then
-		if(winGroup.animFrames == 0) then
-			winGroup.isVisible = false
+		if(M.winGroup.animFrames == 0) then
+			M.winGroup.isVisible = false
 			fixitState = 0
 		end
 	else
@@ -202,22 +205,22 @@ end
 
 function M:makeDisplay()
 	--create overall display group
-	dGroup = display.newGroup()
+	local dGroup = display.newGroup()
 	--create other display groups
-	titleGroup = display.newGroup()
-	probButtonsGroup = display.newGroup()
-	backButtonGroup = display.newGroup()
-	winchProblemGroup = display.newGroup()
-	capsuleProblemGroup = display.newGroup()
-	nettingProblemGroup = display.newGroup()
-	decelProblemGroup = display.newGroup()
-	incorrectGroup = display.newGroup()
-	correctGroup = display.newGroup()
-	winchGameGroup = display.newGroup()
-	capsuleGameGroup = display.newGroup()
-	nettingGameGroup = display.newGroup()
-	decelGameGroup = display.newGroup()
-	winGroup = display.newGroup()
+	local titleGroup = display.newGroup()
+	local probButtonsGroup = display.newGroup()
+	local backButtonGroup = display.newGroup()
+	local winchProblemGroup = display.newGroup()
+	local capsuleProblemGroup = display.newGroup()
+	local nettingProblemGroup = display.newGroup()
+	local decelProblemGroup = display.newGroup()
+	local incorrectGroup = display.newGroup()
+	local correctGroup = display.newGroup()
+	local winchGameGroup = display.newGroup()
+	local capsuleGameGroup = display.newGroup()
+	local nettingGameGroup = display.newGroup()
+	local decelGameGroup = display.newGroup()
+	local winGroup = display.newGroup()
 	--make background rectangle
 	local bkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
 	bkg:setFillColor(0.3, 0.5, 0.9, 1)
@@ -838,6 +841,55 @@ function M:makeDisplay()
 	
 	--set object variables (so they can be accessed elsewhere)
 	self.dGroup = dGroup
+	self.titleGroup = titleGroup
+	self.probButtonsGroup = probButtonsGroup
+	self.backButtonGroup = backButtonGroup
+	self.winchProblemGroup = winchProblemGroup
+	self.capsuleProblemGroup = capsuleProblemGroup
+	self.nettingProblemGroup = nettingProblemGroup
+	self.decelProblemGroup = decelProblemGroup
+	self.incorrectGroup = incorrectGroup
+	self.correctGroup = correctGroup
+	self.winchGameGroup = winchGameGroup
+	self.capsuleGameGroup = capsuleGameGroup
+	self.nettingGameGroup = nettingGameGroup
+	self.decelGameGroup = decelGameGroup
+	self.winGroup = winGroup
 end
+
+function M:reveal()
+	animFrames = 10
+	self.dGroup.isVisible = true
+	print("reveal")
+end
+
+function M:enterFrame(event)
+	if(animFrames > 0) then
+		animFrames = animFrames - 1
+		local newScale = 1 - (animFrames * 0.1)
+		self.dGroup.xScale = newScale
+		self.dGroup.yScale = newScale
+		self.dGroup.x = display.contentCenterX * (1-newScale)
+		self.dGroup.y = display.contentCenterY * (1-newScale)
+		print(newScale)
+	end
+	if(animFrames < 0) then
+		animFrames = animFrames + 1
+		if(animFrames ~= 0) then
+			local newScale = -1 * (animFrames * 0.1)
+			self.dGroup.xScale = newScale
+			self.dGroup.yScale = newScale
+			self.dGroup.x = display.contentCenterX * (1-newScale)
+			self.dGroup.y = display.contentCenterY * (1-newScale)
+		else
+			self.dGroup.isVisible = false
+			appState = 0
+			mainMenuButtons.isVisible = true
+		end
+		print(animFrames)
+	end
+end
+
+Runtime:addEventListener( "enterFrame", M )
 
 return M

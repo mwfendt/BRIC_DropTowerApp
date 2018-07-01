@@ -68,8 +68,9 @@ local sectionButtonHandler = function( event )
 		elseif(event.target.id == "RepairButton") then
 			--go to fixit
 			--appState = 6
-			animFrames = 0
-			fixItGroup.isVisible = true
+			--animFrames = 0
+			--fixItGroup.isVisible = true
+			fixIt:reveal()
 		elseif(event.target.id == "DropTowerButton") then
 			--go to Drop Tower Info
 			appState = 7
