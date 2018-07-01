@@ -13,9 +13,34 @@ local M = {}
 
 local animFrames = 0
 
+local function endVideo()
+	if (video ~= nil) then
+		video:removeSelf()
+		video = nil
+	end
+	stopVidButton.isVisible = false
+end
+
+local function videoListener (event)
+	if(event.errorCode) then
+		print("ERROR: " .. event.errorMessage)
+		native.showAlert("ERROR!", event.errorMessage, {"OK"})
+	else
+		if ("ready" == event.phase) then
+			--video ready, start playing it
+			video:play()
+		elseif ("ended" == event.phase) then
+			--video is over, close it
+			endVideo()
+		end
+	end
+end
+
+
 function buttonHandler(event)
 	if(animFrames == 0) then
 		M:hide()
+		endVideo()
 	end
 end
 
@@ -110,6 +135,9 @@ end
 function M:reveal()
 	animFrames = 10
 	self.dGroup.isVisible = true
+	video = native.newVideo(gW * 0.5, gH * 0.475, gW, gW * 0.75)
+	video:load("videos/PlaceholderVid5.mp4")
+	video:addEventListener("video", videoListener)
 	print("reveal")
 end
 
