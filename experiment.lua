@@ -20,19 +20,47 @@ local expState = 0
 
 local animFrames = 0
 
+local function endVideo()
+	if (video ~= nil) then
+		video:removeSelf()
+		video = nil
+	end
+	stopVidButton.isVisible = false
+end
+
+local function videoListener (event)
+	if(event.errorCode) then
+		print("ERROR: " .. event.errorMessage)
+		native.showAlert("ERROR!", event.errorMessage, {"OK"})
+	else
+		if ("ready" == event.phase) then
+			--video ready, start playing it
+			video:play()
+		elseif ("ended" == event.phase) then
+			--video is over, close it
+			endVideo()
+		end
+	end
+end
+
 function buttonHandler(event)
 	if(event.target.id == "Back") then
 		if(expState == 0) then
 			M:hide()
+			endVideo()
 		elseif(expState == 1) then
 			createExpGroup.isVisible = false
 			experimentGroup.isVisible = true
+			video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * 1.025, display.contentCenterX * .6, display.contentCenterY * .5)
+			video:load("videos/ExperimentPageVid.mp4")
+			video:addEventListener("video", videoListener)
 			expState = 0
 		end
 	elseif(event.target.id == "Bottom Button") then
 		expState = 1
 		createExpGroup.isVisible = true
 		experimentGroup.isVisible = false
+		endVideo()
 	end
 end
 
@@ -43,6 +71,7 @@ local function handleMicroGravEvent(event)
 		microGravText.y = gH * 0.125
 	end
 end 
+
 
 function M:makeDisplay()
 	
@@ -86,14 +115,14 @@ function M:makeDisplay()
 	
 	--experiment capsule container image
 
-	expCapsule = display.newImageRect("images/DropCapsule2.jpg", gW / 2, gH / 2)
+	expCapsule = display.newImageRect("images/DropCapsule2.jpg", gW / 2, gH *.45)
 	expCapsule.x = display.contentCenterX / 2
-	expCapsule.y = display.contentCenterY
+	expCapsule.y = display.contentCenterY * .9
 	experimentGroup:insert(expCapsule)
 			
 	--experimentPage images
 
-	secondsSection = display.newRect(display.contentCenterX * 1.45, display.contentCenterY, gW / 2.25, gH / 2.5)
+	secondsSection = display.newRect(display.contentCenterX * 1.45, display.contentCenterY * .90, gW / 2.25, gH / 2.5)
 	secondsSection:setFillColor(0,.85,0,1)
 	experimentGroup:insert(secondsSection)
 
@@ -115,7 +144,7 @@ function M:makeDisplay()
 		{
 			id = "Bottom Button",
 			x = gW * 0.5,
-			y = gH * 0.875,
+			y = gH * 0.775,
 			width = gW * 0.9, 
 			height = gH * 0.20,
 			shape = "rectangle",
@@ -140,7 +169,7 @@ function M:makeDisplay()
 		{
 			text = "Create an experiment!",
 			x = gW * 0.5,
-			y = gH * 0.875,
+			y = gH * 0.775,
 			width = gW * 0.8, 
 			align = "center",
 			font = native.systemFont,
@@ -151,7 +180,7 @@ function M:makeDisplay()
 		{
 			text = "1.5 Seconds... That seems short! What else is 1.5 seconds long?",
 			x = display.contentCenterX * 1.45,
-			y = display.contentCenterY * 0.725,
+			y = display.contentCenterY * 0.625,
 			width = gW / 2.35,
 			height = gH / 10,
 			align = "center",
@@ -346,6 +375,9 @@ end
 function M:reveal()
 	animFrames = 10
 	self.dGroup.isVisible = true
+	video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * 1.025, display.contentCenterX * .6, display.contentCenterY * .5)
+	video:load("videos/ExperimentPageVid.mp4")
+	video:addEventListener("video", videoListener)
 	print("reveal")
 end
 
