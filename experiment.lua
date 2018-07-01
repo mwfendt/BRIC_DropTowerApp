@@ -51,7 +51,7 @@ function buttonHandler(event)
 		elseif(expState == 1) then
 			createExpGroup.isVisible = false
 			experimentGroup.isVisible = true
-			video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * 1.025, display.contentCenterX * .6, display.contentCenterY * .5)
+			video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * .975, display.contentCenterX * .6, display.contentCenterY * .5)
 			video:load("videos/ExperimentPageVid.mp4")
 			video:addEventListener("video", videoListener)
 			expState = 0
@@ -375,7 +375,7 @@ end
 function M:reveal()
 	animFrames = 10
 	self.dGroup.isVisible = true
-	video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * 1.025, display.contentCenterX * .6, display.contentCenterY * .5)
+	video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * .975, display.contentCenterX * .6, display.contentCenterY * .5)
 	video:load("videos/ExperimentPageVid.mp4")
 	video:addEventListener("video", videoListener)
 	print("reveal")
