@@ -2,6 +2,8 @@
 -- BRIC Drop Tower App
 -- Version: 0.01
 -- dropinfo.lua
+-- Authors: Saul Flores & Marc Willis
+-- Supervising Professor: Matthew Fendt
 ---------------------------------------------------------------------------------------
 
 local widget = require( "widget" )
@@ -13,6 +15,7 @@ local M = {}
 
 local animFrames = 0
 
+--ends video playing on drop info page
 local function endVideo()
 	if (video ~= nil) then
 		video:removeSelf()
@@ -21,6 +24,7 @@ local function endVideo()
 	stopVidButton.isVisible = false
 end
 
+--starts and stops video on page
 local function videoListener (event)
 	if(event.errorCode) then
 		print("ERROR: " .. event.errorMessage)
@@ -36,7 +40,7 @@ local function videoListener (event)
 	end
 end
 
-
+--closes page and ends video
 function buttonHandler(event)
 	if(animFrames == 0) then
 		M:hide()
@@ -48,10 +52,12 @@ function M:makeDisplay()
 	dGroup = display.newGroup()
 	-- What is a drop tower? Page
 
+	--create blue background
 	infoBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
 	infoBkg:setFillColor(.3, .5, .9, 1)
 	dGroup:insert(infoBkg)
-
+	
+	--towerInfo background
 	towerInfoText = widget.newButton(
 		{
 			id = "Info Text",
@@ -64,7 +70,7 @@ function M:makeDisplay()
 		})
 	dGroup:insert(towerInfoText)
 
-
+	--tower info options
 	towerTextOptions = 
 		{
 			text = "In physics and materials science, a drop tower or drop tube is a structure used to produce a controlled period of weightlessness for an object under study. Air bags, polystyrene pellets, and magnetic or mechanical brakes are sometimes used to arrest the fall of the experimental payload.",
@@ -75,11 +81,13 @@ function M:makeDisplay()
 			font = native.systemFont,
 			fontSize = 12
 		}
-		
+	
+	--create tower info text
 	towerText = display.newText(towerTextOptions)
 	towerText:setFillColor(0,0,0,1)
 	dGroup:insert(towerText)
 
+	--bric info button
 	bricInfo = widget.newButton(
 		{
 			id = "BRIC Info",
@@ -92,6 +100,7 @@ function M:makeDisplay()
 		})
 	dGroup:insert(bricInfo)
 
+	--bric info text options
 	bricInfoOptions = 
 		{
 			text = "The Baylor Research and Innovation Collaborative (BRIC) is the flagship project for the Central Texas Technology and Research Park, an initiative by organizations and higher educational institutions in Central Texas to develop, promote and market science and engineering technologies, university research and advanced technology training and workforce development.",
@@ -103,6 +112,7 @@ function M:makeDisplay()
 			fontSize = 12
 		}
 
+	--create bric info text
 	bricText = display.newText(bricInfoOptions)
 	bricText:setFillColor(0,0,0,1)
 	dGroup:insert(bricText)
@@ -132,6 +142,7 @@ function M:makeDisplay()
 	self.dGroup = dGroup
 end
 
+--reveal drop tower info page
 function M:reveal()
 	animFrames = 10
 	self.dGroup.isVisible = true
@@ -141,11 +152,13 @@ function M:reveal()
 	print("reveal")
 end
 
+--hide drop tower info page
 function M:hide()
 	animFrames = -10
 	print("hide")
 end
 
+--zoom in/zoom out functionality
 function M:enterFrame(event)
 	if(animFrames > 0) then
 		animFrames = animFrames - 1

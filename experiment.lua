@@ -2,6 +2,8 @@
 -- BRIC Drop Tower App
 -- Version: 0.01
 -- experiment.lua
+-- Authors: Saul Flores & Marc Willis
+-- Supervising Professor: Matthew Fendt
 ---------------------------------------------------------------------------------------
 
 local widget = require( "widget" )
@@ -17,9 +19,9 @@ local M = {}
 -- 1 - Create Experiment
 -- 2 - Run experiment (not used yet)
 local expState = 0
-
 local animFrames = 0
 
+--ends current video playing
 local function endVideo()
 	if (video ~= nil) then
 		video:removeSelf()
@@ -28,6 +30,7 @@ local function endVideo()
 	stopVidButton.isVisible = false
 end
 
+--starts and ends video 
 local function videoListener (event)
 	if(event.errorCode) then
 		print("ERROR: " .. event.errorMessage)
@@ -43,11 +46,14 @@ local function videoListener (event)
 	end
 end
 
+--controls the functionality of buttons and navigation of pages through the experiment group
 function buttonHandler(event)
 	if(event.target.id == "Back") then
+		--back from page 1 sends to main screen
 		if(expState == 0) then
 			M:hide()
 			endVideo()
+		--back from page 2 sends to page 1 and restarts video
 		elseif(expState == 1) then
 			createExpGroup.isVisible = false
 			experimentGroup.isVisible = true
@@ -56,6 +62,7 @@ function buttonHandler(event)
 			video:addEventListener("video", videoListener)
 			expState = 0
 		end
+		--bottom experiment button sends from page 1 to page 2
 	elseif(event.target.id == "Bottom Button") then
 		expState = 1
 		createExpGroup.isVisible = true
@@ -64,6 +71,7 @@ function buttonHandler(event)
 	end
 end
 
+--replaces the text on "What is microgravity" button when clicked
 local function handleMicroGravEvent(event)
 	if("ended" == event.phase) then	
 		microGravText.text = "Microgravity is everything"
@@ -72,9 +80,10 @@ local function handleMicroGravEvent(event)
 	end
 end 
 
-
+--main display function
 function M:makeDisplay()
 	
+	--instantialize groups
 	experimentGroup = display.newGroup()
 	createExpGroup = display.newGroup()
 	backButtonGroup = display.newGroup()
@@ -106,7 +115,6 @@ function M:makeDisplay()
 	})
 	--insert into group
 	backButtonGroup:insert(backButton)
-	--backButtonGroup.isVisible = false
 	
 	--experiment capsule container background 
 	expBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
@@ -114,14 +122,12 @@ function M:makeDisplay()
 	experimentGroup:insert(expBkg)
 	
 	--experiment capsule container image
-
 	expCapsule = display.newImageRect("images/DropCapsule2.jpg", gW / 2, gH *.45)
 	expCapsule.x = display.contentCenterX / 2
 	expCapsule.y = display.contentCenterY * .9
 	experimentGroup:insert(expCapsule)
 			
 	--experimentPage images
-
 	secondsSection = display.newRect(display.contentCenterX * 1.45, display.contentCenterY * .90, gW / 2.25, gH / 2.5)
 	secondsSection:setFillColor(0,.85,0,1)
 	experimentGroup:insert(secondsSection)
@@ -139,7 +145,8 @@ function M:makeDisplay()
 			onRelease = handleMicroGravEvent
 		})
 	experimentGroup:insert(expPageButtonTop)
-
+	
+	--create an experiment button
 	expPageButtonBottom = widget.newButton(
 		{
 			id = "Bottom Button",
@@ -153,7 +160,7 @@ function M:makeDisplay()
 		})
 	experimentGroup:insert(expPageButtonBottom)
 
-	--create the text for the experiment page 
+	--options for what is micrograv text
 	microGravTextOptions = 
 		{
 			text = "What is microgravity?",
@@ -165,6 +172,7 @@ function M:makeDisplay()
 			fontSize = 20
 		}
 		
+	--options for create experiment text
 	startExperimentTextOptions = 
 		{
 			text = "Create an experiment!",
@@ -176,6 +184,7 @@ function M:makeDisplay()
 			fontSize = 20
 		}
 
+	--options for 1.5 seconds text
 	secondsTextOptions = 
 		{
 			text = "1.5 Seconds... That seems short! What else is 1.5 seconds long?",
@@ -187,26 +196,32 @@ function M:makeDisplay()
 			font = native.systemFont,
 			fontSize = 10
 		}
-		
+	
+	--create micrograv text
 	microGravText = display.newText(microGravTextOptions)
 	microGravText:setFillColor(0,0,0,1)
 	experimentGroup:insert(microGravText)
-
+	
+	--create experiment text
 	startExperimentText = display.newText(startExperimentTextOptions)
 	startExperimentText:setFillColor(0,0,0,1)
 	experimentGroup:insert(startExperimentText)
-
+	
+	--create 1.5 seconds text
 	secondsText = display.newText(secondsTextOptions)
 	secondsText:setFillColor(0,0,0,1)
 	experimentGroup:insert(secondsText)
 	
-	
 	--Create an Experiment page Buttons
-
 	createBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
 	createBkg:setFillColor(.3, .5, .9, 1)
 	createExpGroup:insert(createBkg)
 
+	------------------
+	--What would you--
+	--like to drop? --
+	------------------
+	--top button
 	whatDrop = widget.newButton(
 		{
 			x = display.contentCenterX, 
@@ -223,7 +238,8 @@ function M:makeDisplay()
 			labelColor = {default = {0,0,0,1}, over = {0,0,0,1}}
 		})
 	createExpGroup:insert(whatDrop)
-
+	
+	--first drop icon
 	drop1 = widget.newButton(
 		{
 			x = display.contentCenterX * 0.5, 
@@ -236,6 +252,7 @@ function M:makeDisplay()
 		})
 	createExpGroup:insert(drop1)
 
+	--second drop icon
 	drop2 = widget.newButton(
 		{
 			x = display.contentCenterX, 
@@ -248,6 +265,7 @@ function M:makeDisplay()
 		})
 	createExpGroup:insert(drop2)
 
+	--third drop icon
 	drop3 = widget.newButton(
 		{
 			x = display.contentCenterX * 1.5, 
@@ -260,21 +278,25 @@ function M:makeDisplay()
 		})
 	createExpGroup:insert(drop3)
 
+	--box icon
 	box = display.newImageRect("images/boxtemp.jpg", gW * .125, gW * .125)
 	box.x = display.contentCenterX * .50
 	box.y = display.contentCenterY * .50
 	createExpGroup:insert(box)
 
+	--red no sign icon
 	nosign = display.newImageRect("images/nosign.png", gW * .125, gW * .125)
 	nosign.x = display.contentCenterX
 	nosign.y = display.contentCenterY * .50
 	createExpGroup:insert(nosign)
 
+	--candle sign icon
 	candle = display.newImageRect("images/candle.png", gW * .125, gW * .125)
 	candle.x = display.contentCenterX * 1.5
 	candle.y = display.contentCenterY * .50
 	createExpGroup:insert(candle)
 
+	--what happens button?
 	whatHappen = widget.newButton(
 		{
 			x = display.contentCenterX, 
@@ -292,6 +314,7 @@ function M:makeDisplay()
 		})
 	createExpGroup:insert(whatHappen)
 
+	--what happens1 box
 	happen1 = widget.newButton(
 		{
 			x = display.contentCenterX * 0.3, 
@@ -303,7 +326,8 @@ function M:makeDisplay()
 			strokeColor = {default={ .95 , .95, 0, 1}, over={ .50,.50,.50, 1 } },
 		})
 	createExpGroup:insert(happen1)
-
+	
+	--what happens2 box
 	happen2 = widget.newButton(
 		{
 			x = display.contentCenterX, 
@@ -316,6 +340,7 @@ function M:makeDisplay()
 		})
 	createExpGroup:insert(happen2)
 
+	--what happens3 box
 	happen3 = widget.newButton(
 		{
 			x = display.contentCenterX * 1.7, 
@@ -328,6 +353,7 @@ function M:makeDisplay()
 		})
 	createExpGroup:insert(happen3)
 
+	--run experiment button
 	runExperiment = widget.newButton(
 		{
 			id = "Run Experiment Button",
@@ -343,28 +369,8 @@ function M:makeDisplay()
 			fontSize = 15,
 		})
 	createExpGroup:insert(runExperiment)
-
-	--[[backBar = widget.newButton(
-		{
-			id = "Back Bar",
-			x = display.contentCenterX,
-			y = gH * 0.95,
-			width = gW,
-			height = gH * 0.075,
-			shape = "rectangle",
-			fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
-			strokeColor = {default={ .25 , .25, .25, 1}, over={ .5,.5,.5, 1 } },
-			strokeWidth = 3,
-			label = "Back",
-			font = native.systemFont,
-			fontSize = 16,
-			labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
-			onRelease = buttonHandler
-		})
-	createExpGroup:insert(backBar)]]--
 	
 	createExpGroup.isVisible = false
-	--experimentGroup.isVisible = false
 	dGroup.isVisible = false
 	
 	self.experimentGroup = experimentGroup
@@ -372,6 +378,7 @@ function M:makeDisplay()
 	self.dGroup = dGroup
 end
 
+--function to reveal this page
 function M:reveal()
 	animFrames = 10
 	self.dGroup.isVisible = true
@@ -381,11 +388,13 @@ function M:reveal()
 	print("reveal")
 end
 
+--function to hide this page
 function M:hide()
 	animFrames = -10
 	print("hide")
 end
 
+--function to zoom in/out
 function M:enterFrame(event)
 	if(animFrames > 0) then
 		animFrames = animFrames - 1
@@ -412,8 +421,6 @@ function M:enterFrame(event)
 		print(animFrames)
 	end
 end
-
 Runtime:addEventListener( "enterFrame", M )
-
 
 return M

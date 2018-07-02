@@ -2,6 +2,8 @@
 -- BRIC Drop Tower App
 -- Version: 0.01
 -- main.lua
+-- Authors: Saul Flores & Marc Willis
+-- Supervising Professor: Matthew Fendt
 ---------------------------------------------------------------------------------------
 
 -- Hide device status bar
@@ -13,6 +15,7 @@ local widget = require( "widget" )
 -- BUTTON HANDLERS --
 ---------------------
 
+--ends the video playing currently
 local function endVideo()
 	if (video ~= nil) then
 		video:removeSelf()
@@ -60,34 +63,19 @@ local sectionButtonHandler = function( event )
 		elseif(event.target.id == "ExperimentButton") then
 			--go to Experiment Menu
 			appState = 5
-			--experimentGroup.isVisible = true
 			experimentPage:reveal()
-			--video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * 1.025, display.contentCenterX * .6, display.contentCenterY * .5)
-			--video:load("videos/ExperimentPageVid.mp4")
-			--video:addEventListener("video", videoListener)
 		elseif(event.target.id == "RepairButton") then
 			--go to fixit
-			--appState = 6
-			--animFrames = 0
-			--fixItGroup.isVisible = true
 			fixIt:reveal()
 		elseif(event.target.id == "DropTowerButton") then
 			--go to Drop Tower Info
 			appState = 7
-			dropInfoPage:reveal()
-			--video = native.newVideo(gW * 0.5, gH * 0.475, gW, gW * 0.75)
-			--video:load("videos/PlaceholderVid5.mp4")
-			--video:addEventListener("video", videoListener)
-			--dropTowerGroup.isVisible = true
-			
+			dropInfoPage:reveal()	
 		end
 	elseif(appState == 5) then
 		appState = 6
 		experimentGroup.isVisible = false
 		createExpGroup.isVisible = true
-		--if(video ~= nil) then
-			--endVideo()
-		--end
 		--if the appState has been changed, disable all buttons on this screen
 	else
 		--do nothing, report that handler fired when it shouldn't have
@@ -96,31 +84,6 @@ local sectionButtonHandler = function( event )
 	if(appState ~= 0) then
 		--turning buttons invisible also deactivates them, and is actually the ideal way to deactivate them
 		mainMenuButtons.isVisible = false
-	end
-end
-
---handles button presses for the full-screen button
-local screenButtonHandler = function ( event )
-	videoGroup.isVisible = false
-	if(appState == 5) then 
-		--endVideo()
-		--experimentGroup.isVisible = false
-		--appState = 0
-	elseif(appState == 6) then
-		createExpGroup.isVisible = false
-		experimentGroup.isVisible = true
-		appState = 5
-		video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * 1.025, display.contentCenterX * .6, display.contentCenterY * .5)
-		video:load("videos/ExperimentPageVid.mp4")
-		video:addEventListener("video", videoListener)
-	elseif(appState == 7) then
-		--endVideo()
-		--dropTowerGroup.isVisible = false
-		--appState = 0
-	end
-	if(appState == 0) then
-		--if the appState brings you back to the main menu, enable the main menu buttons
-		mainMenuButtons.isVisible = true
 	end
 end
 
@@ -140,6 +103,7 @@ local function handleBricEvent(event)
 	end
 end
 
+--opens proper video for current state
 local function handleVideo(event)
 	if(appState == 0) then
 		print("WARNING: handleVideo called when appState was 0")
@@ -186,7 +150,6 @@ screenSizedButton = widget.newButton(
 		height = gH,
 		shape = "rectangle",
 		fillColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
-		onRelease = screenButtonHandler
 	})
 
 --display background image (width and height are required in function but overwritten later)
@@ -215,8 +178,7 @@ display:getCurrentStage():insert(nettingInfo.dGroup)
 decelInfo = require("decel")
 decelInfo:makeDisplay()
 display:getCurrentStage():insert(decelInfo.dGroup)
-
---other groups
+--create video group
 videoGroup = display.newGroup()
 videoGroup.isVisible = false
 --import the fixIt group
@@ -229,8 +191,7 @@ fixItGroup.isVisible = false
 experimentPage = require("experiment")
 experimentPage:makeDisplay()
 display:getCurrentStage():insert(experimentPage.dGroup)
-
-
+--import the dropInfoPage group
 dropInfoPage = require("dropinfo")
 dropInfoPage:makeDisplay()
 display:getCurrentStage():insert(dropInfoPage.dGroup)
@@ -248,8 +209,6 @@ decelButton = widget.newButton(
 		height = gH * 0.172,
 		shape = "rectangle",
 		fillColor = { default={ 1,0,0,0.25 }, over={ 1,0,0,0.5 } },
-		--strokeColor = { default={ 1,0,0 }, over={ 1,0,0 } },
-		--strokeWidth = 1,
 		onRelease = sectionButtonHandler
 	})
 mainMenuButtons:insert(decelButton)	
@@ -264,8 +223,6 @@ netButton = widget.newButton(
 		height = gH * 0.278,
 		shape = "rectangle",
 		fillColor = { default={ 0,1,0,0.25 }, over={ 0,1,0,0.5 } },
-		--strokeColor = { default={ 0,1,0 }, over={ 0,1,0 } },
-		--strokeWidth = 1,
 		onRelease = sectionButtonHandler
 	})
 mainMenuButtons:insert(netButton)
@@ -280,8 +237,6 @@ capsuleButton = widget.newButton(
 		height = gH * 0.132,
 		shape = "rectangle",
 		fillColor = { default={ 0,0,1,0.25 }, over={ 0,0,1,0.5 } },
-		--strokeColor = { default={ 0, 0, 1 }, over={ 0, 0, 1 } },
-		--strokeWidth = 1,
 		onRelease = sectionButtonHandler
 	})
 mainMenuButtons:insert(capsuleButton)
@@ -296,8 +251,6 @@ winchButton = widget.newButton(
 		height = gH * 0.086,
 		shape = "rectangle",
 		fillColor = { default={ 1,1,0,0.25 }, over={ 1,1,0,0.5 } },
-		--strokeColor = { default={ 1,1,0 }, over={ 1,1,0 } },
-		--strokeWidth = 1,
 		onRelease = sectionButtonHandler
 	})
 mainMenuButtons:insert(winchButton)
@@ -319,6 +272,8 @@ playVidButton = widget.newButton(
 		labelColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
 		onRelease = handleVideo
 	})
+	
+--"Stop video" button 
 stopVidButton = widget.newButton(
 	{
 		id = "VidStop",
@@ -334,24 +289,24 @@ stopVidButton = widget.newButton(
 		labelColor = { default={ 1,1,1,1 }, over={ 1,1,1,1 } },
 		onRelease = endVideo
 	})
+
 stopVidButton.isVisible = false
 videoGroup:insert(playVidButton)
 videoGroup:insert(stopVidButton)
 
 --top border image
-
 borderRect = display.newRect(display.contentCenterX, display.contentCenterY / 10,  (gW), (gH /10))
 borderRect:setFillColor(0,.188,.082, 1)
 mainMenuButtons:insert(borderRect)
 
 --click to learn more box && accompanying text
-
 learnRect = display.newRect(display.contentCenterX * .20, display.contentCenterY * .85, display.contentCenterX * .40, gH / 10)
 learnRect:setFillColor(0,0,0,0)
 learnRect:setStrokeColor(1,1,0)
 learnRect.strokeWidth = 3
 mainMenuButtons:insert(learnRect)
 
+--options for the learn more text
 local learnTextOptions = 
 	{
 		text = "Click on a section to learn more!",
@@ -363,13 +318,13 @@ local learnTextOptions =
 		width = display.contentCenterX * .30,
 		height = gH / 11
 	}
-	
+
+--create the text	
 learnText = display.newText(learnTextOptions)
 learnText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(learnText)
 	
 --What is a drop tower? button
-
 dropTowerButton = widget.newButton(
 	{
 		id = "DropTowerButton",
@@ -419,17 +374,15 @@ local bricButton = widget.newButton(
 	})
 mainMenuButtons:insert(bricButton)
 
--- experimentButton 
+--experimentButton 
 local experimentButton = widget.newButton(
 	{
 		id = "ExperimentButton",
 		defaultFile = "images/DropCapsule2.jpg",
 		overFile = "images/DropCapsule2.jpg",
 		onRelease = sectionButtonHandler,
-
 		x = display.contentCenterX * 1.60,
 		width = gH * 0.125,
-
 		y = gH - (gH * 0.19),
 		height = gH * 0.125
 	})
@@ -453,6 +406,7 @@ local experimentText = display.newText(experimentTextOptions)
 experimentText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(experimentText)
 
+--function to make text fit inside of respective box
 i = 51
 repeat
 	if(headerText ~= nil) then
@@ -487,8 +441,7 @@ local repairButton = widget.newButton(
 	})
 mainMenuButtons:insert(repairButton)
 
---main menu repair text
-
+--main menu repair text options
 local repairTextOptions = 
 	{
 		text = "Think you know enough to repair the drop tower?",
@@ -500,7 +453,8 @@ local repairTextOptions =
 		width = gH * 0.15,
 		height = gH * 0.05
 	}
-	
+
+--create repair text
 repairText = display.newText(repairTextOptions)
 repairText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(repairText)
