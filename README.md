@@ -11,6 +11,8 @@ Informational application to be used at the Baylor University BRIC Drop Tower
 * Select "New Project" from the main menu, and navigate to the BRIC_DropTowerApp local repo on your machine. 
 * Select the trunk folder as your project and then run it. The simulator should pop up showing a phone display of the app.
 
+# Lua Basics
+
 
 
 # Developers Manual
