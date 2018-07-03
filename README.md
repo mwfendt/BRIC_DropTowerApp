@@ -13,6 +13,21 @@ Informational application to be used at the Baylor University BRIC Drop Tower
 
 # Lua Basics
 
+Lua is like a cross between Python and Java. The syntax will feel a little weird at first, but for the most part it’s actually usually simpler than most languages you’re probably familiar with.
+Notable unique syntax and quirks:
+  * Lines do not necessarily end with a semicolon. Usually a semicolon will be ignored, but sometimes it may cause problems, so I recommend using line breaks instead.
+  * Instead of null, Lua uses the keyword nil, which otherwise functions as Java’s “null”.
+  * Variables do not have fixed types, so there is no type safety in Lua. The language simply does its best to work with what is given, and if a value doesn’t make sense, the function will usually return nil.
+  * If statements do not use curly braces. Instead, they use keywords then and end. In fact, end is usually used where C++ or Java would have a closing curly brace, such as to terminate functions.
+  * The keyword elseif is only one word. 
+  * What in other languages would be a do/while loop is a repeat/until loop in Lua.
+  * When accessing an object’s member variables, use a period as normal; however, when calling member functions, use a colon instead (e.g. object.value versus object:function() )
+  * Most Boolean logic operators are spelled out instead of using symbols; specifically and, not, and or.
+  * The comparator for “not equals” is ~= instead of !=
+  * Single line comments are denoted with a double hyphen (“--“). Block comments are begun with a double hyphen followed by a double open square bracket (“--[[“) and ended by a double close square bracket followed by another double hyphen (“]]--“).
+  * When defining a table, use curly braces.
+  * All variables are assumed to be global unless declared with the keyword local. It is recommended that you make as many variables local variables as possible.
+  * Importing files uses the require function, which either returns the object or value created by a previous require, or treats the code in the specified file as a self-contained function and runs and returns as such.
 
 
 # Developers Manual
