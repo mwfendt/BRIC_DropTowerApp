@@ -49,18 +49,18 @@ __8 States__
   Each of the buttons in mainMenuButton group are handled by sectionButtonHandler which determines what state the app changes to depending on which main menu button is clicked. 
   
   
-  ### Winch Informational Page
+  ## Winch Informational Page
   
-  ### Capsule Informational Page
+  ## Capsule Informational Page
   
-  ### Deceleration Chamber Informational Page
+  ## Deceleration Chamber Informational Page
   
-  ### Netting Informational Page
+  ## Netting Informational Page
   
-  ### Drop Tower Informational Page
+  ## Drop Tower Informational Page
   ![Drop Tower Info Page](https://github.com/saulf95/BRIC_DropTowerApp/blob/master/images/droptowerinfo.PNG "Drop Tower Info Page")
   
-  ### Run an Experiment Page
+  ## Run an Experiment Page
   ![Experiment Page 1](https://github.com/saulf95/BRIC_DropTowerApp/blob/master/images/experimentpage1.PNG "Experiment Home Page")
   ![Experiment Page 2](https://github.com/saulf95/BRIC_DropTowerApp/blob/master/images/experimentpage2.PNG "Run Experiment Page")
   Experiment Menu Page -----------------------------------------------  Run Experiment Page --------------------------------------
@@ -84,7 +84,7 @@ __8 States__
   
   
   
-  ### Drop Tower Fix-it Interactive Game
+  ## Drop Tower Fix-it Interactive Game
   ![Fix-it](https://github.com/saulf95/BRIC_DropTowerApp/blob/master/images/fixitmenu.PNG "Fix-it Menu")
   
 
