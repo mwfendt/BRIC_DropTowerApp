@@ -18,13 +18,13 @@ This application is split up into 8 states, each with their own file containing 
 
 __8 States__
   * [Main Menu](#Main-Menu)
-  * [Winch Informational Page](#Winch-Informational-Page)
-  * [Capsule Informational Page](#Capsule-Informational-Page)
-  * [Deceleration Chamber Informational Page](#Deceleration-Chamber-Informational-Page)
-  * [Netting Informational Page](#Netting-Information-Page)
-  * [Drop Tower Informational Page](#Drop-Tower-Informational-Page)
-  * [Run an Experiment Page](#Run-an-Experiment-Page)
-  * [Drop Tower Fix-it Interactive Game](#Drop-Tower-Fix-it-Interactive-Game)
+  * [Winch Informational Page](#winch-informational-page)
+  * [Capsule Informational Page](#capsule-informational-page)
+  * [Deceleration Chamber Informational Page](#feceleration-chamber-informational-page)
+  * [Netting Informational Page](#netting-information-page)
+  * [Drop Tower Informational Page](#drop-tower-informational-page)
+  * [Run an Experiment Page](#run-an-experiment-page)
+  * [Drop Tower Fix-it Interactive Game](#drop-tower-fix-it-interactive-game)
   
   ### Main Menu
   All of the code for the main menu can be found in trunk/main.lua.
