@@ -85,7 +85,10 @@ local sectionButtonHandler = function( event )
 		elseif(event.target.id == "DropTowerButton") then
 			--go to Drop Tower Info
 			appState = 7
-			dropInfoPage:reveal()	
+			dropInfoPage:reveal()
+		elseif(event.target.id == "PhysicsGameButton") then
+			appState = 8
+			physicsGamePage:reveal()
 		end
 	elseif(appState == 5) then
 		appState = 6
@@ -207,6 +210,10 @@ display:getCurrentStage():insert(experimentPage.dGroup)
 dropInfoPage = require("dropinfo")
 dropInfoPage:makeDisplay()
 display:getCurrentStage():insert(dropInfoPage.dGroup)
+--import the physicsGamePage group
+physicsGamePage = require("physicsgame")
+physicsGamePage:makeDisplay()
+display.getCurrentStage():insert(physicsGamePage.dGroup)
 
 --group for the modular selection
 moduleGroup = display.newGroup()
@@ -460,6 +467,30 @@ local repairTextOptions =
 repairText = display.newText(repairTextOptions)
 repairText:setFillColor(0,0,0,1)
 repairButtonGroup:insert(repairText)
+
+------------------
+-- PHYSICS GAME --
+------------------
+
+local physicsGameButton = widget.newButton(
+	{
+		id = "PhysicsGameButton",
+		x = display.contentCenterX * 1.80,
+		y = display.contentCenterY * 1.05,
+		width = display.contentCenterX * .40,
+		height = gH / 10,
+		shape = "rectangle",
+		fillColor = { default={ 0,0,0,0.01}, over={0,0,0,0.01} },
+		font = native.systemFont,
+		fontSize = 7,
+		label = "Play a Physics Game!",
+		align = "center",
+		labelColor = {default= {0,0,0,1}, over = {0,0,0,1}},
+		strokeColor = { default={ 1,1,0 }, over={ 1,1,0 } },
+		strokeWidth = 3,
+		onRelease = sectionButtonHandler
+	})
+mainMenuButtons:insert(physicsGameButton)
 
 -----------
 -- TITLE --
