@@ -25,6 +25,12 @@ end
 -- BUTTON HANDLERS --
 ---------------------
 
+local function moduleButtonHandler (event)
+	if(event.target.id == "Done") then
+		moduleGroup.isVisible = false
+	end
+end
+
 --ends the video playing currently
 local function endVideo()
 	if (video ~= nil) then
@@ -488,6 +494,7 @@ mainMenuButtons:insert(headerText)
 ----------------------
 -- MODULE SELECTION --
 ----------------------
+--screen cover
 local moduleScreenButton = widget.newButton(
 	{
 		id = "ModuleScreenButton",
@@ -500,6 +507,7 @@ local moduleScreenButton = widget.newButton(
 	})
 moduleGroup:insert(moduleScreenButton)
 
+--title text
 i = math.ceil(px2pt(gH * 0.08))
 repeat
 	if(moduleHeaderText ~= nil) then
@@ -516,7 +524,201 @@ repeat
 			fontSize = i
 		})
 until moduleHeaderText.width <= gW * 0.97 or i==1
-
 moduleHeaderText:setFillColor(1,1,1,1)
 moduleGroup:insert(moduleHeaderText)
-moduleGroup.isVisible = false
+
+--back/done button
+doneButton = widget.newButton(
+	{
+		id = "Done",
+		x = display.contentCenterX,
+		y = gH * 0.95,
+		width = gW * 0.95,
+		height = gH * 0.075,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
+		strokeColor = {default={ .25 , .25, .25, 1}, over={ .50,.50,.50, 1 } },
+		strokeWidth = 3,
+		label = "Done",
+		font = native.systemFont,
+		fontSize = 16,
+		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
+		onRelease = moduleButtonHandler
+	})
+moduleGroup:insert(doneButton)
+
+--row 1: Drop Capsule
+--text
+row1Text = display.newText(
+	{
+		text = "Drop Capsule Info",
+		x = gW * 0.385,
+		width = gW * 0.75,
+		align = "left",
+		y = gH * 0.15,
+		font = native.systemFont,
+		fontSize = math.floor(px2pt(gH * 0.05)),
+	})
+row1Text:setFillColor(0.75, 0.75, 0.75, 1)
+moduleGroup:insert(row1Text)
+
+--button
+row1Button = widget.newButton(
+	{
+		id = "row1",
+		x = gW * 0.875,
+		y = gH * 0.15,
+		width = gW * 0.2,
+		height = gW * 0.1,
+		defaultFile = "images/ON.png",
+		onRelease = moduleButtonHandler,
+		flipTarget = capsuleButton
+	})
+moduleGroup:insert(row1Button)
+
+--row 2: Winch
+--text
+row2Text = display.newText(
+	{
+		text = "Winch Info",
+		x = gW * 0.385,
+		width = gW * 0.75,
+		align = "left",
+		y = gH * 0.25,
+		font = native.systemFont,
+		fontSize = math.floor(px2pt(gH * 0.05)),
+	})
+row2Text:setFillColor(0.75, 0.75, 0.75, 1)
+moduleGroup:insert(row2Text)
+
+--button
+row2Button = widget.newButton(
+	{
+		id = "row2",
+		x = gW * 0.875,
+		y = gH * 0.25,
+		width = gW * 0.2,
+		height = gW * 0.1,
+		defaultFile = "images/ON.png",
+		onRelease = moduleButtonHandler,
+		flipTarget = winchButton
+	})
+moduleGroup:insert(row2Button)
+
+--row 3: Netting
+--text
+row3Text = display.newText(
+	{
+		text = "Netting Info",
+		x = gW * 0.385,
+		width = gW * 0.75,
+		align = "left",
+		y = gH * 0.35,
+		font = native.systemFont,
+		fontSize = math.floor(px2pt(gH * 0.05)),
+	})
+row3Text:setFillColor(0.75, 0.75, 0.75, 1)
+moduleGroup:insert(row3Text)
+
+--button
+row3Button = widget.newButton(
+	{
+		id = "row3",
+		x = gW * 0.875,
+		y = gH * 0.35,
+		width = gW * 0.2,
+		height = gW * 0.1,
+		defaultFile = "images/ON.png",
+		onRelease = moduleButtonHandler,
+		flipTarget = netButton
+	})
+moduleGroup:insert(row3Button)
+
+--row 4: Deceleration Chamber
+--text
+row4Text = display.newText(
+	{
+		text = "Decel. Chamber Info",
+		x = gW * 0.385,
+		width = gW * 0.75,
+		align = "left",
+		y = gH * 0.45,
+		font = native.systemFont,
+		fontSize = math.floor(px2pt(gH * 0.05)),
+	})
+row4Text:setFillColor(0.75, 0.75, 0.75, 1)
+moduleGroup:insert(row4Text)
+
+--button
+row4Button = widget.newButton(
+	{
+		id = "row4",
+		x = gW * 0.875,
+		y = gH * 0.45,
+		width = gW * 0.2,
+		height = gW * 0.1,
+		defaultFile = "images/ON.png",
+		onRelease = moduleButtonHandler,
+		flipTarget = decelButton
+	})
+moduleGroup:insert(row4Button)
+
+--row 5: Fixit
+--text
+row5Text = display.newText(
+	{
+		text = "Fix It Game",
+		x = gW * 0.385,
+		width = gW * 0.75,
+		align = "left",
+		y = gH * 0.55,
+		font = native.systemFont,
+		fontSize = math.floor(px2pt(gH * 0.05)),
+	})
+row5Text:setFillColor(0.75, 0.75, 0.75, 1)
+moduleGroup:insert(row5Text)
+
+--button
+row5Button = widget.newButton(
+	{
+		id = "row5",
+		x = gW * 0.875,
+		y = gH * 0.55,
+		width = gW * 0.2,
+		height = gW * 0.1,
+		defaultFile = "images/ON.png",
+		onRelease = moduleButtonHandler,
+		flipTarget = decelButton
+	})
+moduleGroup:insert(row5Button)
+
+--row 6: Experiment
+--text
+row6Text = display.newText(
+	{
+		text = "Experiment",
+		x = gW * 0.385,
+		width = gW * 0.75,
+		align = "left",
+		y = gH * 0.65,
+		font = native.systemFont,
+		fontSize = math.floor(px2pt(gH * 0.05)),
+	})
+row6Text:setFillColor(0.75, 0.75, 0.75, 1)
+moduleGroup:insert(row6Text)
+
+--button
+row6Button = widget.newButton(
+	{
+		id = "row6",
+		x = gW * 0.875,
+		y = gH * 0.65,
+		width = gW * 0.2,
+		height = gW * 0.1,
+		defaultFile = "images/ON.png",
+		onRelease = moduleButtonHandler,
+		flipTarget = decelButton
+	})
+moduleGroup:insert(row6Button)
+
+--moduleGroup.isVisible = false
