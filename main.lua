@@ -11,6 +11,16 @@ display.setStatusBar( display.HiddenStatusBar )
 -- Require libraries/plugins
 local widget = require( "widget" )
 
+-----------------------
+-- UTILITY FUNCTIONS --
+-----------------------
+
+--converts a height in pixels to the equivalent pt value for text
+--may need some fine-tuning
+local function px2pt( pixels )
+	return pixels * 0.75
+end
+
 ---------------------
 -- BUTTON HANDLERS --
 ---------------------
@@ -41,7 +51,6 @@ end
 
 --handles button presses for the various sections of the drop tower
 local sectionButtonHandler = function( event )
-	--animFrames = 10
 	if(appState == 0) then
 		--figure out which section to display then display it
 		if(event.target.id == "DropCapsule") then
@@ -125,9 +134,6 @@ end
 gH = display.contentHeight
 gW = display.contentWidth
 
---animFrames should be 0 when no animation is happening
-animFrames = 0
-
 --set state
 appState = 0
 -- STATES: --
@@ -141,7 +147,7 @@ appState = 0
 -- 7 - Drop Tower Information
 
 --the screen-sized button can't be invisible in order for it to work, so it needs to be behind everything else
-screenSizedButton = widget.newButton(
+--[[screenSizedButton = widget.newButton(
 	{
 		id = "screen",
 		x = display.contentCenterX,
@@ -150,7 +156,7 @@ screenSizedButton = widget.newButton(
 		height = gH,
 		shape = "rectangle",
 		fillColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
-	})
+	})]]--
 
 --display background image (width and height are required in function but overwritten later)
 local bkg = display.newImageRect( "images/DropTowerDiagram.png", gW, gH )
@@ -195,6 +201,9 @@ display:getCurrentStage():insert(experimentPage.dGroup)
 dropInfoPage = require("dropinfo")
 dropInfoPage:makeDisplay()
 display:getCurrentStage():insert(dropInfoPage.dGroup)
+
+--group for the modular selection
+moduleGroup = display.newGroup()
 
 -- videos jump to the front no matter when they're declared, but declare last to remind ourselves
 video = nil
@@ -294,11 +303,6 @@ stopVidButton.isVisible = false
 videoGroup:insert(playVidButton)
 videoGroup:insert(stopVidButton)
 
---top border image
-borderRect = display.newRect(display.contentCenterX, display.contentCenterY / 10,  (gW), (gH /10))
-borderRect:setFillColor(0,.188,.082, 1)
-mainMenuButtons:insert(borderRect)
-
 --click to learn more box && accompanying text
 learnRect = display.newRect(display.contentCenterX * .20, display.contentCenterY * .85, display.contentCenterX * .40, gH / 10)
 learnRect:setFillColor(0,0,0,0)
@@ -374,7 +378,14 @@ local bricButton = widget.newButton(
 	})
 mainMenuButtons:insert(bricButton)
 
---experimentButton 
+-----------------------
+-- EXPERIMENT BUTTON --
+-----------------------
+--make group
+experimentButtonGroup = display.newGroup()
+mainMenuButtons:insert(experimentButtonGroup)
+
+--make button
 local experimentButton = widget.newButton(
 	{
 		id = "ExperimentButton",
@@ -386,7 +397,7 @@ local experimentButton = widget.newButton(
 		y = gH - (gH * 0.19),
 		height = gH * 0.125
 	})
-mainMenuButtons:insert(experimentButton)
+experimentButtonGroup:insert(experimentButton)
 
 -- options for text below experiment button
 local experimentTextOptions = 
@@ -400,33 +411,18 @@ local experimentTextOptions =
 		width = gH * 0.15,
 		height = gH * 0.05
 	}
-	
---create and insert the text into the main menu
+
+--create and insert the text into the group
 local experimentText = display.newText(experimentTextOptions)
 experimentText:setFillColor(0,0,0,1)
-mainMenuButtons:insert(experimentText)
+experimentButtonGroup:insert(experimentText)
 
---function to make text fit inside of respective box
-i = 51
-repeat
-	if(headerText ~= nil) then
-		headerText:removeSelf()
-	end
-	i = i - 1
-	headerText = display.newText(
-		{
-			text = " Learn about Microgravity using Baylor's Drop Tower!",
-			x = display.contentCenterX,
-			align = "center",
-			y = gH / 20,
-			font = native.systemFont,
-			fontSize = i
-		})
-until headerText.width <= gW * .97 or i == 1
-print(i)
-headerText:setFillColor(1,1,1,1)
-mainMenuButtons:insert(headerText)
+-------------------
+-- REPAIR BUTTON --
+-------------------
 
+repairButtonGroup = display.newGroup()
+mainMenuButtons:insert(repairButtonGroup)
 -- repairButton
 local repairButton = widget.newButton(
 	{
@@ -439,7 +435,7 @@ local repairButton = widget.newButton(
 		y = gH - (gH * 0.19),
 		height = gH * 0.125,
 	})
-mainMenuButtons:insert(repairButton)
+repairButtonGroup:insert(repairButton)
 
 --main menu repair text options
 local repairTextOptions = 
@@ -457,4 +453,70 @@ local repairTextOptions =
 --create repair text
 repairText = display.newText(repairTextOptions)
 repairText:setFillColor(0,0,0,1)
-mainMenuButtons:insert(repairText)
+repairButtonGroup:insert(repairText)
+
+-----------
+-- TITLE --
+-----------
+
+--top border image
+borderRect = display.newRect(display.contentCenterX, display.contentCenterY / 10,  (gW), (gH /10))
+borderRect:setFillColor(0,.188,.082, 1)
+mainMenuButtons:insert(borderRect)
+
+--function to make text fit inside of respective box
+i = 51
+repeat
+	if(headerText ~= nil) then
+		headerText:removeSelf()
+	end
+	i = i - 1
+	headerText = display.newText(
+		{
+			text = "Learn about Microgravity using Baylor's Drop Tower!",
+			x = display.contentCenterX,
+			align = "center",
+			y = gH / 20,
+			font = native.systemFont,
+			fontSize = i
+		})
+until headerText.width <= gW * .97 or i == 1
+print(i)
+headerText:setFillColor(1,1,1,1)
+mainMenuButtons:insert(headerText)
+
+----------------------
+-- MODULE SELECTION --
+----------------------
+local moduleScreenButton = widget.newButton(
+	{
+		id = "ModuleScreenButton",
+		x = display.contentCenterX,
+		width = gW,
+		y = display.contentCenterY,
+		height = gH,
+		fillColor = { default={0.3,0.5,0.9,1}, over={0.3,0.5,0.9,1} },
+		shape = "rectangle"
+	})
+moduleGroup:insert(moduleScreenButton)
+
+i = math.ceil(px2pt(gH * 0.08))
+repeat
+	if(moduleHeaderText ~= nil) then
+		moduleHeaderText:removeSelf()
+	end
+	i = i - 1
+	moduleHeaderText = display.newText(
+		{
+			text = "Enable/Disable Modules",
+			x = display.contentCenterX,
+			align = "center",
+			y = gH * 0.05,
+			font = native.systemFont,
+			fontSize = i
+		})
+until moduleHeaderText.width <= gW * 0.97 or i==1
+
+moduleHeaderText:setFillColor(1,1,1,1)
+moduleGroup:insert(moduleHeaderText)
+moduleGroup.isVisible = false
