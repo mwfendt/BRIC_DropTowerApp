@@ -28,6 +28,7 @@ Notable unique syntax and quirks:
   * When defining a table, use curly braces.
   * All variables are assumed to be global unless declared with the keyword local. It is recommended that you make as many variables local variables as possible.
   * Importing files uses the require function, which either returns the object or value created by a previous require, or treats the code in the specified file as a self-contained function and runs and returns as such.
+  * Like Java, all variables are passed by reference. Unlike Java, there are no "primitive" variables (only literals can be primitives)
 
 
 # Developers Manual

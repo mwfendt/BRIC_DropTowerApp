@@ -17,22 +17,14 @@ local function px2pt( pixels )
 	return pixels * 0.75
 end
 
+webDisplay = nil
+
 ---------------------
 -- BUTTON HANDLERS --
 ---------------------
 
 local function moduleBackHandler (event)
 	moduleGroup.isVisible = false
-end
-
-local function moduleButtonHandler (event)
-	if(event.target.offTarget.isVisible) then
-		event.target.flipTarget.isVisible = true
-		event.target.offTarget.isVisible = false
-	else
-		event.target.flipTarget.isVisible = false
-		event.target.offTarget.isVisible = true
-	end
 end
 
 --ends the video playing currently
@@ -110,18 +102,22 @@ local sectionButtonHandler = function( event )
 end
 
 --declaration of handler for BaylorLogo button
-local function handleBaylorEvent(event)
-
-	if("ended" == event.phase) then 
-		system.openURL("https://www.baylor.edu")
-	end
-end
-
---delaration of handler for BricLogo button
-local function handleBricEvent(event)
-
-	if("ended" == event.phase) then
-		system.openURL("https://www.baylor.edu/bric")
+local function handleWebEvent(event)
+	if("Back" == event.target.id) then
+		webGroup.isVisible = false
+		--if (webDisplay ~= nil) then
+		webDisplay:removeSelf()
+		--end
+	elseif("BaylorLogo" == event.target.id) then
+		webGroup.isVisible = true
+		--system.openURL("https://www.baylor.edu")
+		webDisplay = native.newWebView(display.contentCenterX, gH * 0.45, gW, gH * 0.9)
+		webDisplay:request("https://www.baylor.edu")
+	elseif("BRICLogo" == event.target.id) then
+		webGroup.isVisible = true
+		webDisplay = native.newWebView(display.contentCenterX, gH * 0.45, gW, gH * 0.9)
+		--webDisplay:request("https://www.google.com")
+		webDisplay:request("https://www.baylor.edu/bric")
 	end
 end
 
@@ -218,6 +214,10 @@ display:getCurrentStage():insert(dropInfoPage.dGroup)
 physicsGamePage = require("physicsgame")
 physicsGamePage:makeDisplay()
 display.getCurrentStage():insert(physicsGamePage.dGroup)
+
+--group for web popup display
+webGroup = display.newGroup()
+webGroup.isVisible = false
 
 --group for the modular selection
 moduleGroup = display.newGroup()
@@ -372,7 +372,7 @@ local baylorButton = widget.newButton(
 		id = "BaylorLogo",
 		defaultFile = "images/BaylorGreen.png",
 		overFile = "images/BaylorGreen.png",
-		onEvent = handleBaylorEvent,
+		onRelease = handleWebEvent,
 		x = display.contentCenterX / 2,
 		width = display.contentCenterX,
 		y = gH - (gH * 0.086 * 0.5),
@@ -386,10 +386,9 @@ local bricButton = widget.newButton(
 		id = "BRICLogo",
 		defaultFile = "images/BRICWhite.png",
 		overFile = "images/BRICWhite.png",
-		onEvent = handleBricEvent,
+		onRelease = handleWebEvent,
 		x = display.contentCenterX * 1.5,
 		width = display.contentCenterX,
-
 		y = gH - (gH * 0.086 * 0.5),
 		height = gH * 0.086
 	})
@@ -525,6 +524,35 @@ until headerText.width <= gW * .97 or i == 1
 print(i)
 headerText:setFillColor(1,1,1,1)
 mainMenuButtons:insert(headerText)
+
+---------------
+-- WEB POPUP --
+---------------
+
+--darkener
+darkenerRect = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
+darkenerRect:setFillColor(0,0,0,0.85)
+webGroup:insert(darkenerRect)
+
+--make back button
+backButton = widget.newButton(
+{
+	id = "Back",
+	x = display.contentCenterX,
+	y = gH * 0.95,
+	width = gW * 0.95,
+	height = gH * 0.075,
+	shape = "rectangle",
+	fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
+	strokeColor = {default={ .25 , .25, .25, 1}, over={ .50,.50,.50, 1 } },
+	strokeWidth = 3,
+	label = "Back",
+	font = native.systemFont,
+	fontSize = 16,
+	labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
+	onRelease = handleWebEvent
+})
+webGroup:insert(backButton)
 
 ----------------------
 -- MODULE SELECTION --

@@ -17,4 +17,11 @@ settings =
 			default = "BRIC Drop Tower",
 		},
 	},
+	android =
+    {
+        usesPermissions =
+        {
+            "android.permission.INTERNET",
+        },
+    },
 }
