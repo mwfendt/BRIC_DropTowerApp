@@ -16,6 +16,18 @@ local M = {}
 local animFrames = 0
 local ballVelocity = 1
 
+local function updateTime(event)
+	count = count - 1
+	timeDisplay = string.format("%02d", count)
+	clockText.text = timeDisplay
+	if(count <= 0) then
+	timer.cancel(countDownTimer)
+	print("here")
+	incorrectGroup.isVisible = true
+	incorrectGroup.animFrames = 10
+	end
+end
+
 function buttonHandler(event)
 	if(animFrames == 0) then
 		M:hide()
@@ -23,6 +35,14 @@ function buttonHandler(event)
 end
 
 function ballHandler(event)
+	instructionsText.isVisible = false
+	instructionsText2.isVisible = false
+	startButton.isVisible = false
+	clockText.isVisible = true
+--	if(countDownTimer ~= nil) then
+--	timer.cancel(countDownTimer)
+--	end
+	countDownTimer = timer.performWithDelay(1000, updateTime, count)
 	
 end
 --main display function
@@ -30,6 +50,7 @@ function M:makeDisplay()
 
 	local dGroup = display.newGroup()
 	
+	incorrectGroup = display.newGroup()
 	-----------------
 	-- BACK BUTTON --
 	-----------------
@@ -89,8 +110,73 @@ function M:makeDisplay()
 		font = native.systemFont,
 		fontSize = 16,
 		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
-		--onRelease = ballHandler
+		onRelease = ballHandler
 	})
+	
+	darkenerButton = widget.newButton(
+		{
+			id = "Darkener",
+			x = display.contentCenterX,
+			y = display.contentCenterY,
+			width = gW,
+			height = gH,
+			shape = "rectangle",
+			fillColor = { default={ 0,0,0,0.85 }, over={ 0,0,0,0.85 } },
+			onRelease = buttonHandler
+		})
+	
+	--create box for text to appear on
+	incorrectBox = display.newRect(display.contentCenterX, display.contentCenterY, gW * 0.8, gH * 0.25)
+	incorrectBox:setFillColor(1, 1, 1, 1)
+	incorrectBox.strokeWidth = 3
+	incorrectBox:setStrokeColor(1,0,0,1)
+	--create text and shrink to box
+	i = 31
+	repeat
+		if(incorrectText ~= nil) then
+			incorrectText:removeSelf()
+		end
+		i = i - 1
+		incorrectText = display.newText(
+			{
+				text="Score: 0\n Click to go to main menu!",
+				x=incorrectBox.x,
+				y=incorrectBox.y,
+				width=incorrectBox.width - 6, --keep inside the lines
+				font=native.systemFont,
+				fontSize=i,
+				align="center"
+			})
+	until incorrectText.height <= incorrectBox.height or i == 1
+	incorrectText:setFillColor(1,0,0,1)
+	
+	incorrectGroup:insert(darkenerButton)
+	incorrectGroup:insert(incorrectBox)
+	incorrectGroup:insert(incorrectText)
+	incorrectGroup.isVisible = false
+	incorrectGroup.alpha = 0.01
+	--set up fade in animation
+	incorrectGroup.animFrames = 0
+	function incorrectGroup:enterFrame(event)
+		if(self.animFrames > 0) then
+			self.animFrames = self.animFrames - 1
+			self.alpha = 1 - (self.animFrames * 0.05)
+		elseif(self.animFrames < 0) then
+			self.animFrames = self.animFrames + 1
+			self.alpha = (self.animFrames * -0.05)
+		end
+	end
+	Runtime:addEventListener( "enterFrame", incorrectGroup )
+	
+	dGroup:insert(incorrectGroup)
+	
+	--timer counter
+	count = 5
+	
+	--timer text 
+	clockText = display.newText("60", display.contentCenterX * 0.35, gH * 0.85, native.systemFont, 16)
+	clockText:setFillColor(0.7,0.7,1)
+	
 	--physics game background container background 
 	physBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
 	physBkg:setFillColor(.3, .5, .9, 1)
@@ -135,6 +221,8 @@ function M:makeDisplay()
 	dGroup:insert(startButton)
 	dGroup:insert(instructionsText)
 	dGroup:insert(instructionsText2)
+	dGroup:insert(clockText)
+	dGroup:insert(incorrectGroup)
 	dGroup.isVisible = false
 	self.dGroup = dGroup
 end
@@ -142,13 +230,22 @@ end
 --function to reveal this page
 function M:reveal()
 	animFrames = 10
+	count = 5
+	timeDisplay = string.format("%02d", count)
+	clockText.text = timeDisplay
+	instructionsText.isVisible = true
+	instructionsText2.isVisible = true
+	startButton.isVisible = true
 	self.dGroup.isVisible = true
+	clockText.isVisible = false
+	incorrectGroup.isVisible = false
 	print("reveal")
 end
 
 --function to hide this page
 function M:hide()
 	animFrames = -10
+	timer.cancel(countDownTimer)
 	print("hide")
 end
 
