@@ -2,6 +2,8 @@
 -- BRIC Drop Tower App
 -- Version: 0.01
 -- decel.lua
+-- Authors: Saul Flores & Marc Willis
+-- Supervising Professor: Matthew Fendt
 ---------------------------------------------------------------------------------------
 
 local widget = require( "widget" )
