@@ -110,14 +110,12 @@ local function handleWebEvent(event)
 		--end
 	elseif("BaylorLogo" == event.target.id) then
 		webGroup.isVisible = true
-		--system.openURL("https://www.baylor.edu")
 		webDisplay = native.newWebView(display.contentCenterX, gH * 0.45, gW, gH * 0.9)
 		webDisplay:request("https://www.baylor.edu")
 	elseif("BRICLogo" == event.target.id) then
 		webGroup.isVisible = true
 		webDisplay = native.newWebView(display.contentCenterX, gH * 0.45, gW, gH * 0.9)
-		--webDisplay:request("https://www.google.com")
-		webDisplay:request("https://www.baylor.edu/bric")
+		webDisplay:request("https://www.baylor.edu/bric/")
 	end
 end
 

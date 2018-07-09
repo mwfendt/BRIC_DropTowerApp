@@ -63,7 +63,7 @@ function M:makeRow(rowTitle, rowTarget, rowY, group)
 	rowButton.offTarget = rowOff
 	group:insert(rowButton)
 	group:insert(rowOff)
-	rowOff.isVisible = false
+	rowOff.isVisible = not rowTarget.isVisible
 end
 
 return M
