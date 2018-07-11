@@ -11,6 +11,9 @@ display.setStatusBar( display.HiddenStatusBar )
 -- Require libraries/plugins
 local widget = require( "widget" )
 
+-- "constants"
+local COMPANIONSITEURL = "https://www.baylor.edu/bric/"
+
 --converts a height in pixels to the equivalent pt value for text
 --may need some fine-tuning
 local function px2pt( pixels )
@@ -116,6 +119,10 @@ local function handleWebEvent(event)
 		webGroup.isVisible = true
 		webDisplay = native.newWebView(display.contentCenterX, gH * 0.45, gW, gH * 0.9)
 		webDisplay:request("https://www.baylor.edu/bric/")
+	elseif("CompanionSite" == event.target.id) then
+		webGroup.isVisible = true
+		webDisplay = native.newWebView(display.contentCenterX, gH * 0.45, gW, gH * 0.9)
+		webDisplay:request(COMPANIONSITEURL)
 	end
 end
 
@@ -130,6 +137,23 @@ local function handleVideo(event)
 		video:addEventListener( "video", videoListener )
 	else
 		print("WARNING: No video for appstate "..appstate.." (yet)")
+	end
+end
+
+---------------------
+-- NETWORK HANDLER --
+---------------------
+
+local function netListen( event )
+	if ( event.isError ) then
+		print("Could not reach " .. event.url)
+	else
+		if("ended" == event.phase) then
+			print ( "Response from: " .. event.url )
+			if(COMPANIONSITEURL == event.url) then
+				companionSiteButton.isVisible = true
+			end
+		end
 	end
 end
 
@@ -493,6 +517,35 @@ local physicsGameButton = widget.newButton(
 	})
 mainMenuButtons:insert(physicsGameButton)
 
+--------------------
+-- COMPANION SITE --
+--------------------
+
+--create the button
+companionSiteButton = widget.newButton(
+	{
+		id = "CompanionSite",
+		x = display.contentCenterX * 0.20,
+		y = display.contentCenterY * 1.05,
+		width = display.contentCenterX * .40,
+		height = gH / 10,
+		shape = "rectangle",
+		fillColor = { default={ 0,0,0,0.01}, over={0,0,0,0.01} },
+		font = native.systemFont,
+		fontSize = 7,
+		label = "Visit the website!",
+		align = "center",
+		labelColor = {default= {0,0,0,1}, over = {0,0,0,1}},
+		strokeColor = { default={ 1,1,0 }, over={ 1,1,0 } },
+		strokeWidth = 3,
+		onRelease = handleWebEvent
+	})
+companionSiteButton.isVisible = false
+mainMenuButtons:insert(companionSiteButton)
+
+--trigger testing event that will unhide the button if it gets a response from the website
+network.request( COMPANIONSITEURL, "GET", netListen)
+
 -----------
 -- TITLE --
 -----------
@@ -531,6 +584,18 @@ mainMenuButtons:insert(headerText)
 darkenerRect = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
 darkenerRect:setFillColor(0,0,0,0.85)
 webGroup:insert(darkenerRect)
+
+--make loading text
+webLoadText = display.newText(
+	{
+		text = "Loading...",
+		x = display.contentCenterX,
+		align = "center",
+		y = gH * 0.45,
+		font = native.systemFont,
+		fontSize = 24
+	})
+webGroup:insert(webLoadText)
 
 --make back button
 backButton = widget.newButton(
