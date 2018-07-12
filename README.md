@@ -112,6 +112,6 @@ __9 States__
   ![Fix-it](https://github.com/saulf95/BRIC_DropTowerApp/blob/master/images/fixitmenu.PNG "Fix-it Menu")
   
   ## Physics Game
-  ![Physics Game](https://github.com/saulf95/BRIC_DropTowerApp/blob/master/images/physicsgame.PNG "Physics Game"
+  ![Physics Game](https://github.com/saulf95/BRIC_DropTowerApp/blob/master/images/physicsgame.PNG "Physics Game")
 
 
