@@ -245,7 +245,9 @@ end
 --function to hide this page
 function M:hide()
 	animFrames = -10
-	timer.cancel(countDownTimer)
+	if(countDownTimer ~= nil) then
+		timer.cancel(countDownTimer)
+	end
 	print("hide")
 end
 
