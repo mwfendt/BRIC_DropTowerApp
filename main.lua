@@ -14,7 +14,7 @@ local widget = require( "widget" )
 -- "constants"
 local COMPANIONSITEURL = "https://www.baylor.edu/bric/"
 local LOCALCOMPANIONSITE = "web/index.html"
-local COMPANIONTIMEOUTLENGTH = 30
+local COMPANIONTIMEOUTLENGTH = 0
 
 --converts a height in pixels to the equivalent pt value for text
 --may need some fine-tuning
@@ -32,19 +32,70 @@ companionSiteAvailable = false
 -- BUTTON HANDLERS --
 ---------------------
 
+local function configHandler( event )
+	moduleTitleGroup.isVisible = false
+end
+
 local function moduleBackHandler (event)
-	--save the current settings
-	local saveData = "1010101"
+	--save the current settings to a string
+	local saveData = ""
+	
+	--drop capsule
+	if(capsuleButton.isVisible) then
+		saveData = saveData .. "1"
+	else
+		saveData = saveData .. "0"
+	end
+	--winch
+	if(winchButton.isVisible) then
+		saveData = saveData .. "1"
+	else
+		saveData = saveData .. "0"
+	end
+	--netting
+	if(netButton.isVisible) then
+		saveData = saveData .. "1"
+	else
+		saveData = saveData .. "0"
+	end
+	--decel chamber
+	if(decelButton.isVisible) then
+		saveData = saveData .. "1"
+	else
+		saveData = saveData .. "0"
+	end
+	--fixit
+	if(repairButtonGroup.isVisible) then
+		saveData = saveData .. "1"
+	else
+		saveData = saveData .. "0"
+	end
+	--experiment
+	if(experimentButtonGroup.isVisible) then
+		saveData = saveData .. "1"
+	else
+		saveData = saveData .. "0"
+	end
+	--phys game
+	if(physicsGameButton.isVisible) then
+		saveData = saveData .. "1"
+	else
+		saveData = saveData .. "0"
+	end
+	
+	--open file for writing
 	local configPath = system.pathForFile("config.txt", system.DocumentsDirectory)
 	local configFile, errStr = io.open(configPath, "w")
 	if (not configFile) then
-		--could nto open config file
+		--could not open config file
 		print("File error: " .. errStr)
 	else
+		--opened successfully, write and close
 		configFile:write(saveData)
 		io.close(configFile)
 	end
 	configFile = nil
+	
 	--hide the module menu
 	moduleGroup.isVisible = false
 end
@@ -273,6 +324,7 @@ webGroup.isVisible = false
 
 --group for the modular selection
 moduleGroup = display.newGroup()
+moduleTitleGroup = display.newGroup()
 
 -- videos jump to the front no matter when they're declared, but declare last to remind ourselves
 video = nil
@@ -527,7 +579,7 @@ repairButtonGroup:insert(repairText)
 -- PHYSICS GAME --
 ------------------
 
-local physicsGameButton = widget.newButton(
+physicsGameButton = widget.newButton(
 	{
 		id = "PhysicsGameButton",
 		x = display.contentCenterX * 1.80,
@@ -741,10 +793,21 @@ else
 			print("Phys Game ON")
 		elseif (string.sub(configData,7,7) == "0") then
 			print("Phys Game OFF")
-			PhysicsGameButton.isVisible = false
+			physicsGameButton.isVisible = false
 		else
 			print("Phys Game INVALID")
 			configExists = false
+		end
+		
+		if(not configExists) then
+			--if there was an error, change everything back to its default state
+			capsuleButton.isVisible = true
+			winchButton.isVisible = true
+			netButton.isVisible = true
+			decelButton.isVisible = true
+			repairButtonGroup.isVisible = true
+			experimentButtonGroup.isVisible = true
+			physicsGameButton.isVisible = true
 		end
 	end
 	--close the file
@@ -823,6 +886,80 @@ modRowMaker:makeRow("Fix It Game", repairButtonGroup, gH * 0.55, moduleGroup)
 modRowMaker:makeRow("Experiment", experimentButtonGroup, gH * 0.65, moduleGroup)
 --row 7: Physics game
 modRowMaker:makeRow("Physics Game", physicsGameButton, gH * 0.75, moduleGroup)
+
+--Module "title" screen
+local moduleScreenButton2 = widget.newButton(
+	{
+		id = "ModuleScreenButton",
+		x = display.contentCenterX,
+		width = gW,
+		y = display.contentCenterY,
+		height = gH,
+		fillColor = { default={0.3,0.5,0.9,1}, over={0.3,0.5,0.9,1} },
+		shape = "rectangle"
+	})
+moduleTitleGroup:insert(moduleScreenButton2)
+
+--title screen text
+i = 121
+repeat
+	if(moduleTitleText ~= nil) then
+		moduleTitleText:removeSelf()
+	end
+	i = i - 1
+	moduleTitleText = display.newText(
+		{
+			text = "This app can be configured to enable or disable specific features as best suits your classroom. Would you like to proceed with the default settings or customize what is available?",
+			x = display.contentCenterX,
+			align = "center",
+			y = gH * 0.2,
+			font = native.systemFont,
+			fontSize = i,
+			width = gW * 0.97
+		})
+until moduleTitleText.height <= gH * 0.38 or i==1
+moduleTitleText:setFillColor(1,1,1,1)
+moduleTitleGroup:insert(moduleTitleText)
+--Configure button
+local configureButton = widget.newButton(
+	{
+		id = "ConfigureModules",
+		x = display.contentCenterX,
+		y = gH * 0.575,
+		width = gW * 0.666,
+		height = gH * 0.175,
+		shape = "rectangle",
+		fillColor = { default={ .75,.75,.75,1 }, over={ 1,1,1,1 } },
+		font = native.systemFont,
+		fontSize = 24,
+		label = "Configure Options",
+		labelColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
+		strokeColor = { default={ .25,.25,.25 }, over={ 0.5,0.5,0.5 } },
+		strokeWidth = 3,
+		onRelease = configHandler
+	})
+moduleTitleGroup:insert(configureButton)
+--default button
+local defaultButton = widget.newButton(
+	{
+		id = "DefaultModules",
+		x = display.contentCenterX,
+		y = gH * 0.825,
+		width = gW * 0.666,
+		height = gH * 0.170,
+		shape = "rectangle",
+		fillColor = { default={ .75,.75,.75,1 }, over={ 1,1,1,1 } },
+		font = native.systemFont,
+		fontSize = 24,
+		label = "Use Default Settings",
+		labelColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
+		strokeColor = { default={ .25,.25,.25 }, over={ 0.5,0.5,0.5 } },
+		strokeWidth = 3,
+		onRelease = moduleBackHandler
+	})
+moduleTitleGroup:insert(defaultButton)
+
+moduleGroup:insert(moduleTitleGroup)
 
 if (configExists) then
 	moduleGroup.isVisible = false
