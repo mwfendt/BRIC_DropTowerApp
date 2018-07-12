@@ -37,9 +37,9 @@ Notable unique syntax and quirks:
 Most of what you'll be doing in Corona is specifying what you want to put on the screen and where you want to put it. If you've had experience with 2D engines before, many things should feel familiar to you. Notably, while coordinates in the positive X direction lie to the screen's right as one would expect in a Euclidean system, the Y axis increases as one travels further *down* the screen. Thus the origin (0,0) is in the top left hand corner of the screen. When placing objects, you will provide an x and y coordinate for the object. These coordinates usually refer to the center of the object to be placed (with a few sparse but seemingly random exceptions, such as web popups).
 
 # Developers Manual
-This application is split up into 8 states, each with their own file containing buttons, images, and handlers for them accordingly.
+This application is split up into 9 states, each with their own file containing buttons, images, and handlers for them accordingly.
 
-__8 States__
+__9 States__
   * [Main Menu](#Main-Menu)
   * [Winch Informational Page](#winch-informational-page)
   * [Capsule Informational Page](#capsule-informational-page)
@@ -48,6 +48,7 @@ __8 States__
   * [Drop Tower Informational Page](#drop-tower-informational-page)
   * [Run an Experiment Page](#run-an-experiment-page)
   * [Drop Tower Fix-it Interactive Game](#drop-tower-fix-it-interactive-game)
+  * [Physics Game](#physics-game)
 
   ### Main Menu
   All of the code for the main menu can be found in trunk/main.lua.
@@ -109,6 +110,8 @@ __8 States__
 
   ## Drop Tower Fix-it Interactive Game
   ![Fix-it](https://github.com/saulf95/BRIC_DropTowerApp/blob/master/images/fixitmenu.PNG "Fix-it Menu")
-
+  
+  ## Physics Game
+  ![Physics Game](https://github.com/saulf95/BRIC_DropTowerApp/blob/master/images/physicsgame.PNG "Physics Game"
 
 
