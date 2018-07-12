@@ -13,6 +13,8 @@ local widget = require( "widget" )
 
 -- "constants"
 local COMPANIONSITEURL = "https://www.baylor.edu/bric/"
+local LOCALCOMPANIONSITE = "web/index.html"
+local COMPANIONTIMEOUTLENGTH = 30
 
 --converts a height in pixels to the equivalent pt value for text
 --may need some fine-tuning
@@ -20,7 +22,11 @@ local function px2pt( pixels )
 	return pixels * 0.75
 end
 
+--the object to hold any webpages that are loaded by the app
 webDisplay = nil
+
+--a flag for whether the companion site could be reached or not
+companionSiteAvailable = false
 
 ---------------------
 -- BUTTON HANDLERS --
@@ -122,7 +128,11 @@ local function handleWebEvent(event)
 	elseif("CompanionSite" == event.target.id) then
 		webGroup.isVisible = true
 		webDisplay = native.newWebView(display.contentCenterX, gH * 0.45, gW, gH * 0.9)
-		webDisplay:request(COMPANIONSITEURL)
+		if(companionSiteAvailable) then
+			webDisplay:request(COMPANIONSITEURL)
+		else
+			webDisplay:request(LOCALCOMPANIONSITE, system.ResourceDirectory)
+		end
 	end
 end
 
@@ -147,11 +157,18 @@ end
 local function netListen( event )
 	if ( event.isError ) then
 		print("Could not reach " .. event.url)
+		if(COMPANIONSITEURL == event.url) then
+			--use the placeholder site
+			companionSiteAvailable = false
+			companionSiteButton.isVisible = true
+		end
 	else
 		if("ended" == event.phase) then
 			print ( "Response from: " .. event.url )
 			if(COMPANIONSITEURL == event.url) then
+				--use the real site
 				companionSiteButton.isVisible = true
+				companionSiteAvailable = true
 			end
 		end
 	end
@@ -544,7 +561,7 @@ companionSiteButton.isVisible = false
 mainMenuButtons:insert(companionSiteButton)
 
 --trigger testing event that will unhide the button if it gets a response from the website
-network.request( COMPANIONSITEURL, "GET", netListen)
+network.request( COMPANIONSITEURL, "GET", netListen, {timeout = COMPANIONTIMEOUTLENGTH})
 
 -----------
 -- TITLE --
@@ -617,6 +634,20 @@ backButton = widget.newButton(
 })
 webGroup:insert(backButton)
 
+-----------------
+-- CONFIG DATA --
+-----------------
+
+local configPath = system.pathForFile("config.txt", system.DocumentsDirectory)
+local configExists = false
+local configFile, errStr = io.open(configPath, "r")
+if (not configFile) then
+	--error reading
+	print("File error: " .. errStr)
+else
+	--read the stuff
+	configExists = true
+end
 ----------------------
 -- MODULE SELECTION --
 ----------------------
@@ -687,5 +718,9 @@ modRowMaker:makeRow("Decel. Chamber Info", decelButton, gH * 0.45, moduleGroup)
 modRowMaker:makeRow("Fix It Game", repairButtonGroup, gH * 0.55, moduleGroup)
 --row 6: Experiment
 modRowMaker:makeRow("Experiment", experimentButtonGroup, gH * 0.65, moduleGroup)
+--row 7: Physics game
+modRowMaker:makeRow("Physics Game", physicsGameButton, gH * 0.75, moduleGroup)
 
---moduleGroup.isVisible = false
+if (configExists) then
+	moduleGroup.isVisible = false
+end
