@@ -33,6 +33,19 @@ companionSiteAvailable = false
 ---------------------
 
 local function moduleBackHandler (event)
+	--save the current settings
+	local saveData = "1010101"
+	local configPath = system.pathForFile("config.txt", system.DocumentsDirectory)
+	local configFile, errStr = io.open(configPath, "w")
+	if (not configFile) then
+		--could nto open config file
+		print("File error: " .. errStr)
+	else
+		configFile:write(saveData)
+		io.close(configFile)
+	end
+	configFile = nil
+	--hide the module menu
 	moduleGroup.isVisible = false
 end
 
@@ -642,12 +655,102 @@ local configPath = system.pathForFile("config.txt", system.DocumentsDirectory)
 local configExists = false
 local configFile, errStr = io.open(configPath, "r")
 if (not configFile) then
-	--error reading
+	--error reading, make new config
 	print("File error: " .. errStr)
+	
 else
 	--read the stuff
 	configExists = true
+	local configData = configFile:read("*a")
+	if(7 ~= string.len(configData)) then
+		--file of incorrect size, ignore
+		print("Invalid or old configuration, ignoring.")
+		print("File contents: " .. configData)
+		configExists = false
+	else
+		--file still probably good, go through characters to find out what switches to flip
+		
+		--drop capsule
+		if(string.sub(configData,1,1) == "1") then
+			print("Drop Capsule ON")
+		elseif (string.sub(configData,1,1) == "0") then
+			print("Drop Capsule OFF")
+			capsuleButton.isVisible = false
+		else
+			print("Drop Capsule INVALID")
+			configExists = false
+		end
+		
+		--winch
+		if(string.sub(configData,2,2) == "1") then
+			print("Winch ON")
+		elseif (string.sub(configData,2,2) == "0") then
+			print("Winch OFF")
+			winchButton.isVisible = false
+		else
+			print("Winch INVALID")
+			configExists = false
+		end
+		
+		--netting
+		if(string.sub(configData,3,3) == "1") then
+			print("Netting ON")
+		elseif (string.sub(configData,3,3) == "0") then
+			print("Netting OFF")
+			netButton.isVisible = false
+		else
+			print("Netting INVALID")
+			configExists = false
+		end
+		
+		--deceleration chamber
+		if(string.sub(configData,4,4) == "1") then
+			print("Decel Chamber ON")
+		elseif (string.sub(configData,4,4) == "0") then
+			print("Decel Chamber OFF")
+			decelButton.isVisible = false
+		else
+			print("Decel INVALID")
+			configExists = false
+		end
+		
+		--fixit
+		if(string.sub(configData,5,5) == "1") then
+			print("Fix It ON")
+		elseif (string.sub(configData,5,5) == "0") then
+			print("Fix It OFF")
+			repairButtonGroup.isVisible = false
+		else
+			print("Fix It INVALID")
+			configExists = false
+		end
+		
+		--experiment
+		if(string.sub(configData,6,6) == "1") then
+			print("Experiment ON")
+		elseif (string.sub(configData,6,6) == "0") then
+			print("Experiment OFF")
+			experimentButtonGroup.isVisible = false
+		else
+			print("Experiment INVALID")
+			configExists = false
+		end
+		
+		--winch
+		if(string.sub(configData,7,7) == "1") then
+			print("Phys Game ON")
+		elseif (string.sub(configData,7,7) == "0") then
+			print("Phys Game OFF")
+			PhysicsGameButton.isVisible = false
+		else
+			print("Phys Game INVALID")
+			configExists = false
+		end
+	end
+	--close the file
+	io.close(configFile)
 end
+configFile = nil
 ----------------------
 -- MODULE SELECTION --
 ----------------------
