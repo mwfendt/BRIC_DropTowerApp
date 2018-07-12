@@ -23,8 +23,8 @@ local function updateTime(event)
 	if(count <= 0) then
 	timer.cancel(countDownTimer)
 	print("here")
-	incorrectGroup.isVisible = true
-	incorrectGroup.animFrames = 10
+	gameGroup.isVisible = true
+	gameGroup.animFrames = 10
 	end
 end
 
@@ -50,7 +50,7 @@ function M:makeDisplay()
 
 	local dGroup = display.newGroup()
 	
-	incorrectGroup = display.newGroup()
+	gameGroup = display.newGroup()
 	-----------------
 	-- BACK BUTTON --
 	-----------------
@@ -126,38 +126,38 @@ function M:makeDisplay()
 		})
 	
 	--create box for text to appear on
-	incorrectBox = display.newRect(display.contentCenterX, display.contentCenterY, gW * 0.8, gH * 0.25)
-	incorrectBox:setFillColor(1, 1, 1, 1)
-	incorrectBox.strokeWidth = 3
-	incorrectBox:setStrokeColor(1,0,0,1)
+	gameOverBox = display.newRect(display.contentCenterX, display.contentCenterY, gW * 0.8, gH * 0.25)
+	gameOverBox:setFillColor(1, 1, 1, 1)
+	gameOverBox.strokeWidth = 3
+	gameOverBox:setStrokeColor(1,0,0,1)
 	--create text and shrink to box
 	i = 31
 	repeat
-		if(incorrectText ~= nil) then
-			incorrectText:removeSelf()
+		if(gameOverText ~= nil) then
+			gameOverText:removeSelf()
 		end
 		i = i - 1
-		incorrectText = display.newText(
+		gameOverText = display.newText(
 			{
 				text="Score: 0\n Click to go to main menu!",
-				x=incorrectBox.x,
-				y=incorrectBox.y,
-				width=incorrectBox.width - 6, --keep inside the lines
+				x=gameOverBox.x,
+				y=gameOverBox.y,
+				width=gameOverBox.width - 6, --keep inside the lines
 				font=native.systemFont,
 				fontSize=i,
 				align="center"
 			})
-	until incorrectText.height <= incorrectBox.height or i == 1
-	incorrectText:setFillColor(1,0,0,1)
+	until gameOverText.height <= gameOverBox.height or i == 1
+	gameOverText:setFillColor(1,0,0,1)
 	
-	incorrectGroup:insert(darkenerButton)
-	incorrectGroup:insert(incorrectBox)
-	incorrectGroup:insert(incorrectText)
-	incorrectGroup.isVisible = false
-	incorrectGroup.alpha = 0.01
+	gameGroup:insert(darkenerButton)
+	gameGroup:insert(gameOverBox)
+	gameGroup:insert(gameOverText)
+	gameGroup.isVisible = false
+	gameGroup.alpha = 0.01
 	--set up fade in animation
-	incorrectGroup.animFrames = 0
-	function incorrectGroup:enterFrame(event)
+	gameGroup.animFrames = 0
+	function gameGroup:enterFrame(event)
 		if(self.animFrames > 0) then
 			self.animFrames = self.animFrames - 1
 			self.alpha = 1 - (self.animFrames * 0.05)
@@ -166,9 +166,9 @@ function M:makeDisplay()
 			self.alpha = (self.animFrames * -0.05)
 		end
 	end
-	Runtime:addEventListener( "enterFrame", incorrectGroup )
+	Runtime:addEventListener( "enterFrame", gameGroup )
 	
-	dGroup:insert(incorrectGroup)
+	dGroup:insert(gameGroup)
 	
 	--timer counter
 	count = 5
@@ -222,7 +222,7 @@ function M:makeDisplay()
 	dGroup:insert(instructionsText)
 	dGroup:insert(instructionsText2)
 	dGroup:insert(clockText)
-	dGroup:insert(incorrectGroup)
+	dGroup:insert(gameGroup)
 	dGroup.isVisible = false
 	self.dGroup = dGroup
 end
@@ -238,7 +238,7 @@ function M:reveal()
 	startButton.isVisible = true
 	self.dGroup.isVisible = true
 	clockText.isVisible = false
-	incorrectGroup.isVisible = false
+	gameGroup.isVisible = false
 	print("reveal")
 end
 
