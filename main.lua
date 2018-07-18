@@ -12,7 +12,7 @@ display.setStatusBar( display.HiddenStatusBar )
 local widget = require( "widget" )
 
 -- "constants"
-local COMPANIONSITEURL = "https://www.baylor.edu/bric/"
+local COMPANIONSITEURL = "https://www.bayloskldnksdfr.edu/bric/"
 local LOCALCOMPANIONSITE = "web/index.html"
 local COMPANIONTIMEOUTLENGTH = 0
 
@@ -434,8 +434,8 @@ learnRect:setStrokeColor(1,1,0)
 learnRect.strokeWidth = 3
 mainMenuButtons:insert(learnRect)
 
---options for the learn more text
-local learnTextOptions = 
+--create the text	
+learnText = display.newText(
 	{
 		text = "Click on a section to learn more!",
 		x = display.contentCenterX * .20,
@@ -445,10 +445,7 @@ local learnTextOptions =
 		align = "center",
 		width = display.contentCenterX * .30,
 		height = gH / 11
-	}
-
---create the text	
-learnText = display.newText(learnTextOptions)
+	})
 learnText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(learnText)
 	

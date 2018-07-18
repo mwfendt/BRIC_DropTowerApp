@@ -38,7 +38,7 @@ For more information and a detailed guide of Lua syntax, consult the [Lua Refere
 
 Most of what you'll be doing in Corona is specifying what you want to put on the screen and where you want to put it. If you've had experience with 2D engines before, many things should feel familiar to you. Notably, while coordinates in the positive X direction lie to the screen's right as one would expect in a Euclidean system, the Y axis increases as one travels further *down* the screen. Thus the origin (0,0) is in the top left hand corner of the screen. When placing objects, you will provide an x and y coordinate for the object. These coordinates usually refer to the center of the object to be placed (with a few sparse but seemingly random exceptions, such as web popups).
 
-Almost everything that shows up on the screen is a [DisplayObject](https://docs.coronalabs.com/api/type/DisplayObject/index.html). The three objects we ended up using the most were [image rectangles](https://docs.coronalabs.com/api/library/display/newImageRect.html), [buttons](https://docs.coronalabs.com/api/type/ButtonWidget/index.html), and [display groups](https://docs.coronalabs.com/api/type/GroupObject/index.html).  Other notable objects include [text objects](https://docs.coronalabs.com/api/type/TextObject/index.html), [regular rectangles](https://docs.coronalabs.com/api/library/display/newRect.html), [videos](https://docs.coronalabs.com/api/type/Video/index.html), and [WebViews](https://docs.coronalabs.com/api/type/WebView/index.html) (which are not the same as the semi-depricated [web popups](https://docs.coronalabs.com/api/library/native/showWebPopup.html)). Notably, videos and webviews are *not* part of the DisplayObject heirarchy and will both display over any existing DisplayObjects.
+Almost everything that shows up on the screen is a [DisplayObject](https://docs.coronalabs.com/api/type/DisplayObject/index.html). The three objects we ended up using the most were [image rectangles](https://docs.coronalabs.com/api/library/display/newImageRect.html), [buttons](https://docs.coronalabs.com/api/type/ButtonWidget/index.html), and [display groups](https://docs.coronalabs.com/api/type/GroupObject/index.html).  Other notable objects include [text objects](https://docs.coronalabs.com/api/type/TextObject/index.html), [regular rectangles](https://docs.coronalabs.com/api/library/display/newRect.html), [videos](https://docs.coronalabs.com/api/type/Video/index.html), and [WebViews](https://docs.coronalabs.com/api/type/WebView/index.html) (which are not the same as the semi-depricated [web popups](https://docs.coronalabs.com/api/library/native/showWebPopup.html)). Notably, videos and webviews are *not* part of the DisplayObject heirarchy and will both display over any existing DisplayObjects.  Below are some short summaries of these frequently used objects. You can also check the [Corona API Reference](https://docs.coronalabs.com/api/index.html) for specific questions. The API is searchable using the search bar at the top.
 
 ### Image rectangles
 Image rectangles are the simplest way to get an image onto the screen. To create one, call [display.newImageRect()](https://docs.coronalabs.com/api/library/display/newImageRect.html). The simplest call to the function contains (in order) the relative path to the filename and the width and height of the image, as it should be displayed on the screen. The image Since X and Y are not defined for the image, you will need to set them on the following lines. As an example:
@@ -122,7 +122,45 @@ titleGroup:insert(backButtonL)
 
 It is also important to note that a group can be a member of another group. If a group contains a subgroup, all of the subgroup's members will be rendered in the order they were inserted into the subgroup at the point the subgroup was inserted into the main group.
 
-You can check the [Corona API Reference](https://docs.coronalabs.com/api/index.html) for specific questions. The API is searchable using the search bar at the top.
+### Text Objects
+Text objects are more or less exactly what they sound like: ```DisplayObjects``` designed to display text. They are created with the ```display.newText()``` function which, like buttons, takes a table of options as its argument, as shown below:
+~~~
+learnText = display.newText(
+	{
+		text = "Click on a section to learn more!",
+		x = display.contentCenterX * .20,
+		y = display.contentCenterY * .92,
+		font = native.systemFont,
+		fontSize = 7,
+		align = "center",
+		width = display.contentCenterX * .30,
+		height = gH / 11
+	})
+learnText:setFillColor(0,0,0,1)
+~~~
+The preceding code illustrates a number of the key elements of the table, such as the expected ```height```, ```width```, ```x```, ```y```, and ```text``` fields, but it also shows some that may have been less obvious, such as ```font``` and ```fontsize```. Text objects will print the string they are given as well as they can in the height and width they're given, breaking into multiple lines if possible. If there is not enough room, the text will not all appear. If you are not sure how large you need the box to be, you can simply leave ```height``` and/or ```width``` out of the table. If a ```TextObject``` is given a ```width``` without a ```height```, it will be fixed at that width and take up as many lines as necessary to display all of the text provided, centered on the ```y``` given.  If there is no fixed ```height``` or ```width```, you can get how wide or tall the ```TextObject``` ended up after rendering by using ```TextObject.height``` or ```TextObject.width```. Unfortunately, some devices have a higher resolution available than others, so a font size that looks fine on one device may appear too large or small on another. To correct this, we've written an algorithm that can resize text to fit a given area. There were too many possible constraints to effectively make it its own function, but the general form is illustrated by the following code:
+~~~
+local i = 31
+repeat
+	if(nettingText ~= nil) then
+		nettingText:removeSelf()
+	end
+	i = i - 1
+	nettingText = display.newText(
+		{
+			text="This is test text.",
+			x=nettingTextBkg.x,
+			y=nettingTextBkg.y,
+			width=nettingTextBkg.width,
+			font=native.systemFont,
+			fontSize=i,
+			align="center"
+		})
+until nettingText.height <= nettingTextBkg.height or i == 1
+nettingText:setFillColor(0,0,0,1)
+~~~
+In short, this segment of code creates a text box, detects if it exceeds the size of the box it is supposed to be in, and, if it is too large, deletes the ```TextObject``` and creates one with a font size smaller.  This results in the text taking up as much of the given area as possible without exceeding the alotted space.
+Both of these examples also illustrate that the fill color for a text object is not a property that can be set in the options table, and must be set with the [```setFillColor()``` function](https://docs.coronalabs.com/api/type/ShapeObject/setFillColor.html). If you do not use this function, the text defaults to white.
 
 # Developers Manual
 This application is split up into 9 states, each with their own file containing buttons, images, and handlers for them accordingly.
