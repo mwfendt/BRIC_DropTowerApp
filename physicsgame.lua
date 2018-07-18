@@ -205,8 +205,8 @@ function M:makeDisplay()
 	instructionsText.width = gW * 0.8
 	instructionsText:setFillColor( 0.7, 0.7, 1 )
 	
-	instructionsText2 = display.newText( "One minute to get as many balls in the deceleration container!", display.contentCenterX, display.contentCenterY, native.systemFont, 10)
-	instructionsText2.width = gW * 0.8
+	instructionsText2 = display.newText( "One minute to get as many balls in the deceleration container as possible!", display.contentCenterX, display.contentCenterY, native.systemFont, 10)
+	--instructionsText2.width = gW * 0.8
 	instructionsText2:setFillColor( 0.7, 0.7, 1 )
 	
 	--insert all components of the page into the group

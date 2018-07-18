@@ -158,6 +158,9 @@ local sectionButtonHandler = function( event )
 		elseif(event.target.id == "PhysicsGameButton") then
 			appState = 8
 			physicsGamePage:reveal()
+		elseif(event.target.id == "SettingsButton") then
+			moduleGroup.isVisible = true
+			moduleTitleGroup.isVisible = false
 		end
 	elseif(appState == 5) then
 		appState = 6
@@ -627,6 +630,22 @@ mainMenuButtons:insert(companionSiteButton)
 
 --trigger testing event that will unhide the button if it gets a response from the website
 network.request( COMPANIONSITEURL, "GET", netListen, {timeout = COMPANIONTIMEOUTLENGTH})
+
+---------------------
+-- SETTINGS BUTTON --
+---------------------
+local settingsButton = widget.newButton(
+	{
+		id = "SettingsButton",
+		defaultFile = "images/settings.png",
+		overFile = "images/settings.png",
+		onRelease = sectionButtonHandler,
+		x = gW * 0.950,
+		width = gW * 0.100,
+		y = gH * 0.1 + (gW * 0.050),
+		height = gW * 0.100,
+	})
+mainMenuButtons:insert(settingsButton)
 
 -----------
 -- TITLE --
