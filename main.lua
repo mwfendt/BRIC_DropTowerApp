@@ -12,7 +12,7 @@ display.setStatusBar( display.HiddenStatusBar )
 local widget = require( "widget" )
 
 -- "constants"
-local COMPANIONSITEURL = "https://www.bayloskldnksdfr.edu/bric/"
+local COMPANIONSITEURL = "https://www.baylor.edu/bric/"
 local LOCALCOMPANIONSITE = "web/index.html"
 local COMPANIONTIMEOUTLENGTH = 0
 
@@ -93,6 +93,8 @@ local function moduleBackHandler (event)
 		--opened successfully, write and close
 		configFile:write(saveData)
 		io.close(configFile)
+		--make the popup, well, pop up
+		configPopupGroup.animFrames = 40
 	end
 	configFile = nil
 	
@@ -324,6 +326,10 @@ display.getCurrentStage():insert(physicsGamePage.dGroup)
 --group for web popup display
 webGroup = display.newGroup()
 webGroup.isVisible = false
+
+--group for "config updated" popup
+configPopupGroup = display.newGroup()
+configPopupGroup.isVisible = false
 
 --group for the modular selection
 moduleGroup = display.newGroup()
@@ -714,6 +720,57 @@ backButton = widget.newButton(
 	onRelease = handleWebEvent
 })
 webGroup:insert(backButton)
+
+--------------------------
+-- CONFIG UPDATED POPUP --
+--------------------------
+--create box for text to appear on
+configBox = display.newRect(display.contentCenterX, display.contentCenterY, gW * 0.8, gH * 0.25)
+configBox:setFillColor(1, 1, 1, 1)
+configBox.strokeWidth = 3
+configBox:setStrokeColor(0,0,1,1)
+--create text and shrink to box
+i = 50
+repeat
+	if(configText ~= nil) then
+		configText:removeSelf()
+	end
+	i = i - 1
+	configText = display.newText(
+		{
+			text="Config\nUpdated",
+			x=configBox.x,
+			y=configBox.y,
+			width=configBox.width - 6, --keep inside the lines
+			font=native.systemFontBold,
+			fontSize=i,
+			align="center"
+		})
+until configText.height <= configBox.height or i == 1
+configText:setFillColor(0,0,1,1)
+
+--insert into group
+configPopupGroup:insert(configBox)
+configPopupGroup:insert(configText)
+
+--set up fade out animation
+configPopupGroup.animFrames = 0
+
+function configPopupGroup:enterFrame(event)
+	if (self.animFrames > 0) then
+		self.isVisible = true
+		self.animFrames = self.animFrames - 1
+		if(self.animFrames >= 10) then
+			self.alpha = 1
+		else
+			self.alpha = self.animFrames/10
+		end
+	else
+		self.isVisible = false
+	end
+end
+
+Runtime:addEventListener( "enterFrame", configPopupGroup )
 
 -----------------
 -- CONFIG DATA --

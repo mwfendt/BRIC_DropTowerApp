@@ -31,6 +31,7 @@ Notable unique syntax and quirks:
   * Importing files uses the ```require``` function, which either returns the object or value created by a previous calling of ```require```, or treats the code in the specified file as a self-contained function and runs and returns as such.
   * Like Java, all variables are passed by reference. Unlike Java, there are no "primitive" variables (only literals can be primitives)
   * Strings start at index 1 instead of 0. Arrays still start at index 0. I don't know why.
+  * Instead of Java's ```this```, Lua uses the effectively identical keyword ```self```.
 
 For more information and a detailed guide of Lua syntax, consult the [Lua Reference Guide](https://www.lua.org/manual/5.3/).
   
