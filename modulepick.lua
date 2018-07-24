@@ -23,13 +23,34 @@ local function moduleButtonHandler (event)
 	end
 end
 
+local function labelButtonHandler (event)
+	--print("test")
+	moduleInfoText.text = event.target.textChange
+end
+
 --converts a height in pixels to the equivalent pt value for text
 --may need some fine-tuning
 local function px2pt( pixels )
 	return pixels * 0.75
 end
 
-function M:makeRow(rowTitle, rowTarget, rowY, group)
+function M:makeRow(rowTitle, rowTarget, rowY, description, group)
+	--(mostly) invisible label row button
+	labelButton = widget.newButton(
+		{
+			id = "label",
+			x = gW * 0.385,
+			y = rowY,
+			width = gW * 0.75,
+			height = gH * 0.06,
+			shape = "rect",
+			fillColor = { default = {1,1,1,0.01}, over = {1,1,1,0.01} },
+			onRelease = labelButtonHandler
+		})
+	group:insert(labelButton)
+	labelButton.textChange = description
+	
+	--row label text
 	rowText = display.newText(
 		{
 			text = rowTitle,

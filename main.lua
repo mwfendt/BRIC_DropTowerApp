@@ -946,19 +946,39 @@ moduleGroup:insert(doneButton)
 local modRowMaker = require("modulepick")
 
 --row 1: Drop Capsule
-modRowMaker:makeRow("Drop Capsule Info", capsuleButton, gH * 0.15, moduleGroup)
+modRowMaker:makeRow("Drop Capsule Info", capsuleButton, gH * 0.15, "Provides information about the drop capsule iteslf", moduleGroup)
 --row 2: Winch
-modRowMaker:makeRow("Winch Info", winchButton, gH * 0.25, moduleGroup)
+modRowMaker:makeRow("Winch Info", winchButton, gH * 0.23, "Provides information about the winch that rasies the drop capsule to its starting height", moduleGroup)
 --row 3: Netting
-modRowMaker:makeRow("Netting Info", netButton, gH * 0.35, moduleGroup)
+modRowMaker:makeRow("Netting Info", netButton, gH * 0.31, "Provides information about the netting that surrounds the drop area", moduleGroup)
 --row 4: Deceleration Chamber
-modRowMaker:makeRow("Decel. Chamber Info", decelButton, gH * 0.45, moduleGroup)
+modRowMaker:makeRow("Decel. Chamber Info", decelButton, gH * 0.39, "Provides information about the chamber that safely decelerates the drop capsule", moduleGroup)
 --row 5: Fixit
-modRowMaker:makeRow("Fix It Game", repairButtonGroup, gH * 0.55, moduleGroup)
+modRowMaker:makeRow("Fix It Game", repairButtonGroup, gH * 0.47, "A short quiz-based game in which the user answers questions to try to fix the drop tower", moduleGroup)
 --row 6: Experiment
-modRowMaker:makeRow("Experiment", experimentButtonGroup, gH * 0.65, moduleGroup)
+modRowMaker:makeRow("Experiment", experimentButtonGroup, gH * 0.55, "A module in which the user can simulate common drop tower experiments", moduleGroup)
 --row 7: Physics game
-modRowMaker:makeRow("Physics Game", physicsGameButton, gH * 0.75, moduleGroup)
+modRowMaker:makeRow("Physics Game", physicsGameButton, gH * 0.63, "A game where the user can learn about the physics of gravity", moduleGroup)
+
+--create area for information text
+local textBkg = display.newRect(gW * 0.5, gH * 0.785, gW * 0.95, gH * 0.21)
+textBkg:setFillColor(.25,.25,.25,.75)
+moduleGroup:insert(textBkg)
+
+--create information text box
+moduleInfoText = display.newText(
+	{
+		text = "Tap the title of a row to get more information about the objects in that row.",
+		x = gW * 0.5,
+		width = gW * 0.92,
+		y = gH * 0.785,
+		align = "center",
+		font = native.systemFont,
+		fontSize = 18,
+	})
+moduleInfoText:setFillColor(1,1,1,1)
+moduleGroup:insert(moduleInfoText)
+
 
 --Module "title" screen
 local moduleScreenButton2 = widget.newButton(
