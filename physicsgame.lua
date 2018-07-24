@@ -32,7 +32,16 @@ end
 ]]--
 
 function buttonHandler(event)
-	if(animFrames == 0) then
+	if("GravOnOff" == event.target.id) then
+		if(gravButton:getLabel() == "Gravity:\n On")then
+			gravButton:setLabel("Gravity:\n Off")
+			physics.setGravity(0,0)
+			print("here")
+		elseif(gravButton:getLabel() == "Gravity:\n Off")then
+			gravButton:setLabel("Gravity:\n On")
+			physics.setGravity(0,9.8)
+		end
+	elseif(animFrames == 0) then
 		M:hide()
 	end
 end
@@ -52,7 +61,7 @@ function M:makeDisplay()
 		id = "Back",
 		x = display.contentCenterX,
 		y = gH * 0.95,
-		width = gW * 0.95,
+		width = gW * 0.5,
 		height = gH * 0.075,
 		shape = "rectangle",
 		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
@@ -61,6 +70,24 @@ function M:makeDisplay()
 		label = "Back",
 		font = native.systemFont,
 		fontSize = 16,
+		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
+		onRelease = buttonHandler
+	})
+	
+	gravButton = widget.newButton(
+	{
+		id = "GravOnOff",
+		x = display.contentCenterX * .25,
+		y = gH * 0.95,
+		width = gW * 0.15,
+		height = gH * 0.075,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
+		strokeColor = {default={ .25 , .25, .25, 1}, over={ .50,.50,.50, 1 } },
+		strokeWidth = 3,
+		label = "Gravity:\n On",
+		font = native.systemFont,
+		fontSize = 10,
 		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
 		onRelease = buttonHandler
 	})
@@ -140,12 +167,38 @@ function M:makeDisplay()
 	ball = display.newCircle(display.contentCenterX, display.contentCenterY * 0.19, 50)
 	ball:setFillColor(1,0,0,1)
 	
+	--ball
+	ball2 = display.newCircle(display.contentCenterX * .80, display.contentCenterY * 0.10, 25)
+	ball2:setFillColor(0,1,0,1)
+		
+	--ball
+	ball3 = display.newCircle(display.contentCenterX * 1.20, display.contentCenterY * 0.10, 25)
+	ball3:setFillColor(0,0,1,1)
+	
+	--floor
+	physFloor = display.newRect(display.contentCenterX, gH * 0.9, gW, gH * 0.005)
+	physFloor:setFillColor(0,0,0,1)
+	
+	--wall
+	physLeftWall = display.newRect(0,display.contentCenterY,0.001,gH)
+	physRightWall = display.newRect(gW,display.contentCenterY,0.001,gH)
+	
+	--ceiling
+	physCeiling = display.newRect(display.contentCenterX, 0, gW, 0.001)
+	
 	--insert all components of the page into the group
 	dGroup:insert(physBkg)
 	dGroup:insert(backButton)
 	dGroup:insert(catchBox)
 	dGroup:insert(ball)
 	dGroup:insert(gameGroup)
+	dGroup:insert(physFloor)
+	dGroup:insert(gravButton)
+	dGroup:insert(ball2)
+	dGroup:insert(ball3)
+	dGroup:insert(physLeftWall)
+	dGroup:insert(physRightWall)
+	dGroup:insert(physCeiling)
 	dGroup.isVisible = false
 	self.dGroup = dGroup
 
@@ -159,12 +212,21 @@ function M:reveal()
 	--clockText.text = timeDisplay
 	--clockText.isVisible = false
 	physics.start()
-	bkg = display.newImage("images\Netting.jpg")
 	physics.setGravity(0, 9.8)
-	physics.setDrawMode("debug")
+	physics.setDrawMode("hybrid")
 	physics.addBody(ball, {radius = 50, density=1.0, friction=0.3, bounce=0.2} )
-	--self.dGroup.isVisible = true
-	--gameGroup.isVisible = false
+	physics.addBody(ball2, {radius = 25, density=1.0, friction=0.3, bounce=0.2} )
+	physics.addBody(ball3, {radius = 25, density=1.0, friction=0.3, bounce=0.2} )
+	physics.addBody(physFloor, {density=1.0, friction=0.3, bounce=0.5})
+	physics.addBody(physLeftWall, {density=1.0, friction=0.3, bounce=0.5})
+	physics.addBody(physRightWall, {density=1.0, friction=0.3, bounce=0.5})
+	physics.addBody(physCeiling, {density=1.0, friction=0.3, bounce=0.5})
+	physFloor.bodyType = "static"
+	physLeftWall.bodyType = "static"
+	physRightWall.bodyType = "static"
+	physCeiling.bodyType = "static"
+	self.dGroup.isVisible = true
+	gameGroup.isVisible = false
 	print("reveal")
 end
 
@@ -174,6 +236,14 @@ function M:hide()
 	--if(countDownTimer ~= nil) then
 	--	timer.cancel(countDownTimer)
 	--end
+	physics.removeBody(ball)
+	physics.removeBody(physFloor)
+	physics.removeBody(ball2)
+	physics.removeBody(ball3)
+	physics.removeBody(physCeling)
+	physics.removeBody(physLeftWall)
+	physics.removeBody(physRightWall)
+	physics.stop()
 	print("hide")
 end
 
