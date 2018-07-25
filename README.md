@@ -41,7 +41,7 @@ Most of what you'll be doing in Corona is specifying what you want to put on the
 
 Almost everything that shows up on the screen is a [DisplayObject](https://docs.coronalabs.com/api/type/DisplayObject/index.html). The three objects we ended up using the most were [image rectangles](https://docs.coronalabs.com/api/library/display/newImageRect.html), [buttons](https://docs.coronalabs.com/api/type/ButtonWidget/index.html), and [display groups](https://docs.coronalabs.com/api/type/GroupObject/index.html).  Other notable objects include [text objects](https://docs.coronalabs.com/api/type/TextObject/index.html), [regular rectangles](https://docs.coronalabs.com/api/library/display/newRect.html), [videos](https://docs.coronalabs.com/api/type/Video/index.html), and [WebViews](https://docs.coronalabs.com/api/type/WebView/index.html) (which are not the same as the semi-depricated [web popups](https://docs.coronalabs.com/api/library/native/showWebPopup.html)). Notably, videos and webviews are *not* part of the DisplayObject heirarchy and will both display over any existing DisplayObjects.  Below are some short summaries of these frequently used objects. You can also check the [Corona API Reference](https://docs.coronalabs.com/api/index.html) for specific questions. The API is searchable using the search bar at the top.
 
-### Image rectangles
+### Image Rectangles
 Image rectangles are the simplest way to get an image onto the screen. To create one, call [display.newImageRect()](https://docs.coronalabs.com/api/library/display/newImageRect.html). The simplest call to the function contains (in order) the relative path to the filename and the width and height of the image, as it should be displayed on the screen. The image Since X and Y are not defined for the image, you will need to set them on the following lines. As an example:
 ~~~
 local bkg = display.newImageRect( "images/DropTowerDiagram.png", gW, gH )
@@ -162,6 +162,65 @@ nettingText:setFillColor(0,0,0,1)
 ~~~
 In short, this segment of code creates a text box, detects if it exceeds the size of the box it is supposed to be in, and, if it is too large, deletes the ```TextObject``` and creates one with a font size smaller.  This results in the text taking up as much of the given area as possible without exceeding the alotted space.
 Both of these examples also illustrate that the fill color for a text object is not a property that can be set in the options table, and must be set with the [```setFillColor()``` function](https://docs.coronalabs.com/api/type/ShapeObject/setFillColor.html). If you do not use this function, the text defaults to white.
+
+### Rectangles
+In addition to image rectangles, it is possible in Corona to create rectangles of a solid color, with or without a secondary outlining color. The process is fairly simple: call ```display.newRect()``` with the desired ```x```, ```y```, ```width```, and ```height``` (in that order). After creating the rectangle, you can change its color with the ```setFillColor()``` command, which takes up to 4 values ranging from 0 to 1: ```red```, ```green```, ```blue```, and ```alpha```. The first three function as you would expect, representing the intensity of one of the primary colors in the overall color. An object's ```alpha``` can be changed to set its transparency; that is, a lower ```alpha``` means an object will appear less visible. If you do not provide an ```alpha```, the current one will remain (1, or completely opaque, is the default).  Rectangles are commonly used to create solid background colors in the app, as demonstrated below:
+~~~
+local bkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
+bkg:setFillColor(0.3, 0.5, 0.9, 1)
+~~~
+You can also give the rectangle an outline using the ```strokeWidth``` property and the ```setStrokeColor``` function. A rectangle's ```strokeWidth``` is the number of pixels wide its outline should be. After setting this to a non-zero value and setting the stroke color with ```setStrokeColor()``` (which functions identically to ```setFillColor()``` as described above), an outline should appear around the rectangle.  If you like, you can even set the fill color's ```alpha``` to 0 and have only the outline, as demonstrated by the following code:
+~~~
+learnRect = display.newRect(display.contentCenterX * .20, display.contentCenterY * .85, display.contentCenterX * .40, gH / 10)
+learnRect:setFillColor(0,0,0,0)
+learnRect:setStrokeColor(1,1,0)
+learnRect.strokeWidth = 3
+~~~
+As it was frequently more helpful to use image rectangles, "normal" rectangles are used only sparsely throughout the app, however they are used enough to be familiar with them.
+
+### Videos
+Videos are expected to be one of the highlights of the app, so despite the fact that they may be used infrequently, it is important to know how they work. First, videos to be displayed should be types that can be played by the desired device. In general, iOS devices have tighter restrictions on which videos can be played. These restrictions are described in [the API entry for ```media.playVideo()```](https://docs.coronalabs.com/api/library/media/playVideo.html). Assuming the video files are supposed to be local instead of remote (highly recommended since one of the stated goals for the project was to have a working version even without the internet), they should be saved in the project folder where main.lua can be found, or in a subfolder of that folder.
+
+There are two ways to play a video in Corona: in-app or in the device's native standalone player. In the app so far, we have exclusively used the former, as the standalone player does not provide the same amount of control, nor does it allow for additional content to be displayed while the video is playing. If you wish to use the standalone player, read the API entry for ```media.playVideo()``` linked above.  For embedded video, you'll use the ```native.newVideo()``` command.  It should be noted that neither way of displaying videos works in the Corona simulator, so to test you'll need to install the app on a testing device.
+
+To play an embedded video, first you must create the video by calling ```native.newVideo()```. This function takes ```x```, ```y```, ```width```, and ```height```. You must then call the ```load()``` function on the video object, which takes a path to the video as a string. Finally, you must either play the video, or set up a video listener to play the video once it has been loaded (the latter is preferred). For example, see the code below:
+~~~
+local function endVideo()
+	if (video ~= nil) then
+		video:removeSelf()
+		video = nil
+	end
+	stopVidButton.isVisible = false
+end
+
+local function videoListener (event)
+	if(event.errorCode) then
+		print("ERROR: " .. event.errorMessage)
+		native.showAlert("ERROR!", event.errorMessage, {"OK"})
+	else
+		if ("ready" == event.phase) then
+			--video ready, start playing it
+			video:play()
+		elseif ("ended" == event.phase) then
+			--video is over, close it
+			endVideo()
+		end
+	end
+end
+
+video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * .975, display.contentCenterX * .6, display.contentCenterY * .5)
+video:load("videos/ExperimentPageVid.mp4")
+video:addEventListener("video", videoListener)
+~~~
+One final note: unlike DisplayObjects, videos are not part of the display heirarchy and are rendered on top of everything else. In short, they are automatically at the "top" of the display stack.
+
+### WebViews
+WebView objects are a way to display web pages inside the app without requiring the user to switch to their native browser. In the app, it is used to bring up the Baylor and BRIC home pages, as well as the companion website.  Bringing up a WebView is a fairly simple two-step process. First, call ```native.newWebView()```, which takes parameters for ```x```, ```y```, ```width```, and ```height``` of the new WebView, in that order. Next, simply call ```request()``` on the WebView object, which takes a string to the desired webpage, as seen below:
+~~~
+webDisplay = native.newWebView(display.contentCenterX, gH * 0.45, gW, gH * 0.9)
+webDisplay:request("https://www.baylor.edu")
+~~~
+To dismiss the WebView, you must call ```removeSelf()``` on it. This will erase the webpage from the screen and stop any loading it was doing.  Like videos, WebView objects are not part of the display heirarchy and are rendered on top of everything else on the screen.
 
 # Developers Manual
 This application is split up into 9 states, each with their own file containing buttons, images, and handlers for them accordingly.

@@ -179,7 +179,7 @@ local sectionButtonHandler = function( event )
 	end
 end
 
---declaration of handler for BaylorLogo button
+--declaration of handler for web based events
 local function handleWebEvent(event)
 	if("Back" == event.target.id) then
 		webGroup.isVisible = false
