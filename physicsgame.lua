@@ -92,6 +92,7 @@ function M:makeDisplay()
 		onRelease = buttonHandler
 	})
 	
+	
 	darkenerButton = widget.newButton(
 		{
 			id = "Darkener",
@@ -160,19 +161,25 @@ function M:makeDisplay()
 
 	
 	-- catch box 
-	catchBox = display.newRect(display.contentCenterX, display.contentCenterY * 1.54, gW * 0.25, gH * 0.25)
-	catchBox:setFillColor(0.3, .5, .9, 1)
+	catchBox = display.newRect(display.contentCenterX, display.contentCenterY * 1.55, gW * 0.25, gH * 0.25)
+	catchBox:setFillColor(0, 0, 0, 1)
+	
+	--catch box wall
+	catchLeftWall = display.newRect(display.contentCenterX - gW * 0.125,display.contentCenterY * 1.55,1,gH * 0.25)
+	catchLeftWall:setFillColor(1,1,1,1)
+	catchRightWall = display.newRect(display.contentCenterX + gW * 0.125,display.contentCenterY * 1.55,1,gH * 0.25)
+	catchRightWall:setFillColor(1,1,1,1)
 	
 	--ball
-	ball = display.newCircle(display.contentCenterX, display.contentCenterY * 0.19, 50)
+	ball = display.newCircle(display.contentCenterX, display.contentCenterY * 0.10, 45)
 	ball:setFillColor(1,0,0,1)
 	
 	--ball
-	ball2 = display.newCircle(display.contentCenterX * .80, display.contentCenterY * 0.10, 25)
+	ball2 = display.newCircle(display.contentCenterX * .80, display.contentCenterY * 0.20, 25)
 	ball2:setFillColor(0,1,0,1)
 		
 	--ball
-	ball3 = display.newCircle(display.contentCenterX * 1.20, display.contentCenterY * 0.10, 25)
+	ball3 = display.newCircle(display.contentCenterX * 1.20, display.contentCenterY * 0.20, 25)
 	ball3:setFillColor(0,0,1,1)
 	
 	--floor
@@ -199,6 +206,8 @@ function M:makeDisplay()
 	dGroup:insert(physLeftWall)
 	dGroup:insert(physRightWall)
 	dGroup:insert(physCeiling)
+	dGroup:insert(catchLeftWall)
+	dGroup:insert(catchRightWall)
 	dGroup.isVisible = false
 	self.dGroup = dGroup
 
@@ -213,18 +222,28 @@ function M:reveal()
 	--clockText.isVisible = false
 	physics.start()
 	physics.setGravity(0, 9.8)
-	physics.setDrawMode("hybrid")
-	physics.addBody(ball, {radius = 50, density=1.0, friction=0.3, bounce=0.2} )
-	physics.addBody(ball2, {radius = 25, density=1.0, friction=0.3, bounce=0.2} )
-	physics.addBody(ball3, {radius = 25, density=1.0, friction=0.3, bounce=0.2} )
-	physics.addBody(physFloor, {density=1.0, friction=0.3, bounce=0.5})
-	physics.addBody(physLeftWall, {density=1.0, friction=0.3, bounce=0.5})
-	physics.addBody(physRightWall, {density=1.0, friction=0.3, bounce=0.5})
-	physics.addBody(physCeiling, {density=1.0, friction=0.3, bounce=0.5})
+	physics.setDrawMode("normal")
+	ball.x = display.contentCenterX
+	ball.y = display.contentCenterY * 0.10
+	ball2.x = display.contentCenterX * 0.80
+	ball2.y = display.contentCenterY * 0.20
+	ball3.x = display.contentCenterX * 1.20
+	ball3.y = display.contentCenterY * 0.20
+	physics.addBody(ball, {radius = 45, density=1.0, friction=0.3, bounce=0.5} )
+	physics.addBody(ball2, {radius = 25, density=1.0, friction=0.3, bounce=0.5} )
+	physics.addBody(ball3, {radius = 25, density=1.0, friction=0.3, bounce=0.5} )
+	physics.addBody(physFloor, {density=1.0, friction=0.3, bounce=0.75})
+	physics.addBody(physLeftWall, {density=1.0, friction=0.3, bounce=0.9})
+	physics.addBody(physRightWall, {density=1.0, friction=0.3, bounce=0.9})
+	physics.addBody(physCeiling, {density=1.0, friction=0.3, bounce=0.75})
+	physics.addBody(catchLeftWall, {density=1, friction=0.2, bounce=0.8})
+	physics.addBody(catchRightWall, {density=1, friction=0.2, bounce=0.8})
 	physFloor.bodyType = "static"
 	physLeftWall.bodyType = "static"
 	physRightWall.bodyType = "static"
 	physCeiling.bodyType = "static"
+	catchLeftWall.bodyType = "static"
+	catchRightWall.bodyType = "static"
 	self.dGroup.isVisible = true
 	gameGroup.isVisible = false
 	print("reveal")
@@ -236,6 +255,8 @@ function M:hide()
 	--if(countDownTimer ~= nil) then
 	--	timer.cancel(countDownTimer)
 	--end
+	gravButton:setLabel("Gravity:\n On")
+	physics.setGravity(0,9.8)
 	physics.removeBody(ball)
 	physics.removeBody(physFloor)
 	physics.removeBody(ball2)
