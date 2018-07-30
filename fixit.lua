@@ -230,7 +230,7 @@ function M:makeDisplay()
 	-- TITLE SCREEN --
 	------------------
 	--make title text (shrink until it fits on one line)
-	local i = 31
+	local i = 200
 	repeat
 		if(titleText ~= nil) then
 			titleText:removeSelf()
@@ -286,7 +286,7 @@ function M:makeDisplay()
 				y=gH * 0.275,
 				width=gW * 0.95,
 				font=native.systemFont,
-				fontSize=16,
+				fontSize=px2pt(gH * 0.05),
 				align="center"
 			})
 	--make buttons
@@ -301,7 +301,7 @@ function M:makeDisplay()
 			shape = "rectangle",
 			fillColor = { default={ .75,.75,.75,1 }, over={ 1,1,1,1 } },
 			font = native.systemFont,
-			fontSize = 24,
+			fontSize = px2pt(gH * 0.07),
 			label = "Play Game",
 			labelColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
 			strokeColor = { default={ .25,.25,.25 }, over={ 0.5,0.5,0.5 } },
@@ -318,7 +318,7 @@ function M:makeDisplay()
 			shape = "rectangle",
 			fillColor = { default={ .75,.75,.75,1 }, over={ 1,1,1,1 } },
 			font = native.systemFont,
-			fontSize = 24,
+			fontSize = px2pt(gH * 0.07),
 			label = "Go Back",
 			labelColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
 			strokeColor = { default={ .25,.25,.25 }, over={ 0.5,0.5,0.5 } },
@@ -357,7 +357,7 @@ function M:makeDisplay()
 			cornerRadius = 6,
 			fillColor = { default={ .75,.75,.75,1 }, over={ 1,1,1,1 } },
 			font = native.systemFont,
-			fontSize = 18,
+			fontSize = px2pt(gH * 0.04),
 			label = "Winch",
 			labelColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
 			strokeColor = { default={ .25,.25,.25 }, over={ 0.5,0.5,0.5 } },
@@ -375,7 +375,7 @@ function M:makeDisplay()
 			cornerRadius = 6,
 			fillColor = { default={ .75,.75,.75,1 }, over={ 1,1,1,1 } },
 			font = native.systemFont,
-			fontSize = 18,
+			fontSize = px2pt(gH * 0.04),
 			label = "Netting",
 			labelColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
 			strokeColor = { default={ .25,.25,.25 }, over={ 0.5,0.5,0.5 } },
@@ -393,7 +393,7 @@ function M:makeDisplay()
 			cornerRadius = 6,
 			fillColor = { default={ .75,.75,.75,1 }, over={ 1,1,1,1 } },
 			font = native.systemFont,
-			fontSize = 18,
+			fontSize = px2pt(gH * 0.04),
 			label = "Capsule",
 			labelColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
 			strokeColor = { default={ .25,.25,.25 }, over={ 0.5,0.5,0.5 } },
@@ -411,7 +411,7 @@ function M:makeDisplay()
 			cornerRadius = 6,
 			fillColor = { default={ .75,.75,.75,1 }, over={ 1,1,1,1 } },
 			font = native.systemFont,
-			fontSize = 18,
+			fontSize = px2pt(gH * 0.04),
 			label = "Deceleration\nChamber",
 			labelColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
 			labelAligh = "center",
@@ -420,7 +420,7 @@ function M:makeDisplay()
 			onRelease = buttonHandler
 		})
 	--make question text (resize to fit on one line)
-	i = 31
+	i = 200
 	repeat
 		if(questionText ~= nil) then
 			questionText:removeSelf()
@@ -488,7 +488,7 @@ function M:makeDisplay()
 		strokeWidth = 3,
 		label = "Back",
 		font = native.systemFont,
-		fontSize = 16,
+		fontSize = px2pt(gH * 0.05),
 		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
 		onRelease = buttonHandler
 	})

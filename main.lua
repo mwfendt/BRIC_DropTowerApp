@@ -18,7 +18,7 @@ local COMPANIONTIMEOUTLENGTH = 0
 
 --converts a height in pixels to the equivalent pt value for text
 --may need some fine-tuning
-local function px2pt( pixels )
+function px2pt( pixels )
 	return pixels * 0.75
 end
 
@@ -263,18 +263,6 @@ appState = 0
 -- 6 - Create Experiment 
 -- 7 - Drop Tower Information
 
---the screen-sized button can't be invisible in order for it to work, so it needs to be behind everything else
---[[screenSizedButton = widget.newButton(
-	{
-		id = "screen",
-		x = display.contentCenterX,
-		y = display.contentCenterY,
-		width = gW,
-		height = gH,
-		shape = "rectangle",
-		fillColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
-	})]]--
-
 --display background image (width and height are required in function but overwritten later)
 local bkg = display.newImageRect( "images/DropTowerDiagram.png", gW, gH )
 bkg.x = display.contentCenterX
@@ -447,7 +435,7 @@ learnText = display.newText(
 		x = display.contentCenterX * .20,
 		y = display.contentCenterY * .92,
 		font = native.systemFont,
-		fontSize = 7,
+		fontSize = px2pt(gH * 0.015),
 		align = "center",
 		width = display.contentCenterX * .30,
 		height = gH / 11
@@ -466,7 +454,7 @@ dropTowerButton = widget.newButton(
 		shape = "rectangle",
 		fillColor = { default={ 0,0,0,0.01}, over={0,0,0,0.01} },
 		font = native.systemFont,
-		fontSize = 7,
+		fontSize = px2pt(gH * 0.015),
 		label = "What is a drop tower?",
 		align = "center",
 		labelColor = {default= {0,0,0,1}, over = {0,0,0,1}},
@@ -532,7 +520,7 @@ local experimentTextOptions =
 		x = display.contentCenterX * 1.60,
 		y = gH - (gH * 0.10),
 		font = native.systemFont,
-		fontSize = 8,
+		fontSize = px2pt(gH * 0.017),
 		align = "center",
 		width = gH * 0.15,
 		height = gH * 0.05
@@ -570,7 +558,7 @@ local repairTextOptions =
 		x = display.contentCenterX * 0.30,
 		y = gH - (gH * 0.10),
 		font = native.systemFont,
-		fontSize = 8,
+		fontSize = px2pt(gH * 0.017),
 		align = "center",
 		width = gH * 0.15,
 		height = gH * 0.05
@@ -595,7 +583,7 @@ physicsGameButton = widget.newButton(
 		shape = "rectangle",
 		fillColor = { default={ 0,0,0,0.01}, over={0,0,0,0.01} },
 		font = native.systemFont,
-		fontSize = 7,
+		fontSize = px2pt(gH * 0.015),
 		label = "Play a Physics Game!",
 		align = "center",
 		labelColor = {default= {0,0,0,1}, over = {0,0,0,1}},
@@ -620,7 +608,7 @@ companionSiteButton = widget.newButton(
 		shape = "rectangle",
 		fillColor = { default={ 0,0,0,0.01}, over={0,0,0,0.01} },
 		font = native.systemFont,
-		fontSize = 7,
+		fontSize = px2pt(gH * 0.015),
 		label = "Visit the website!",
 		align = "center",
 		labelColor = {default= {0,0,0,1}, over = {0,0,0,1}},
@@ -715,7 +703,7 @@ backButton = widget.newButton(
 	strokeWidth = 3,
 	label = "Back",
 	font = native.systemFont,
-	fontSize = 16,
+	fontSize = px2pt(gH * 0.05),
 	labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
 	onRelease = handleWebEvent
 })
@@ -730,7 +718,7 @@ configBox:setFillColor(1, 1, 1, 1)
 configBox.strokeWidth = 3
 configBox:setStrokeColor(0,0,1,1)
 --create text and shrink to box
-i = 50
+i = 200
 repeat
 	if(configText ~= nil) then
 		configText:removeSelf()
@@ -937,7 +925,7 @@ doneButton = widget.newButton(
 		strokeWidth = 3,
 		label = "Done",
 		font = native.systemFont,
-		fontSize = 16,
+		fontSize = px2pt(gH * 0.05),
 		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
 		onRelease = moduleBackHandler
 	})
@@ -974,7 +962,7 @@ moduleInfoText = display.newText(
 		y = gH * 0.785,
 		align = "center",
 		font = native.systemFont,
-		fontSize = 18,
+		fontSize = px2pt(gH * 0.06),
 	})
 moduleInfoText:setFillColor(1,1,1,1)
 moduleGroup:insert(moduleInfoText)
@@ -1024,7 +1012,7 @@ local configureButton = widget.newButton(
 		shape = "rectangle",
 		fillColor = { default={ .75,.75,.75,1 }, over={ 1,1,1,1 } },
 		font = native.systemFont,
-		fontSize = 24,
+		fontSize = px2pt(gH * 0.06),
 		label = "Configure Options",
 		labelColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
 		strokeColor = { default={ .25,.25,.25 }, over={ 0.5,0.5,0.5 } },
@@ -1043,7 +1031,7 @@ local defaultButton = widget.newButton(
 		shape = "rectangle",
 		fillColor = { default={ .75,.75,.75,1 }, over={ 1,1,1,1 } },
 		font = native.systemFont,
-		fontSize = 24,
+		fontSize = px2pt(gH * 0.06),
 		label = "Use Default Settings",
 		labelColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
 		strokeColor = { default={ .25,.25,.25 }, over={ 0.5,0.5,0.5 } },
