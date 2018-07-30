@@ -33,13 +33,13 @@ end
 
 function buttonHandler(event)
 	if("GravOnOff" == event.target.id) then
-		if(gravButton:getLabel() == "Gravity:\n On")then
-			gravButton:setLabel("Gravity:\n Off")
+		if(gravButton:getLabel() == "Gravity: On")then
+			gravButton:setLabel("Gravity: Off")
 			physics.setGravity(0,0)
 			print("here")
-		elseif(gravButton:getLabel() == "Gravity:\n Off")then
-			gravButton:setLabel("Gravity:\n On")
-			physics.setGravity(0,9.8)
+		elseif(gravButton:getLabel() == "Gravity: Off")then
+			gravButton:setLabel("Gravity: On")
+			physics.setGravity(9.8,0)
 		end
 	elseif(animFrames == 0) then
 		M:hide()
@@ -59,10 +59,10 @@ function M:makeDisplay()
 	backButton = widget.newButton(
 	{
 		id = "Back",
-		x = display.contentCenterX,
-		y = gH * 0.95,
+		x = gW * .938,
+		y = gH * 0.1425,
 		width = gW * 0.5,
-		height = gH * 0.075,
+		height = gH * 0.0635,
 		shape = "rectangle",
 		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
 		strokeColor = {default={ .25 , .25, .25, 1}, over={ .50,.50,.50, 1 } },
@@ -73,25 +73,26 @@ function M:makeDisplay()
 		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
 		onRelease = buttonHandler
 	})
+	backButton.rotation = -90
 	
 	gravButton = widget.newButton(
 	{
 		id = "GravOnOff",
-		x = display.contentCenterX * .25,
-		y = gH * 0.95,
-		width = gW * 0.15,
-		height = gH * 0.075,
+		x = gW * .938,
+		y = gH - gH * 0.1425,
+		width = gW * 0.5,
+		height = gH * 0.0635,
 		shape = "rectangle",
 		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
 		strokeColor = {default={ .25 , .25, .25, 1}, over={ .50,.50,.50, 1 } },
 		strokeWidth = 3,
-		label = "Gravity:\n On",
+		label = "Gravity: On",
 		font = native.systemFont,
-		fontSize = 10,
+		fontSize = 16,
 		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
 		onRelease = buttonHandler
 	})
-	
+	gravButton.rotation = -90
 	
 	darkenerButton = widget.newButton(
 		{
@@ -161,14 +162,14 @@ function M:makeDisplay()
 
 	
 	-- catch box 
-	catchBox = display.newRect(display.contentCenterX, display.contentCenterY * 1.55, gW * 0.25, gH * 0.25)
+	catchBox = display.newRect(gW * .65 , gW * .125, gW * 0.25, gH * 0.25)
 	catchBox:setFillColor(0, 0, 0, 1)
-	
+	catchBox.rotation = -90
 	--catch box wall
-	catchLeftWall = display.newRect(display.contentCenterX - gW * 0.125,display.contentCenterY * 1.55,1,gH * 0.25)
+
+	catchLeftWall = display.newRect(display.contentCenterX + gW * 0.15,display.contentCenterY * 0.275,gH * 0.005,gH * 0.25)
 	catchLeftWall:setFillColor(1,1,1,1)
-	catchRightWall = display.newRect(display.contentCenterX + gW * 0.125,display.contentCenterY * 1.55,1,gH * 0.25)
-	catchRightWall:setFillColor(1,1,1,1)
+	catchLeftWall.rotation = -90
 	
 	--ball
 	ball = display.newCircle(display.contentCenterX, display.contentCenterY * 0.10, 45)
@@ -179,19 +180,30 @@ function M:makeDisplay()
 	ball2:setFillColor(0,1,0,1)
 		
 	--ball
-	ball3 = display.newCircle(display.contentCenterX * 1.20, display.contentCenterY * 0.20, 25)
+	ball3 = display.newCircle(gW *0.15, gH * 0.70, 50)
 	ball3:setFillColor(0,0,1,1)
 	
+	--block
+	block = display.newRect(gW * 0.67, gH * 0.875, gW * 0.065, gW * 0.065)
+	
 	--floor
-	physFloor = display.newRect(display.contentCenterX, gH * 0.9, gW, gH * 0.005)
+	physFloor = display.newRect(gW * .875, display.contentCenterY, gW * 0.005, gH)
 	physFloor:setFillColor(0,0,0,1)
 	
 	--wall
-	physLeftWall = display.newRect(0,display.contentCenterY,0.001,gH)
-	physRightWall = display.newRect(gW,display.contentCenterY,0.001,gH)
+	physLeftWall = display.newRect(0,gH,gW * 2,0.001)
+	physRightWall = display.newRect(0, 0, gW * 2, 0.001)
 	
 	--ceiling
-	physCeiling = display.newRect(display.contentCenterX, 0, gW, 0.001)
+	physCeiling = display.newRect(-gW,display.contentCenterY,0.001,gH)
+	
+	--seeSaw peg
+	peg = display.newRect(gW * 0.835, gH * 0.80, gW * 0.075, gH * 0.025)
+	peg2 = display.newRect(gW * 0.835, gH * 0.875, gW * 0.075, gH * 0.025)
+	
+	--seeSaw board
+	
+	board = display.newRect(gW * 0.760, gH * 0.80, gW * 0.025, gH * 0.20)
 	
 	--insert all components of the page into the group
 	dGroup:insert(physBkg)
@@ -207,7 +219,10 @@ function M:makeDisplay()
 	dGroup:insert(physRightWall)
 	dGroup:insert(physCeiling)
 	dGroup:insert(catchLeftWall)
-	dGroup:insert(catchRightWall)
+	dGroup:insert(peg)
+	dGroup:insert(peg2)
+	dGroup:insert(board)
+	dGroup:insert(block)
 	dGroup.isVisible = false
 	self.dGroup = dGroup
 
@@ -221,29 +236,33 @@ function M:reveal()
 	--clockText.text = timeDisplay
 	--clockText.isVisible = false
 	physics.start()
-	physics.setGravity(0, 9.8)
+	physics.setGravity(9.8, 0)
 	physics.setDrawMode("normal")
 	ball.x = display.contentCenterX
 	ball.y = display.contentCenterY * 0.10
 	ball2.x = display.contentCenterX * 0.80
 	ball2.y = display.contentCenterY * 0.20
-	ball3.x = display.contentCenterX * 1.20
-	ball3.y = display.contentCenterY * 0.20
+	ball3.x = gW * 0.15
+	ball3.y = gH * 0.70
 	physics.addBody(ball, {radius = 45, density=1.0, friction=0.3, bounce=0.5} )
 	physics.addBody(ball2, {radius = 25, density=1.0, friction=0.3, bounce=0.5} )
-	physics.addBody(ball3, {radius = 25, density=1.0, friction=0.3, bounce=0.5} )
+	physics.addBody(ball3, {radius = 50, density=1.0, friction=0.3, bounce=0.5} )
 	physics.addBody(physFloor, {density=1.0, friction=0.3, bounce=0.75})
 	physics.addBody(physLeftWall, {density=1.0, friction=0.3, bounce=0.9})
 	physics.addBody(physRightWall, {density=1.0, friction=0.3, bounce=0.9})
 	physics.addBody(physCeiling, {density=1.0, friction=0.3, bounce=0.75})
 	physics.addBody(catchLeftWall, {density=1, friction=0.2, bounce=0.8})
-	physics.addBody(catchRightWall, {density=1, friction=0.2, bounce=0.8})
+	physics.addBody(peg, {density=1, friction=0.2, bounce=0.8})
+	physics.addBody(peg2, {density=1, friction=0.2, bounce=0.8})
+	physics.addBody(board, {density=1, friction=0.2, bounce=0.8})
+	physics.addBody(block, {density=1, friction=0.2, bounce=0.1})
 	physFloor.bodyType = "static"
 	physLeftWall.bodyType = "static"
 	physRightWall.bodyType = "static"
 	physCeiling.bodyType = "static"
 	catchLeftWall.bodyType = "static"
-	catchRightWall.bodyType = "static"
+	peg.bodyType = "static"
+	peg2.bodyType = "static"
 	self.dGroup.isVisible = true
 	gameGroup.isVisible = false
 	print("reveal")
