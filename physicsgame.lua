@@ -35,11 +35,13 @@ end
 function tapListener(event)
 	--ball3
 	if(event.phase == "began") then 
+		if(ballPlaced == 1) then 
+			physics.removeBody(ball3)
+			ballPlaced = 0
+		end
 		print("here")
-		ball3 = display.newCircle(event.x, event.y, 50)
-		ball3:setFillColor(0,0,1,1)
-		ball3.isVisible = true
-		dGroup:insert(ball3)
+		ball3.x = event.x
+		ball3.y = event.y
 		physics.addBody(ball3, {radius = 50, density=densityValue, friction=0.3, bounce=0.5} )
 		ballPlaced = 1
 	end
@@ -72,6 +74,21 @@ function buttonHandler(event)
 		weight3:setFillColor(1,1,1,1)
 		weight1:setFillColor(.75,.75,.75,1)
 		weight2:setFillColor(.75,.75,.75,1)
+	elseif("Reset" == event.target.id) then
+		ball3.x = gW * 4
+		ball3.y = gH * 4
+		physics.removeBody(ball3)
+		ballPlaced = 0
+		board:setLinearVelocity(0,0)
+		block:setLinearVelocity(0,0)
+		board.angularVelocity = 0
+		block.angularVelocity = 0
+		board.rotation = 0
+		block.rotation = 0
+		board.x = gW * 0.77
+		board.y = gH * 0.80
+		block.x = gW * 0.7375
+		block.y = gH * 0.875
 	elseif(animFrames == 0) then
 		M:hide()
 	end
@@ -182,6 +199,26 @@ function M:makeDisplay()
 	weight3:setFillColor(.75,.75,.75,1)
 	weight3.rotation = -90
 	
+	resetButton = widget.newButton(
+	{
+		id = "Reset",
+		x = gW * .938,
+		y = gH * 0.4175,
+		width = gW * 0.47,
+		height = gH * 0.0635,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
+		strokeColor = {default={ .25 , .25, .25, 1}, over={ .50,.50,.50, 1 } },
+		strokeWidth = 3,
+		label = "Reset",
+		font = native.systemFont,
+		fontSize = 16,
+		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
+		onRelease = buttonHandler
+	})
+	resetButton.rotation = -90
+	
+	
 	darkenerButton = widget.newButton(
 		{
 			id = "Darkener",
@@ -267,8 +304,12 @@ function M:makeDisplay()
 	ball2 = display.newCircle(display.contentCenterX * .80, display.contentCenterY * 0.20, 25)
 	ball2:setFillColor(0,1,0,1)
 	
+	-- placeable ball
+	ball3 = display.newCircle(gW * 4, gH * 4, 50)
+	ball3:setFillColor(0,0,1,1)
+	
 	--block
-	block = display.newRect(gW * 0.67, gH * 0.875, gW * 0.065, gW * 0.065)
+	block = display.newRect(gW * 0.7375, gH * 0.875, gW * 0.065, gW * 0.065)
 	
 	--floor
 	physFloor = display.newRect(gW * .875, display.contentCenterY, gW * 0.005, gH)
@@ -286,10 +327,10 @@ function M:makeDisplay()
 	peg2 = display.newRect(gW * 0.835, gH * 0.875, gW * 0.075, gH * 0.025)
 	
 	--seeSaw board
-	board = display.newRect(gW * 0.760, gH * 0.80, gW * 0.025, gH * 0.20)
+	board = display.newRect(gW * 0.77, gH * 0.80, gW * 0.025, gH * 0.20)
 	
-	placeButton = display.newRect(gW * .40, gH * .55, gW * 0.5, gH * 0.7)
-	placeButton:setFillColor(0,0,0,1)
+	placeButton = display.newRect(gW * .37, gH * .56, gW * 0.70, gH * 0.86)
+	placeButton:setFillColor(0,0,0,0.01)
 	placeButton:addEventListener("touch", tapListener)
 	
 	--insert all components of the page into the group
@@ -301,6 +342,7 @@ function M:makeDisplay()
 	dGroup:insert(physFloor)
 	dGroup:insert(gravButton)
 	dGroup:insert(ball2)
+	dGroup:insert(ball3)
 	dGroup:insert(physLeftWall)
 	dGroup:insert(physRightWall)
 	dGroup:insert(physCeiling)
@@ -313,6 +355,7 @@ function M:makeDisplay()
 	dGroup:insert(weight2)
 	dGroup:insert(weight3)
 	dGroup:insert(placeButton)
+	dGroup:insert(resetButton)
 	dGroup.isVisible = false
 	self.dGroup = dGroup
 
@@ -327,7 +370,7 @@ function M:reveal()
 	--clockText.isVisible = false
 	physics.start()
 	physics.setGravity(9.8, 0)
-	physics.setDrawMode("debug")
+	physics.setDrawMode("normal")
 	ball.x = display.contentCenterX
 	ball.y = display.contentCenterY * 0.10
 	ball2.x = display.contentCenterX * 0.80
@@ -370,6 +413,8 @@ function M:hide()
 	physics.removeBody(physFloor)
 	physics.removeBody(ball2)
 	if(ballPlaced == 1) then
+		ball.x = gW * 4
+		ball.y = gH * 4
 		physics.removeBody(ball3)
 		ballPlaced = 0
 	end
