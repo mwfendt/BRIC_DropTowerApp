@@ -407,7 +407,7 @@ function M:hide()
 	--if(countDownTimer ~= nil) then
 	--	timer.cancel(countDownTimer)
 	--end
-	gravButton:setLabel("Gravity:\n On")
+	gravButton:setLabel("Gravity: On")
 	physics.setGravity(0,9.8)
 	physics.removeBody(ball)
 	physics.removeBody(physFloor)
