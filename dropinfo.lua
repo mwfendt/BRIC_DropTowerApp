@@ -79,7 +79,7 @@ function M:makeDisplay()
 			width = gW * 0.8,
 			align = "center",
 			font = native.systemFont,
-			fontSize = 12
+			fontSize = px2pt(gH * 0.02)
 		}
 	
 	--create tower info text
@@ -109,7 +109,7 @@ function M:makeDisplay()
 			width = gW * 0.8,
 			align = "center",
 			font = native.systemFont,
-			fontSize = 12
+			fontSize = px2pt(gH * 0.02)
 		}
 
 	--create bric info text
@@ -131,7 +131,7 @@ function M:makeDisplay()
 		strokeWidth = 3,
 		label = "Back",
 		font = native.systemFont,
-		fontSize = 16,
+		fontSize = px2pt(gH * 0.05),
 		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
 		onRelease = buttonHandler
 	})

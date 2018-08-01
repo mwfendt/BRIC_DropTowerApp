@@ -656,17 +656,28 @@ repeat
 	i = i - 1
 	headerText = display.newText(
 		{
-			text = "Learn about Microgravity using Baylor's Drop Tower!",
+			text = "Learn about Baylor's Drop Tower!",
 			x = display.contentCenterX,
 			align = "center",
 			y = gH / 20,
-			font = native.systemFont,
+			font = native.systemFontBold,
 			fontSize = i
 		})
 until headerText.width <= gW * .97 or i == 1
-print(i)
 headerText:setFillColor(1,1,1,1)
+headerDropShadow = display.newText(
+	{
+		text = headerText.text,
+		x = gW * .51,
+		align = "center",
+		y = gH * .055,
+		font = native.systemFontBold,
+		fontSize = i
+	})
+headerDropShadow:setFillColor(0,0,0,0.5)
+mainMenuButtons:insert(headerDropShadow)
 mainMenuButtons:insert(headerText)
+
 
 ---------------
 -- WEB POPUP --

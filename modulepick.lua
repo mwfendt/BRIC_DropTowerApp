@@ -11,6 +11,8 @@ local widget = require( "widget" )
 local gH = display.contentHeight
 local gW = display.contentWidth
 
+local labels = {}
+
 local M = {}
 
 local function moduleButtonHandler (event)
@@ -25,6 +27,10 @@ end
 
 local function labelButtonHandler (event)
 	--print("test")
+	for index,label in pairs(labels) do
+		label:setFillColor(0.75, 0.75, 0.75, 1)
+	end
+	event.target.labelChange:setFillColor(1,1,1,1)
 	moduleInfoText.text = event.target.textChange
 end
 
@@ -35,6 +41,22 @@ local function px2pt( pixels )
 end
 
 function M:makeRow(rowTitle, rowTarget, rowY, description, group)
+	--row label text
+	rowText = display.newText(
+		{
+			text = rowTitle,
+			x = gW * 0.385,
+			width = gW * 0.75,
+			align = "left",
+			y = rowY,
+			font = native.systemFont,
+			fontSize = math.floor(px2pt(gH * 0.05)),
+		})
+	rowText:setFillColor(0.75, 0.75, 0.75, 1)
+	group:insert(rowText)
+	
+	table.insert(labels, rowText)
+	
 	--(mostly) invisible label row button
 	labelButton = widget.newButton(
 		{
@@ -49,20 +71,7 @@ function M:makeRow(rowTitle, rowTarget, rowY, description, group)
 		})
 	group:insert(labelButton)
 	labelButton.textChange = description
-	
-	--row label text
-	rowText = display.newText(
-		{
-			text = rowTitle,
-			x = gW * 0.385,
-			width = gW * 0.75,
-			align = "left",
-			y = rowY,
-			font = native.systemFont,
-			fontSize = math.floor(px2pt(gH * 0.05)),
-		})
-	rowText:setFillColor(0.75, 0.75, 0.75, 1)
-	group:insert(rowText)
+	labelButton.labelChange = rowText
 
 	--Off label
 	rowOff = display.newImageRect("images/OFF.png", gW * 0.2, gW * 0.1)

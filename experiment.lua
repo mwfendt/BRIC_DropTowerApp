@@ -109,7 +109,7 @@ function M:makeDisplay()
 		strokeWidth = 3,
 		label = "Back",
 		font = native.systemFont,
-		fontSize = 16,
+		fontSize = px2pt(gH * 0.05),
 		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
 		onRelease = buttonHandler
 	})
@@ -169,7 +169,7 @@ function M:makeDisplay()
 			width = gW * 0.8,
 			align = "center",
 			font = native.systemFont,
-			fontSize = 20
+			fontSize = px2pt(gH * 0.05)
 		}
 		
 	--options for create experiment text
@@ -181,7 +181,7 @@ function M:makeDisplay()
 			width = gW * 0.8, 
 			align = "center",
 			font = native.systemFont,
-			fontSize = 20
+			fontSize = px2pt(gH * 0.05)
 		}
 
 	--options for 1.5 seconds text
@@ -194,7 +194,7 @@ function M:makeDisplay()
 			height = gH / 10,
 			align = "center",
 			font = native.systemFont,
-			fontSize = 10
+			fontSize = px2pt(gH * 0.02)
 		}
 	
 	--create micrograv text
@@ -234,7 +234,7 @@ function M:makeDisplay()
 			strokeWidth = 3,
 			label = "What do you want to drop?",
 			font = native.systemFont,
-			fontSize = 16,
+			fontSize = px2pt(gH * 0.03),
 			labelColor = {default = {0,0,0,1}, over = {0,0,0,1}}
 		})
 	createExpGroup:insert(whatDrop)
@@ -309,7 +309,7 @@ function M:makeDisplay()
 			strokeWidth = 3,
 			label = "What do you think will happen?",
 			font = native.systemFont,
-			fontSize = 16,
+			fontSize = px2pt(gH * 0.03),
 			labelColor = {default = {0,0,0,1}, over = {0,0,0,1}}
 		})
 	createExpGroup:insert(whatHappen)
@@ -366,7 +366,7 @@ function M:makeDisplay()
 			label = "Run Experiment",
 			labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
 			font = native.systemFont,
-			fontSize = 15,
+			fontSize = px2pt(gH * 0.05),
 		})
 	createExpGroup:insert(runExperiment)
 	
