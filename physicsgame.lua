@@ -18,6 +18,7 @@ local animFrames = 0
 local ballVelocity = 1
 local densityValue = 0.1
 local ballPlaced = 0
+local tutorialState = 0
 --[[
 local function updateTime(event)
 	count = count - 1
@@ -89,7 +90,13 @@ function buttonHandler(event)
 		board.y = gH * 0.80
 		block.x = gW * 0.7375
 		block.y = gH * 0.875
-	elseif(animFrames == 0) then
+	elseif("Next" == event.target.id) then	
+		if(tutorialState == 0) then	
+			gameGroup.isVisible = false
+			nextButton.isVisible = false
+			tutorialState = 1
+		end
+	elseif("Back" == event.target.id) then
 		M:hide()
 	end
 end
@@ -100,6 +107,19 @@ function M:makeDisplay()
 	local dGroup = display.newGroup()
 	
 	gameGroup = display.newGroup()
+	
+		darkenerButton = widget.newButton(
+		{
+			id = "Darkener",
+			x = display.contentCenterX,
+			y = display.contentCenterY,
+			width = gW,
+			height = gH,
+			shape = "rectangle",
+			fillColor = { default={ 0,0,0,0.85 }, over={ 0,0,0,0.85 } },
+			onRelease = buttonHandler
+		})
+	
 	-----------------
 	-- BACK BUTTON --
 	-----------------
@@ -122,6 +142,7 @@ function M:makeDisplay()
 		onRelease = buttonHandler
 	})
 	backButton.rotation = -90
+	backButton:setEnabled(false)
 	
 	gravButton = widget.newButton(
 	{
@@ -141,7 +162,8 @@ function M:makeDisplay()
 		onRelease = buttonHandler
 	})
 	gravButton.rotation = -90
-	
+	gravButton:setEnabled(false)
+		
 	weight1 = widget.newButton(
 		{
 		id = "weight1",
@@ -160,6 +182,7 @@ function M:makeDisplay()
 		})
 	weight1:setFillColor(1,1,1,1)
 	weight1.rotation = -90
+	weight1:setEnabled(false)
 	
 	weight2 = widget.newButton(
 		{
@@ -179,6 +202,7 @@ function M:makeDisplay()
 		})
 	weight2:setFillColor(.75,.75,.75,1)
 	weight2.rotation = -90
+	weight2:setEnabled(false)
 	
 	weight3 = widget.newButton(
 		{
@@ -198,6 +222,7 @@ function M:makeDisplay()
 		})
 	weight3:setFillColor(.75,.75,.75,1)
 	weight3.rotation = -90
+	weight3:setEnabled(false)
 	
 	resetButton = widget.newButton(
 	{
@@ -217,25 +242,33 @@ function M:makeDisplay()
 		onRelease = buttonHandler
 	})
 	resetButton.rotation = -90
+	resetButton:setEnabled(false)
 	
-	
-	darkenerButton = widget.newButton(
-		{
-			id = "Darkener",
-			x = display.contentCenterX,
-			y = display.contentCenterY,
-			width = gW,
-			height = gH,
-			shape = "rectangle",
-			fillColor = { default={ 0,0,0,0.85 }, over={ 0,0,0,0.85 } },
-			onRelease = buttonHandler
-		})
+	nextButton = widget.newButton(
+	{
+		id = "Next",
+		x = gW * .79,
+		y = gH * 0.5,
+		width = gW * 0.47,
+		height = gH * 0.0635,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
+		strokeColor = {default={ .25 , .25, .25, 1}, over={ .50,.50,.50, 1 } },
+		strokeWidth = 3,
+		label = "Next",
+		font = native.systemFont,
+		fontSize = 16,
+		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
+		onRelease = buttonHandler
+	})
+	nextButton.rotation = -90
 	
 	--create box for text to appear on
 	gameOverBox = display.newRect(display.contentCenterX, display.contentCenterY, gW * 0.8, gH * 0.25)
 	gameOverBox:setFillColor(1, 1, 1, 1)
 	gameOverBox.strokeWidth = 3
 	gameOverBox:setStrokeColor(1,0,0,1)
+	gameOverBox.rotation = -90
 	--create text and shrink to box
 	i = 31
 	repeat
@@ -245,7 +278,7 @@ function M:makeDisplay()
 		i = i - 1
 		gameOverText = display.newText(
 			{
-				text="Score: 0\n Click to go to main menu!",
+				text="Welcome to the Physics Playground!\n\n In the physics playground you will get to learn about physics while testing your knowledge in a catapult game!\n\n First lets take a look at what you can do in the playground. Hit the next button on your screen to begin the tutorial!",
 				x=gameOverBox.x,
 				y=gameOverBox.y,
 				width=gameOverBox.width - 6, --keep inside the lines
@@ -255,6 +288,7 @@ function M:makeDisplay()
 			})
 	until gameOverText.height <= gameOverBox.height or i == 1
 	gameOverText:setFillColor(1,0,0,1)
+	gameOverText.rotation = -90
 	
 	gameGroup:insert(darkenerButton)
 	gameGroup:insert(gameOverBox)
@@ -327,18 +361,19 @@ function M:makeDisplay()
 	peg2 = display.newRect(gW * 0.835, gH * 0.875, gW * 0.075, gH * 0.025)
 	
 	--seeSaw board
-	board = display.newRect(gW * 0.77, gH * 0.80, gW * 0.025, gH * 0.20)
+	board = display.newRect(gW * 0.76, gH * 0.80, gW * 0.025, gH * 0.20)
 	
-	placeButton = display.newRect(gW * .37, gH * .56, gW * 0.70, gH * 0.86)
+	placeButton = display.newRect(gW * .355, gH * .57, gW * 0.6975, gH * 0.85)
 	placeButton:setFillColor(0,0,0,0.01)
 	placeButton:addEventListener("touch", tapListener)
+	placeButton.strokeWidth = 3
+	placeButton:setStrokeColor(0.5,0,0,1)
 	
 	--insert all components of the page into the group
 	dGroup:insert(physBkg)
 	dGroup:insert(backButton)
 	dGroup:insert(catchBox)
 	dGroup:insert(ball)
-	dGroup:insert(gameGroup)
 	dGroup:insert(physFloor)
 	dGroup:insert(gravButton)
 	dGroup:insert(ball2)
@@ -356,6 +391,8 @@ function M:makeDisplay()
 	dGroup:insert(weight3)
 	dGroup:insert(placeButton)
 	dGroup:insert(resetButton)
+	dGroup:insert(gameGroup)
+	dGroup:insert(nextButton)
 	dGroup.isVisible = false
 	self.dGroup = dGroup
 
@@ -397,7 +434,8 @@ function M:reveal()
 	peg.bodyType = "static"
 	peg2.bodyType = "static"
 	self.dGroup.isVisible = true
-	gameGroup.isVisible = false
+	gameGroup.animFrames = 10
+	gameGroup.isVisible = true
 	print("reveal")
 end
 
