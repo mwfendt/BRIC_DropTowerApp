@@ -108,7 +108,7 @@ local function moduleBackHandler (event)
 		configFile:write(saveData)
 		io.close(configFile)
 		--make the popup, well, pop up
-		configPopupGroup.animFrames = 40
+		configPopupGroup.animFrames = 90
 	end
 	configFile = nil
 	
@@ -433,7 +433,7 @@ videoGroup:insert(stopVidButton)
 
 --click to learn more box && accompanying text
 learnRect = display.newRect(display.contentCenterX * .20, display.contentCenterY * .85, display.contentCenterX * .40, gH / 10)
-learnRect:setFillColor(0,0,0,0)
+learnRect:setFillColor(1,1,1,1)
 learnRect:setStrokeColor(1,1,0)
 learnRect.strokeWidth = 3
 mainMenuButtons:insert(learnRect)
@@ -462,7 +462,7 @@ dropTowerButton = widget.newButton(
 		width = display.contentCenterX * .40,
 		height = gH / 10,
 		shape = "rectangle",
-		fillColor = { default={ 0,0,0,0.01}, over={0,0,0,0.01} },
+		fillColor = { default={ 1,1,1,1}, over={1,1,1,1} },
 		font = native.systemFont,
 		fontSize = textSizeA,
 		label = "What is a drop tower?",
@@ -591,7 +591,7 @@ physicsGameButton = widget.newButton(
 		width = display.contentCenterX * .40,
 		height = gH / 10,
 		shape = "rectangle",
-		fillColor = { default={ 0,0,0,0.01}, over={0,0,0,0.01} },
+		fillColor = { default={ 1,1,1,1}, over={1,1,1,1} },
 		font = native.systemFont,
 		fontSize = textSizeA,
 		label = "Play a Physics Game!",
@@ -616,7 +616,7 @@ companionSiteButton = widget.newButton(
 		width = display.contentCenterX * .40,
 		height = gH / 10,
 		shape = "rectangle",
-		fillColor = { default={ 0,0,0,0.01}, over={0,0,0,0.01} },
+		fillColor = { default={ 1,1,1,1}, over={1,1,1,1} },
 		font = native.systemFont,
 		fontSize = textSizeA,
 		label = "Visit the website!",
@@ -1053,7 +1053,7 @@ local defaultButton = widget.newButton(
 		fillColor = { default={ .75,.75,.75,1 }, over={ 1,1,1,1 } },
 		font = native.systemFont,
 		fontSize = textSizeD,
-		label = "Use Default Settings",
+		label = "Default Settings",
 		labelColor = { default={ 0,0,0,1 }, over={ 0,0,0,1 } },
 		strokeColor = { default={ .25,.25,.25 }, over={ 0.5,0.5,0.5 } },
 		strokeWidth = 3,
