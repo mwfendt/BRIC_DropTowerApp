@@ -34,12 +34,6 @@ local function labelButtonHandler (event)
 	moduleInfoText.text = event.target.textChange
 end
 
---converts a height in pixels to the equivalent pt value for text
---may need some fine-tuning
-local function px2pt( pixels )
-	return pixels * 0.75
-end
-
 function M:makeRow(rowTitle, rowTarget, rowY, description, group)
 	--row label text
 	rowText = display.newText(
@@ -50,7 +44,7 @@ function M:makeRow(rowTitle, rowTarget, rowY, description, group)
 			align = "left",
 			y = rowY,
 			font = native.systemFont,
-			fontSize = math.floor(px2pt(gH * 0.05)),
+			fontSize = textSizeC,
 		})
 	rowText:setFillColor(0.75, 0.75, 0.75, 1)
 	group:insert(rowText)

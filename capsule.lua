@@ -63,7 +63,7 @@ function M:makeDisplay()
 		strokeWidth = 3,
 		label = "Back",
 		font = native.systemFont,
-		fontSize = px2pt(gH * 0.05),
+		fontSize = textSizeC,
 		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
 		onRelease = buttonHandler
 	})
