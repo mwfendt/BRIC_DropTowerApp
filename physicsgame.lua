@@ -36,15 +36,15 @@ end
 function tapListener(event)
 	--ball3
 	if(event.phase == "began") then 
-		if(ballPlaced == 1) then 
-			physics.removeBody(ball3)
-			ballPlaced = 0
-		end
-		print("here")
+		if(ballPlaced == 0) then
 		ball3.x = event.x
 		ball3.y = event.y
 		physics.addBody(ball3, {radius = 50, density=densityValue, friction=0.3, bounce=0.5} )
 		ballPlaced = 1
+			if(tutorialState == 3) then	
+				nextButton.isVisible = true
+			end
+		end
 	end
 	return true
 end
@@ -59,6 +59,11 @@ function buttonHandler(event)
 		elseif(gravButton:getLabel() == "Gravity: Off")then
 			gravButton:setLabel("Gravity: On")
 			physics.setGravity(9.8,0)
+			if(tutorialState == 1) then
+				tutorialState = 2
+				gameOverText.text = "Great! Now gravity has been turned on!\n\n Objects you place in the playground will now begin accelerating towards the ground at 9.8 meters per second!\n\n When you are ready, click next and click in the bright red box to place a ball in the playground!"
+				nextButton.isVisible = true
+			end
 		end
 	elseif("weight1" == event.target.id) then
 		densityValue = 0.5
@@ -90,11 +95,26 @@ function buttonHandler(event)
 		board.y = gH * 0.80
 		block.x = gW * 0.7375
 		block.y = gH * 0.875
+		if(tutorialState == 4) then
+			gameOverText.text = "Great! Now everything is back how you found it! Now we're going to change the weight of the ball in order to send the object being launched farther! Click next when youre ready!"
+			nextButton.isVisible = true
+		end
 	elseif("Next" == event.target.id) then	
 		if(tutorialState == 0) then	
-			gameGroup.isVisible = false
+			gameOverText.text = "First we're going to take a look at the buttons that control the playground!\n\n Lets start with the gravity button!\n\n Notice that gravity is turned off in the playground right now. Click the button in the bottom left corner to turn gravity on!"
+			gravButton.isVisible = true
 			nextButton.isVisible = false
 			tutorialState = 1
+		elseif(tutorialState == 2) then 
+			gameGroup.isVisible = false
+			nextButton.isVisible = false
+			tutorialState = 3
+		elseif(tutorialState == 3) then
+			gameOverText.text = "Great job! Now the catapult in the playground is ruined though!\n\n Click on the reset button to put everything back into place!"
+			gameGroup.isVisible = true
+			tutorialState = 4
+			resetButton.isVisible = true
+			nextButton.isVisible = false
 		end
 	elseif("Back" == event.target.id) then
 		M:hide()
@@ -142,27 +162,27 @@ function M:makeDisplay()
 		onRelease = buttonHandler
 	})
 	backButton.rotation = -90
-	backButton:setEnabled(false)
+	backButton.isVisible = false
 	
 	gravButton = widget.newButton(
 	{
 		id = "GravOnOff",
 		x = gW * .938,
-		y = gH - gH * 0.1425,
-		width = gW * 0.5,
+		y = gH - gH * 0.1375,
+		width = gW * 0.475,
 		height = gH * 0.0635,
 		shape = "rectangle",
 		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
 		strokeColor = {default={ .25 , .25, .25, 1}, over={ .50,.50,.50, 1 } },
 		strokeWidth = 3,
-		label = "Gravity: On",
+		label = "Gravity: Off",
 		font = native.systemFont,
 		fontSize = 16,
 		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
 		onRelease = buttonHandler
 	})
 	gravButton.rotation = -90
-	gravButton:setEnabled(false)
+	gravButton.isVisible = false
 		
 	weight1 = widget.newButton(
 		{
@@ -182,7 +202,7 @@ function M:makeDisplay()
 		})
 	weight1:setFillColor(1,1,1,1)
 	weight1.rotation = -90
-	weight1:setEnabled(false)
+	weight1.isVisible = false
 	
 	weight2 = widget.newButton(
 		{
@@ -202,7 +222,7 @@ function M:makeDisplay()
 		})
 	weight2:setFillColor(.75,.75,.75,1)
 	weight2.rotation = -90
-	weight2:setEnabled(false)
+	weight2.isVisible = false
 	
 	weight3 = widget.newButton(
 		{
@@ -222,7 +242,7 @@ function M:makeDisplay()
 		})
 	weight3:setFillColor(.75,.75,.75,1)
 	weight3.rotation = -90
-	weight3:setEnabled(false)
+	weight3.isVisible = false
 	
 	resetButton = widget.newButton(
 	{
@@ -242,7 +262,7 @@ function M:makeDisplay()
 		onRelease = buttonHandler
 	})
 	resetButton.rotation = -90
-	resetButton:setEnabled(false)
+	resetButton.isVisible = false
 	
 	nextButton = widget.newButton(
 	{
@@ -367,15 +387,13 @@ function M:makeDisplay()
 	placeButton:setFillColor(0,0,0,0.01)
 	placeButton:addEventListener("touch", tapListener)
 	placeButton.strokeWidth = 3
-	placeButton:setStrokeColor(0.5,0,0,1)
+	placeButton:setStrokeColor(1,0,0,1)
 	
 	--insert all components of the page into the group
 	dGroup:insert(physBkg)
-	dGroup:insert(backButton)
 	dGroup:insert(catchBox)
 	dGroup:insert(ball)
 	dGroup:insert(physFloor)
-	dGroup:insert(gravButton)
 	dGroup:insert(ball2)
 	dGroup:insert(ball3)
 	dGroup:insert(physLeftWall)
@@ -386,13 +404,15 @@ function M:makeDisplay()
 	dGroup:insert(peg2)
 	dGroup:insert(board)
 	dGroup:insert(block)
+	dGroup:insert(placeButton)
+	dGroup:insert(gameGroup)
+	dGroup:insert(nextButton)
+	dGroup:insert(gravButton)
+	dGroup:insert(resetButton)
+	dGroup:insert(backButton)
 	dGroup:insert(weight1)
 	dGroup:insert(weight2)
 	dGroup:insert(weight3)
-	dGroup:insert(placeButton)
-	dGroup:insert(resetButton)
-	dGroup:insert(gameGroup)
-	dGroup:insert(nextButton)
 	dGroup.isVisible = false
 	self.dGroup = dGroup
 
