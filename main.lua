@@ -27,8 +27,8 @@ gH = display.contentHeight
 gW = display.contentWidth
 
 --Text sizes because calling functions in tables is wonky and may break the app on android
-textSizeA = px2pt(gH * 0.015)
-textSizeB = px2pt(gH * 0.017)
+textSizeA = px2pt(gH * 0.025)
+textSizeB = px2pt(gH * 0.019)
 textSizeC = px2pt(gH * 0.05)
 textSizeD = px2pt(gH * 0.06)
 textSizeE = px2pt(gH * 0.07)
@@ -91,7 +91,7 @@ local function moduleBackHandler (event)
 		saveData = saveData .. "0"
 	end
 	--phys game
-	if(physicsGameButton.isVisible) then
+	if(physicsGameButtonGroup.isVisible) then
 		saveData = saveData .. "1"
 	else
 		saveData = saveData .. "0"
@@ -108,7 +108,7 @@ local function moduleBackHandler (event)
 		configFile:write(saveData)
 		io.close(configFile)
 		--make the popup, well, pop up
-		configPopupGroup.animFrames = 90
+		configPopupGroup.animFrames = 100
 	end
 	configFile = nil
 	
@@ -243,14 +243,14 @@ local function netListen( event )
 		if(COMPANIONSITEURL == event.url) then
 			--use the placeholder site
 			companionSiteAvailable = false
-			companionSiteButton.isVisible = true
+			companionSiteGroup.isVisible = true
 		end
 	else
 		if("ended" == event.phase) then
 			print ( "Response from: " .. event.url )
 			if(COMPANIONSITEURL == event.url) then
 				--use the real site
-				companionSiteButton.isVisible = true
+				companionSiteGroup.isVisible = true
 				companionSiteAvailable = true
 			end
 		end
@@ -432,49 +432,70 @@ videoGroup:insert(playVidButton)
 videoGroup:insert(stopVidButton)
 
 --click to learn more box && accompanying text
-learnRect = display.newRect(display.contentCenterX * .20, display.contentCenterY * .85, display.contentCenterX * .40, gH / 10)
+local learnRect = display.newRect(gW * 0.1, gH * 0.425, gW * .20, gH * 0.1)
 learnRect:setFillColor(1,1,1,1)
-learnRect:setStrokeColor(1,1,0)
+learnRect:setStrokeColor(0,0,1)
 learnRect.strokeWidth = 3
 mainMenuButtons:insert(learnRect)
 
 --create the text	
-learnText = display.newText(
+local learnText = display.newText(
 	{
 		text = "Click on a section to learn more!",
-		x = display.contentCenterX * .20,
-		y = display.contentCenterY * .92,
+		x = gW * 0.1,
+		y = gH * 0.425,
 		font = native.systemFont,
 		fontSize = textSizeA,
 		align = "center",
-		width = display.contentCenterX * .30,
-		height = gH / 11
+		width = gW * .15,
 	})
 learnText:setFillColor(0,0,0,1)
 mainMenuButtons:insert(learnText)
 	
---What is a drop tower? button
-dropTowerButton = widget.newButton(
+---------------------------
+-- WHAT IS A DROP TOWER? --
+---------------------------
+dropTowerButtonGroup = display.newGroup()
+mainMenuButtons:insert(dropTowerButtonGroup)
+
+--make the button
+local dropTowerButton = widget.newButton(
 	{
 		id = "DropTowerButton",
-		x = display.contentCenterX * 1.80,
-		y = display.contentCenterY * .85,
-		width = display.contentCenterX * .40,
-		height = gH / 10,
+		x = gW * 0.9,
+		y = gH * 0.425,
+		width = gW * 0.20,
+		height = gH * 0.1,
 		shape = "rectangle",
 		fillColor = { default={ 1,1,1,1}, over={1,1,1,1} },
-		font = native.systemFont,
-		fontSize = textSizeA,
-		label = "What is a drop tower?",
-		align = "center",
-		labelColor = {default= {0,0,0,1}, over = {0,0,0,1}},
-		strokeColor = { default={ 1,1,0 }, over={ 1,1,0 } },
+		strokeColor = { default={ 0,0,1 }, over={ 0,0,1 } },
 		strokeWidth = 3,
 		onRelease = sectionButtonHandler
 	})
-mainMenuButtons:insert(dropTowerButton)
+dropTowerButtonGroup:insert(dropTowerButton)
 
--- baylor button
+--text
+local dropTowerText = display.newText(
+	{
+		text = "What is a drop tower?",
+		x = gW * 0.90,
+		y = gH * 0.425,
+		width = gW * 0.20,
+		font = native.systemFont,
+		align = "center",
+		fontSize = textSizeA
+	})
+dropTowerText:setFillColor(0,0,0,1)
+dropTowerButtonGroup:insert(dropTowerText)
+
+-------------------
+-- BAYLOR BUTTON --
+-------------------
+
+baylorButtonGroup = display.newGroup()
+mainMenuButtons:insert(baylorButtonGroup)
+
+--image
 local baylorButton = widget.newButton(
 	{
 		id = "BaylorLogo",
@@ -484,11 +505,25 @@ local baylorButton = widget.newButton(
 		x = display.contentCenterX / 2,
 		width = display.contentCenterX,
 		y = gH - (gH * 0.086 * 0.5),
-		height = gH * 0.086
+		height = gH * 0.086,
 	})
-mainMenuButtons:insert(baylorButton)
+baylorButtonGroup:insert(baylorButton)
 
--- bric button 
+--outline
+local baylorButtonOutline = display.newRect(gW * 0.25, gH * 0.957, gW * 0.5 - 4, gH * .086 - 4)
+baylorButtonOutline.strokeWidth = 3
+baylorButtonOutline:setStrokeColor(0,0,1)
+baylorButtonOutline:setFillColor(1,1,1,0)
+baylorButtonGroup:insert(baylorButtonOutline)
+
+-----------------
+-- BRIC BUTTON --
+-----------------
+
+bricButtonGroup = display.newGroup()
+mainMenuButtons:insert(bricButtonGroup)
+
+--image
 local bricButton = widget.newButton(
 	{
 		id = "BRICLogo",
@@ -500,7 +535,14 @@ local bricButton = widget.newButton(
 		y = gH - (gH * 0.086 * 0.5),
 		height = gH * 0.086
 	})
-mainMenuButtons:insert(bricButton)
+bricButtonGroup:insert(bricButton)
+
+--outline
+local bricButtonOutline = display.newRect(gW * 0.75, gH * 0.957, gW * 0.5 - 4, gH * .086 - 4)
+bricButtonOutline.strokeWidth = 3
+bricButtonOutline:setStrokeColor(0,0,1)
+bricButtonOutline:setFillColor(1,1,1,0)
+bricButtonGroup:insert(bricButtonOutline)
 
 -----------------------
 -- EXPERIMENT BUTTON --
@@ -509,26 +551,34 @@ mainMenuButtons:insert(bricButton)
 experimentButtonGroup = display.newGroup()
 mainMenuButtons:insert(experimentButtonGroup)
 
---make button
-local experimentButton = widget.newButton(
+--actual button
+local experimentButtonOutline = widget.newButton(
 	{
 		id = "ExperimentButton",
-		defaultFile = "images/DropCapsule2.jpg",
-		overFile = "images/DropCapsule2.jpg",
 		onRelease = sectionButtonHandler,
-		x = display.contentCenterX * 1.60,
-		width = gH * 0.125,
-		y = gH - (gH * 0.19),
-		height = gH * 0.125
+		x = gW * 0.849,
+		width = gW * 0.3,
+		y = gH * 0.825,
+		height = gH * 0.17,
+		shape = "rectangle",
+		fillColor = { default={ 1,1,1,1}, over={1,1,1,1} },
+		strokeColor = { default={ 0,0,1 }, over={ 0,0,1 } },
+		strokeWidth = 3,
 	})
-experimentButtonGroup:insert(experimentButton)
+experimentButtonGroup:insert(experimentButtonOutline)
+
+--image
+local experimentButtonImage = display.newImageRect("images/DropCapsule2.jpg", gH * 0.10, gH * 0.10)
+experimentButtonImage.x = gW * 0.85
+experimentButtonImage.y = gH * 0.80
+experimentButtonGroup:insert(experimentButtonImage)
 
 -- options for text below experiment button
 local experimentTextOptions = 
 	{
 		text = "Start your own experiment!",
-		x = display.contentCenterX * 1.60,
-		y = gH - (gH * 0.10),
+		x = gW * 0.85,
+		y = gH * 0.89,
 		font = native.systemFont,
 		fontSize = textSizeB,
 		align = "center",
@@ -547,26 +597,35 @@ experimentButtonGroup:insert(experimentText)
 
 repairButtonGroup = display.newGroup()
 mainMenuButtons:insert(repairButtonGroup)
--- repairButton
-local repairButton = widget.newButton(
+
+-- actual button
+local repairButtonOutline = widget.newButton(
 	{
 		id = "RepairButton",
-		defaultFile = "images/wrench.jpg",
-		overFile = "images/wrench.jpg",
 		onRelease = sectionButtonHandler,
-		x = display.contentCenterX * 0.30,
-		width = gH * 0.125,
-		y = gH - (gH * 0.19),
-		height = gH * 0.125,
+		x = gW * 0.151,
+		width = gW * 0.3,
+		y = gH * 0.825,
+		height = gH * 0.17,
+		shape = "rectangle",
+		fillColor = { default={ 1,1,1,1}, over={1,1,1,1} },
+		strokeColor = { default={ 0,0,1 }, over={ 0,0,1 } },
+		strokeWidth = 3,
 	})
-repairButtonGroup:insert(repairButton)
+repairButtonGroup:insert(repairButtonOutline)
+	
+-- wrench image
+local repairButtonImage = display.newImageRect("images/wrench.jpg", gH * 0.1, gH * 0.1)
+repairButtonImage.x = gW * 0.15
+repairButtonImage.y = gH * 0.80
+repairButtonGroup:insert(repairButtonImage)
 
 --main menu repair text options
 local repairTextOptions = 
 	{
 		text = "Think you know enough to repair the drop tower?",
-		x = display.contentCenterX * 0.30,
-		y = gH - (gH * 0.10),
+		x = gW * 0.15,
+		y = gH * 0.88,
 		font = native.systemFont,
 		fontSize = textSizeB,
 		align = "center",
@@ -583,52 +642,76 @@ repairButtonGroup:insert(repairText)
 -- PHYSICS GAME --
 ------------------
 
-physicsGameButton = widget.newButton(
+physicsGameButtonGroup = display.newGroup()
+mainMenuButtons:insert(physicsGameButtonGroup)
+
+--button
+local physicsGameButton = widget.newButton(
 	{
 		id = "PhysicsGameButton",
-		x = display.contentCenterX * 1.80,
-		y = display.contentCenterY * 1.05,
-		width = display.contentCenterX * .40,
-		height = gH / 10,
+		x = gW * 0.90,
+		y = gH * 0.525,
+		width = gW * 0.20,
+		height = gH * 0.1,
 		shape = "rectangle",
 		fillColor = { default={ 1,1,1,1}, over={1,1,1,1} },
-		font = native.systemFont,
-		fontSize = textSizeA,
-		label = "Play a Physics Game!",
-		align = "center",
-		labelColor = {default= {0,0,0,1}, over = {0,0,0,1}},
-		strokeColor = { default={ 1,1,0 }, over={ 1,1,0 } },
+		strokeColor = { default={ 0,0,1 }, over={ 0,0,1 } },
 		strokeWidth = 3,
 		onRelease = sectionButtonHandler
 	})
-mainMenuButtons:insert(physicsGameButton)
+physicsGameButtonGroup:insert(physicsGameButton)
+
+--text
+local physicsGameText = display.newText(
+	{
+		text = "Play a physics game!",
+		x = gW * 0.90,
+		y = gH * 0.525,
+		width = gW * 0.20,
+		font = native.systemFont,
+		align = "center",
+		fontSize = textSizeA
+	})
+physicsGameText:setFillColor(0,0,0,1)
+physicsGameButtonGroup:insert(physicsGameText)
 
 --------------------
 -- COMPANION SITE --
 --------------------
+companionSiteGroup = display.newGroup()
+mainMenuButtons:insert(companionSiteGroup)
 
 --create the button
-companionSiteButton = widget.newButton(
+local companionSiteButton = widget.newButton(
 	{
 		id = "CompanionSite",
-		x = display.contentCenterX * 0.20,
-		y = display.contentCenterY * 1.05,
-		width = display.contentCenterX * .40,
-		height = gH / 10,
+		x = gW * 0.10,
+		y = gH * 0.525,
+		width = gW * 0.20,
+		height = gH * 0.10,
 		shape = "rectangle",
 		fillColor = { default={ 1,1,1,1}, over={1,1,1,1} },
-		font = native.systemFont,
-		fontSize = textSizeA,
-		label = "Visit the website!",
-		align = "center",
-		labelColor = {default= {0,0,0,1}, over = {0,0,0,1}},
-		strokeColor = { default={ 1,1,0 }, over={ 1,1,0 } },
+		strokeColor = { default={ 0,0,1 }, over={ 0,0,1 } },
 		strokeWidth = 3,
 		onRelease = handleWebEvent
 	})
-companionSiteButton.isVisible = false
-mainMenuButtons:insert(companionSiteButton)
+companionSiteGroup:insert(companionSiteButton)
 
+--text
+local companionSiteText = display.newText(
+	{
+		text = "Visit the website!",
+		x = gW * 0.10,
+		y = gH * 0.525,
+		width = gW * 0.20,
+		font = native.systemFont,
+		align = "center",
+		fontSize = textSizeA
+	})
+companionSiteText:setFillColor(0,0,0,1)
+companionSiteGroup:insert(companionSiteText)
+
+companionSiteGroup.isVisible = false
 --trigger testing event that will unhide the button if it gets a response from the website
 network.request( COMPANIONSITEURL, "GET", netListen, {timeout = COMPANIONTIMEOUTLENGTH})
 
@@ -875,7 +958,7 @@ else
 			print("Phys Game ON")
 		elseif (string.sub(configData,7,7) == "0") then
 			print("Phys Game OFF")
-			physicsGameButton.isVisible = false
+			physicsGameButtonGroup.isVisible = false
 		else
 			print("Phys Game INVALID")
 			configExists = false
@@ -889,7 +972,7 @@ else
 			decelButton.isVisible = true
 			repairButtonGroup.isVisible = true
 			experimentButtonGroup.isVisible = true
-			physicsGameButton.isVisible = true
+			physicsGameButtonGroup.isVisible = true
 		end
 	end
 	--close the file
@@ -967,7 +1050,7 @@ modRowMaker:makeRow("Fix It Game", repairButtonGroup, gH * 0.47, "A short quiz-b
 --row 6: Experiment
 modRowMaker:makeRow("Experiment", experimentButtonGroup, gH * 0.55, "A module in which the user can simulate common drop tower experiments", moduleGroup)
 --row 7: Physics game
-modRowMaker:makeRow("Physics Game", physicsGameButton, gH * 0.63, "A game where the user can learn about the physics of gravity", moduleGroup)
+modRowMaker:makeRow("Physics Game", physicsGameButtonGroup, gH * 0.63, "A game where the user can learn about the physics of gravity", moduleGroup)
 
 --create area for information text
 local textBkg = display.newRect(gW * 0.5, gH * 0.785, gW * 0.95, gH * 0.21)
