@@ -434,8 +434,6 @@ videoGroup:insert(stopVidButton)
 --click to learn more box && accompanying text
 local learnRect = display.newRect(gW * 0.1, gH * 0.425, gW * .20, gH * 0.1)
 learnRect:setFillColor(1,1,1,1)
-learnRect:setStrokeColor(0,0,1)
-learnRect.strokeWidth = 3
 mainMenuButtons:insert(learnRect)
 
 --create the text	

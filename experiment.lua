@@ -17,7 +17,8 @@ local M = {}
 -- STATES: --
 -- 0 - Experiment menu
 -- 1 - Create Experiment
--- 2 - Run experiment (not used yet)
+-- 2 - Run experiment
+-- 3 - Experiment results
 local expState = 0
 local animFrames = 0
 local expSelected = 0
@@ -29,7 +30,6 @@ local function endVideo()
 		video:removeSelf()
 		video = nil
 	end
-	stopVidButton.isVisible = false
 end
 
 --starts and ends video 
@@ -44,6 +44,13 @@ local function videoListener (event)
 		elseif ("ended" == event.phase) then
 			--video is over, close it
 			endVideo()
+			if(expState == 2) then
+				--if you're done watching the experiment, advance
+				expState = 3
+				createExpGroup.isVisible = false
+				expVideoGroup.isVisible = false
+				postExpGroup.isVisible = true
+			end
 		end
 	end
 end
@@ -83,6 +90,15 @@ function buttonHandler(event)
 		elseif(expState == 2) then
 			endVideo()
 			expVideoGroup.isVisible = false
+			expState = 1
+		--back from the past-experiment page gots back to the first page
+		elseif(expState == 3) then
+			expState = 0
+			postExpGroup.isVisible = false
+			experimentGroup.isVisible = true
+			video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * .975, display.contentCenterX * .6, display.contentCenterY * .5)
+			video:load("videos/ExperimentPageVid.mp4")
+			video:addEventListener("video", videoListener)
 		end
 		--bottom experiment button sends from page 1 to page 2
 	elseif(event.target.id == "Bottom Button") then
@@ -90,6 +106,12 @@ function buttonHandler(event)
 		createExpGroup.isVisible = true
 		experimentGroup.isVisible = false
 		endVideo()
+	elseif(event.target.id == "ScreenDarkener") then
+		expState = 3
+		endVideo()
+		createExpGroup.isVisible = false
+		expVideoGroup.isVisible = false
+		postExpGroup.isVisible = true
 	end
 end
 
@@ -141,8 +163,13 @@ local function happenButtonHandler(event)
 end
 
 local function runExperimentHandler(event)
-	expVideoGroup.isVisible = true
-	expState = 2
+	if(expSelected ~= 0 and hypSelected ~= 0) then
+		expVideoGroup.isVisible = true
+		expState = 2
+		video = native.newVideo(gW * 0.5, gH * 0.45, gH * 0.506 , gH * 0.9)
+		video:load("videos/ExperimentVid" .. expSelected .. ".mp4")
+		video:addEventListener("video", videoListener)
+	end
 end
 
 --main display function
@@ -152,11 +179,13 @@ function M:makeDisplay()
 	experimentGroup = display.newGroup()
 	createExpGroup = display.newGroup()
 	expVideoGroup = display.newGroup()
+	postExpGroup = display.newGroup()
 	backButtonGroup = display.newGroup()
 	dGroup = display.newGroup()
 	dGroup:insert(experimentGroup)
 	dGroup:insert(createExpGroup)
 	dGroup:insert(expVideoGroup)
+	dGroup:insert(postExpGroup)
 	dGroup:insert(backButtonGroup)
 	
 	-----------------
@@ -278,16 +307,16 @@ function M:makeDisplay()
 	secondsText = display.newText(secondsTextOptions)
 	secondsText:setFillColor(0,0,0,1)
 	experimentGroup:insert(secondsText)
-	
-	--Create an Experiment page Buttons
-	createBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
-	createBkg:setFillColor(.3, .5, .9, 1)
-	createExpGroup:insert(createBkg)
 
 	------------------
 	--What would you--
 	--like to drop? --
 	------------------
+	--Create an Experiment page Buttons
+	createBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
+	createBkg:setFillColor(.3, .5, .9, 1)
+	createExpGroup:insert(createBkg)
+	
 	--top button
 	whatDrop = widget.newButton(
 		{
@@ -494,7 +523,7 @@ function M:makeDisplay()
 		i = i - 1
 		hyp1C = display.newText(
 			{
-				text="The lego men will explode.",
+				text="The lego men will pull on the chain downwards.",
 				x=happen3.x,
 				y=happen3.y,
 				width=happen3.width * 0.95,
@@ -676,11 +705,22 @@ function M:makeDisplay()
 			labelColor = {default = {1,1,1,1}, over = {1,1,1,1}},
 			font = native.systemFont,
 			fontSize = textSizeA,
+			onRelease = buttonHandler
 		})
 	expVideoGroup:insert(screenDarkener)
 	expVideoGroup.isVisible = false
 	
 	createExpGroup.isVisible = false
+	
+	---------------------
+	-- POST EXPERIMENT --
+	---------------------
+	postBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
+	postBkg:setFillColor(.3, .5, .9, 1)
+	postExpGroup:insert(postBkg)
+	
+	postExpGroup.isVisible = false
+	
 	dGroup.isVisible = false
 	self.experimentGroup = experimentGroup
 	self.createExpGroup = createExpGroup
