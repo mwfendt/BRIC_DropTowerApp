@@ -44,6 +44,9 @@ function tapListener(event)
 			if(tutorialState == 3) then	
 				nextButton.isVisible = true
 			end
+			if(tutorialState == 5) then
+				nextButton.isVisible = true
+			end
 		end
 	end
 	return true
@@ -61,25 +64,32 @@ function buttonHandler(event)
 			physics.setGravity(9.8,0)
 			if(tutorialState == 1) then
 				tutorialState = 2
-				gameOverText.text = "Great! Now gravity has been turned on!\n\n Objects you place in the playground will now begin accelerating towards the ground at 9.8 meters per second!\n\n When you are ready, click next and click in the bright red box to place a ball in the playground!"
+				gameOverText.text = "Great! Now gravity has been turned on!\n\n Objects you place in the playground will now begin accelerating towards the ground at 9.8m/s^2!\n\n When you are ready, click next and click in the bright red box to place a ball in the playground!"
 				nextButton.isVisible = true
 			end
 		end
 	elseif("weight1" == event.target.id) then
-		densityValue = 0.5
-		weight1:setFillColor(1,1,1,1)
-		weight2:setFillColor(.75,.75,.75,1)
-		weight3:setFillColor(.75,.75,.75,1)
+		if(tutorialState ~= 5) then
+			densityValue = 0.5
+			weight1:setFillColor(1,1,1,1)
+			weight2:setFillColor(.75,.75,.75,1)
+			weight3:setFillColor(.75,.75,.75,1)
+		end
 	elseif("weight2" == event.target.id) then
-		densityValue = 1
-		weight2:setFillColor(1,1,1,1)
-		weight1:setFillColor(.75,.75,.75,1)
-		weight3:setFillColor(.75,.75,.75,1)
+		if(tutorialState ~= 5) then
+			densityValue = 1.5
+			weight2:setFillColor(1,1,1,1)
+			weight1:setFillColor(.75,.75,.75,1)
+			weight3:setFillColor(.75,.75,.75,1)
+		end
 	elseif("weight3" == event.target.id) then
-		densityValue = 2
+		densityValue = 3
 		weight3:setFillColor(1,1,1,1)
 		weight1:setFillColor(.75,.75,.75,1)
 		weight2:setFillColor(.75,.75,.75,1)
+		if(tutorialState == 5) then
+			gameGroup.isVisible = false
+		end
 	elseif("Reset" == event.target.id) then
 		ball3.x = gW * 4
 		ball3.y = gH * 4
@@ -101,7 +111,7 @@ function buttonHandler(event)
 		end
 	elseif("Next" == event.target.id) then	
 		if(tutorialState == 0) then	
-			gameOverText.text = "First we're going to take a look at the buttons that control the playground!\n\n Lets start with the gravity button!\n\n Notice that gravity is turned off in the playground right now. Click the button in the bottom left corner to turn gravity on!"
+			gameOverText.text = "First we're going to take a look at the buttons that control the playground!\n\n Lets start with the gravity button!\n\n Notice that gravity is turned off right now. That means that if you placed a ball in the playground it would stay in its exact position! Click the button in the bottom left corner to turn gravity on!"
 			gravButton.isVisible = true
 			nextButton.isVisible = false
 			tutorialState = 1
@@ -115,7 +125,24 @@ function buttonHandler(event)
 			tutorialState = 4
 			resetButton.isVisible = true
 			nextButton.isVisible = false
-		end
+		elseif(tutorialState == 4) then 
+			tutorialState = 5
+			gameOverText.text = "See these three weight buttons at the bottom? These control how heavy the ball is.\n\n Currently the ball you are dropping is 25 pounds.\n\n Set the weight to 75 pounds, drop a ball above the catapult to see what happens!"
+			weight1.isVisible = true
+			weight2.isVisible = true
+			weight3.isVisible = true
+			nextButton.isVisible = false
+		elseif(tutorialState == 5) then
+			tutorialState = 6
+			gameGroup.isVisible = true
+			gameOverText.text = "Great job! Notice how although the ball weighs more and sends the object flying further, it still falls down at the same speed since weight isnt a factor in gravity!\n\n Now you can experiment in the playground yourself and try to get the payload in the box on the right! Hit next to begin, and back to leave at any point!"
+		elseif(tutorialState == 6) then
+			tutorialState = 10
+			backButton.isVisible = true
+			gameGroup.isVisible = false
+			nextButton.isVisible = false
+			
+		end		
 	elseif("Back" == event.target.id) then
 		M:hide()
 	end
@@ -162,7 +189,7 @@ function M:makeDisplay()
 		onRelease = buttonHandler
 	})
 	backButton.rotation = -90
-	backButton.isVisible = false
+	--backButton.isVisible = false
 	
 	gravButton = widget.newButton(
 	{
@@ -306,7 +333,7 @@ function M:makeDisplay()
 				fontSize=i,
 				align="center"
 			})
-	until gameOverText.height <= gameOverBox.height or i == 1
+	until gameOverText.height <= gameOverBox.height * .90 or i == 1
 	gameOverText:setFillColor(1,0,0,1)
 	gameOverText.rotation = -90
 	
@@ -406,10 +433,10 @@ function M:makeDisplay()
 	dGroup:insert(block)
 	dGroup:insert(placeButton)
 	dGroup:insert(gameGroup)
+	dGroup:insert(backButton)
 	dGroup:insert(nextButton)
 	dGroup:insert(gravButton)
 	dGroup:insert(resetButton)
-	dGroup:insert(backButton)
 	dGroup:insert(weight1)
 	dGroup:insert(weight2)
 	dGroup:insert(weight3)
@@ -454,8 +481,10 @@ function M:reveal()
 	peg.bodyType = "static"
 	peg2.bodyType = "static"
 	self.dGroup.isVisible = true
-	gameGroup.animFrames = 10
-	gameGroup.isVisible = true
+	if(tutorialState ~= 10) then
+		gameGroup.animFrames = 10
+		gameGroup.isVisible = true
+	end
 	print("reveal")
 end
 
