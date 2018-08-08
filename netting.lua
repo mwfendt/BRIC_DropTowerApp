@@ -39,7 +39,7 @@ function M:makeDisplay()
 		i = i - 1
 		nettingText = display.newText(
 			{
-				text="This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text. This is test text. It is going to be a lot of test text.",
+				text="The area surrounding the drop shaft is protected by a wire netting that prevents any large objects from accidentally interfering with the drop or from anything in the drop shaft from escaping. Theoretically, nothing should ever be able to escape the shaft since payloads are dropped straight down, but it's better to be safe than sorry!",
 				x=nettingTextBkg.x,
 				y=nettingTextBkg.y,
 				width=nettingTextBkg.width,

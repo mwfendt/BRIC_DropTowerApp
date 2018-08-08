@@ -39,7 +39,7 @@ function M:makeDisplay()
 		i = i - 1
 		winchText = display.newText(
 			{
-				text="Something shorter",
+				text="The winch raises the drop capsule to its starting height and holds it there until the drop begins. The top of the winch mechanism is designed to reduce any swinging created by the act of lifting the capsule, so that the drop can be started more quickly.",
 				x=winchTextBkg.x,
 				y=winchTextBkg.y,
 				width=winchTextBkg.width,

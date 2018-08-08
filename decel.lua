@@ -39,7 +39,7 @@ function M:makeDisplay()
 		i = i - 1
 		decelText = display.newText(
 			{
-				text="Something kind of in the middle; long enough for a couple lines at 30 but not enough to knock it down.",
+				text="The deceleration chamber ensures that the drop capsule is safely stopped without any damage. As it turns out, ordinary packing peanuts are very good at doing this!",
 				x=decelTextBkg.x,
 				y=decelTextBkg.y,
 				width=decelTextBkg.width,

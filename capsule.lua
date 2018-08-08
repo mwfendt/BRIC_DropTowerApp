@@ -39,7 +39,7 @@ function M:makeDisplay()
 		i = i - 1
 		dropCapText = display.newText(
 			{
-				text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+				text="The drop capsule has two separate pieces: the inner layer and the outer layer. The outer layer is designed to reduce air resistance so that the inner layer can experience microgravity closer to true weightlessness. The inner capsule is not physically connected to the outer layer so that it can experience free fall without being slowed down by air resistance like the outer layer is. Thus the inner layer is where the experiments are housed.",
 				x=dropCapTextBkg.x,
 				y=dropCapTextBkg.y, --change to align top?
 				width=dropCapTextBkg.width,
