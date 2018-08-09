@@ -141,8 +141,31 @@ function buttonHandler(event)
 			backButton.isVisible = true
 			gameGroup.isVisible = false
 			nextButton.isVisible = false
-			
 		end		
+	elseif("ResetTutorial" == event.target.id) then
+		tutorialState = 0
+		gameOverText.text="Welcome to the Physics Playground!\n\n In the physics playground you will get to learn about physics while testing your knowledge in a catapult game!\n\n You will learn the following: \n 1. Objects do not begin to fall unless gravity is acting upon them. \n 2. Heavier objects do not fall faster. \n\n  Hit the next button on your screen to begin the tutorial!"
+		gameGroup.isVisible = true
+		nextButton.isVisible = true
+		gravButton.isVisible = false
+		weight1.isVisible = false
+		weight2.isVisible = false
+		weight3.isVisible = false
+		resetButton.isVisible = false
+		ball3.x = gW * 4
+		ball3.y = gH * 4
+		physics.removeBody(ball3)
+		ballPlaced = 0
+		board:setLinearVelocity(0,0)
+		block:setLinearVelocity(0,0)
+		board.angularVelocity = 0
+		block.angularVelocity = 0
+		board.rotation = 0
+		block.rotation = 0
+		board.x = gW * 0.77
+		board.y = gH * 0.80
+		block.x = gW * 0.7375
+		block.y = gH * 0.875
 	elseif("Back" == event.target.id) then
 		M:hide()
 	end
@@ -175,8 +198,8 @@ function M:makeDisplay()
 	{
 		id = "Back",
 		x = gW * .938,
-		y = gH * 0.1425,
-		width = gW * 0.5,
+		y = gH * 0.19,
+		width = gW * 0.35,
 		height = gH * 0.0635,
 		shape = "rectangle",
 		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
@@ -189,6 +212,25 @@ function M:makeDisplay()
 		onRelease = buttonHandler
 	})
 	backButton.rotation = -90
+	
+	resetTutorialButton = widget.newButton(
+	{
+		id = "ResetTutorial",
+		x = gW * .938,
+		y = gH * 0.045,
+		width = gW * 0.15,
+		height = gH * 0.0635,
+		shape = "rectangle",
+		fillColor = {default={.75, .75, .75, 1}, over={1,1,1,1}},
+		strokeColor = {default={ .25 , .25, .25, 1}, over={ .50,.50,.50, 1 } },
+		strokeWidth = 3,
+		label = "Reset Tutorial",
+		font = native.systemFont,
+		fontSize = 7,
+		labelColor = {default = {0,0,0,1}, over = {0,0,0,1}},
+		onRelease = buttonHandler
+	})
+	resetTutorialButton.rotation = -90
 	--backButton.isVisible = false
 	
 	gravButton = widget.newButton(
@@ -325,7 +367,7 @@ function M:makeDisplay()
 		i = i - 1
 		gameOverText = display.newText(
 			{
-				text="Welcome to the Physics Playground!\n\n In the physics playground you will get to learn about physics while testing your knowledge in a catapult game!\n\n First lets take a look at what you can do in the playground. Hit the next button on your screen to begin the tutorial!",
+				text="Welcome to the Physics Playground!\n\n In the physics playground you will get to learn about physics while testing your knowledge in a catapult game!\n\n You will learn the following: \n 1. Objects do not begin to fall unless gravity is acting upon them. \n 2. Heavier objects do not fall faster. \n\n  Hit the next button on your screen to begin the tutorial!",
 				x=gameOverBox.x,
 				y=gameOverBox.y,
 				width=gameOverBox.width - 6, --keep inside the lines
@@ -434,6 +476,7 @@ function M:makeDisplay()
 	dGroup:insert(placeButton)
 	dGroup:insert(gameGroup)
 	dGroup:insert(backButton)
+	dGroup:insert(resetTutorialButton)
 	dGroup:insert(nextButton)
 	dGroup:insert(gravButton)
 	dGroup:insert(resetButton)
