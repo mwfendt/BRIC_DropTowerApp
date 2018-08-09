@@ -43,13 +43,16 @@ local function videoListener (event)
 			video:play()
 		elseif ("ended" == event.phase) then
 			--video is over, close it
-			endVideo()
 			if(expState == 2) then
 				--if you're done watching the experiment, advance
 				expState = 3
 				createExpGroup.isVisible = false
 				expVideoGroup.isVisible = false
 				postExpGroup.isVisible = true
+				endVideo()
+			else
+				video:seek(0)
+				video:play()
 			end
 		end
 	end

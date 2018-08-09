@@ -12,9 +12,9 @@ display.setStatusBar( display.HiddenStatusBar )
 local widget = require( "widget" )
 
 -- "constants"
-local COMPANIONSITEURL = "https://www.baylor.edu/bric/"
+local COMPANIONSITEURL = "https://room.eu.com/article/a-new-microgravity-research-facility-for-central-texas-and-beyond"
 local LOCALCOMPANIONSITE = "web/index.html"
-local COMPANIONTIMEOUTLENGTH = 0
+local COMPANIONTIMEOUTLENGTH = 60
 
 --converts a height in pixels to the equivalent pt value for text
 --may need some fine-tuning
@@ -41,6 +41,8 @@ webDisplay = nil
 
 --a flag for whether the companion site could be reached or not
 companionSiteAvailable = false
+baylorSiteAvailable = false
+bricSiteAvailable = false
 
 ---------------------
 -- BUTTON HANDLERS --
@@ -203,11 +205,19 @@ local function handleWebEvent(event)
 	elseif("BaylorLogo" == event.target.id) then
 		webGroup.isVisible = true
 		webDisplay = native.newWebView(display.contentCenterX, gH * 0.45, gW, gH * 0.9)
-		webDisplay:request("https://www.baylor.edu")
+		if(baylorSiteAvailable) then
+			webDisplay:request("https://www.baylor.edu")
+		else
+			webDisplay:request(LOCALCOMPANIONSITE, system.ResourceDirectory)
+		end
 	elseif("BRICLogo" == event.target.id) then
 		webGroup.isVisible = true
 		webDisplay = native.newWebView(display.contentCenterX, gH * 0.45, gW, gH * 0.9)
-		webDisplay:request("https://www.baylor.edu/bric/")
+		if(bricSiteAvailable) then
+			webDisplay:request("https://www.baylor.edu/bric/")
+		else
+			webDisplay:request(LOCALCOMPANIONSITE, system.ResourceDirectory)
+		end
 	elseif("CompanionSite" == event.target.id) then
 		webGroup.isVisible = true
 		webDisplay = native.newWebView(display.contentCenterX, gH * 0.45, gW, gH * 0.9)
@@ -244,6 +254,10 @@ local function netListen( event )
 			--use the placeholder site
 			companionSiteAvailable = false
 			companionSiteGroup.isVisible = true
+		elseif(event.url = "https://www.baylor.edu") then
+			baylorSiteAvailable = false
+		elseif(event.url = "https://www.baylor.edu/bric/") then
+			bricSiteAvailable = false
 		end
 	else
 		if("ended" == event.phase) then
@@ -252,6 +266,10 @@ local function netListen( event )
 				--use the real site
 				companionSiteGroup.isVisible = true
 				companionSiteAvailable = true
+			elseif(event.url = "https://www.baylor.edu") then
+				baylorSiteAvailable = true
+			elseif(event.url = "https://www.baylor.edu/bric/") then
+				bricSiteAvailable = true
 			end
 		end
 	end
@@ -712,6 +730,8 @@ companionSiteGroup:insert(companionSiteText)
 companionSiteGroup.isVisible = false
 --trigger testing event that will unhide the button if it gets a response from the website
 network.request( COMPANIONSITEURL, "GET", netListen, {timeout = COMPANIONTIMEOUTLENGTH})
+network.request( "https://www.baylor.edu", "GET", netListen, {timeout = COMPANIONTIMEOUTLENGTH})
+network.request( "https://www.baylor.edu/bric/", "GET", netListen, {timeout = COMPANIONTIMEOUTLENGTH})
 
 ---------------------
 -- SETTINGS BUTTON --
