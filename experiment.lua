@@ -99,6 +99,7 @@ function buttonHandler(event)
 			video = native.newVideo(display.contentCenterX * 1.45, display.contentCenterY * .975, display.contentCenterX * .6, display.contentCenterY * .5)
 			video:load("videos/ExperimentPageVid.mp4")
 			video:addEventListener("video", videoListener)
+			resetExpButtons()
 		end
 		--bottom experiment button sends from page 1 to page 2
 	elseif(event.target.id == "Bottom Button") then
@@ -132,14 +133,23 @@ local function dropButtonHandler(event)
 		--Lego men
 		expSelected = 1
 		hypothesis1.isVisible = true
+		explain1Group.isVisible = true
+		explain2Group.isVisible = false
+		explain3Group.isVisible = false
 	elseif ("Drop2" == event.target.id) then
 		--water
 		expSelected = 2
 		hypothesis2.isVisible = true
+		explain1Group.isVisible = false
+		explain2Group.isVisible = true
+		explain3Group.isVisible = false
 	elseif ("Drop3" == event.target.id) then
 		--candle
 		expSelected = 3
 		hypothesis3.isVisible = true
+		explain1Group.isVisible = false
+		explain2Group.isVisible = false
+		explain3Group.isVisible = true
 	end
 end
 
@@ -152,12 +162,33 @@ local function happenButtonHandler(event)
 		if("Happen1" == event.target.id) then
 			--leftmost choice
 			hypSelected = 1
+			if(expSelected == 3) then
+				hypCorrectGroup.isVisible = true
+				hypIncorrectGroup.isVisible = false
+			else
+				hypCorrectGroup.isVisible = false
+				hypIncorrectGroup.isVisible = true
+			end
 		elseif ("Happen2" == event.target.id) then
 			--middle choice
 			hypSelected = 2
+			if(expSelected == 1) then
+				hypCorrectGroup.isVisible = true
+				hypIncorrectGroup.isVisible = false
+			else
+				hypCorrectGroup.isVisible = false
+				hypIncorrectGroup.isVisible = true
+			end
 		elseif ("Happen3" == event.target.id) then
 			--rightmost choice
 			hypSelected = 3
+			if(expSelected == 2) then
+				hypCorrectGroup.isVisible = true
+				hypIncorrectGroup.isVisible = false
+			else
+				hypCorrectGroup.isVisible = false
+				hypIncorrectGroup.isVisible = true
+			end
 		end
 	end
 end
@@ -515,7 +546,7 @@ function M:makeDisplay()
 	hypothesis1:insert(hyp1B)
 	
 	--text C
-	local i = textSizeC
+	i = textSizeC
 	repeat
 		if(hyp1C ~= nil) then
 			hyp1C:removeSelf()
@@ -542,7 +573,7 @@ function M:makeDisplay()
 	createExpGroup:insert(hypothesis2)
 	
 	--text A
-	local i = textSizeC
+	i = textSizeC
 	repeat
 		if(hyp2A ~= nil) then
 			hyp2A:removeSelf()
@@ -584,7 +615,7 @@ function M:makeDisplay()
 	hypothesis2:insert(hyp2B)
 	
 	--text C
-	local i = textSizeC
+	i = textSizeC
 	repeat
 		if(hyp2C ~= nil) then
 			hyp2C:removeSelf()
@@ -611,7 +642,7 @@ function M:makeDisplay()
 	createExpGroup:insert(hypothesis3)
 	
 	--text A
-	local i = textSizeC
+	i = textSizeC
 	repeat
 		if(hyp3A ~= nil) then
 			hyp3A:removeSelf()
@@ -640,7 +671,7 @@ function M:makeDisplay()
 		i = i - 1
 		hyp3B = display.newText(
 			{
-				text="The flame will form a sphere.",
+				text="The flame will not change.",
 				x=happen2.x,
 				y=happen2.y,
 				width=happen2.width * 0.95,
@@ -653,7 +684,7 @@ function M:makeDisplay()
 	hypothesis3:insert(hyp3B)
 	
 	--text C
-	local i = textSizeC
+	i = textSizeC
 	repeat
 		if(hyp3C ~= nil) then
 			hyp3C:removeSelf()
@@ -691,6 +722,8 @@ function M:makeDisplay()
 		})
 	createExpGroup:insert(runExperiment)
 	
+	createExpGroup.isVisible = false
+	
 	--video playing group
 	local screenDarkener = widget.newButton(
 		{
@@ -710,15 +743,110 @@ function M:makeDisplay()
 	expVideoGroup:insert(screenDarkener)
 	expVideoGroup.isVisible = false
 	
-	createExpGroup.isVisible = false
-	
 	---------------------
 	-- POST EXPERIMENT --
 	---------------------
 	postBkg = display.newRect(display.contentCenterX, display.contentCenterY, gW, gH)
 	postBkg:setFillColor(.3, .5, .9, 1)
 	postExpGroup:insert(postBkg)
+	hypCorrectGroup = display.newGroup()
+	hypIncorrectGroup = display.newGroup()
+	explain1Group = display.newGroup()
+	explain2Group = display.newGroup()
+	explain3Group = display.newGroup()
+	postExpGroup:insert(hypCorrectGroup)
+	postExpGroup:insert(hypIncorrectGroup)
 	
+	explanationBkg = display.newRect(gW * 0.5, gH * 0.65, gW * 0.9, gH * 0.4)
+	explanationBkg:setFillColor(1, 1, 1, 1)
+	postExpGroup:insert(explanationBkg)
+	
+	--correct-specific items
+	correctText = display.newText(
+		{
+			text="Good job!",
+			x = gW * 0.5,
+			y = gH * 0.075,
+			width = gW,
+			font=native.systemFont,
+			fontSize=textSizeE,
+			align="center"
+		})
+	correctText:setFillColor(1,1,1,1)
+	hypCorrectGroup:insert(correctText)
+	correctIcon = display.newImageRect("images/thumbsup.png", gH * 0.2, gH * 0.2)
+	correctIcon.x = gW * 0.5
+	correctIcon.y = gH * 0.3
+	hypCorrectGroup:insert(correctIcon)
+	
+	--incorrect-specific items
+	incorrectText = display.newText(
+		{
+			text="Not quite!",
+			x = gW * 0.5,
+			y = gH * 0.075,
+			width = gW,
+			font=native.systemFont,
+			fontSize=textSizeE,
+			align="center"
+		})
+	incorrectText:setFillColor(1, 1, 1, 1)
+	hypIncorrectGroup:insert(incorrectText)
+	incorrectIcon = display.newImageRect("images/shrug.png", gH * 0.2, gH * 0.2)
+	incorrectIcon.x = gW * 0.5
+	incorrectIcon.y = gH * 0.3
+	hypIncorrectGroup:insert(incorrectIcon)
+	
+	--explanation 1
+	explain1 = display.newText(
+		{
+			text="Newton's third law of motion states \"for every action, there is an equal and opposite reaction,\" meaning that when the lego men pull down on the chain due to gravity, the chain pulls up with an equal amount of force. When gravity is suddenly removed from the equation, the chain is still pulling up with that same force, meaning the lego men will be pulled upwards for a moment, resulting in slow, upwards movement.",
+			x = explanationBkg.x,
+			y = explanationBkg.y,
+			width = explanationBkg.width,
+			font=native.systemFont,
+			fontSize=textSizeH,
+			align="center"
+		})
+	explain1:setFillColor(0,0,0,1)
+	explain1Group:insert(explain1)
+	postExpGroup:insert(explain1Group)
+	
+	--explanation 2
+	explain2 = display.newText(
+		{
+			text="When not pulled down by gravity, the water molecules form a sphere. I'm honestly not really sure how to explain this on an 8th grade level. Actually, I'm not really sure what an 8th grader knows in terms of science.",
+			x = explanationBkg.x,
+			y = explanationBkg.y,
+			width = explanationBkg.width,
+			font=native.systemFont,
+			fontSize=textSizeH,
+			align="center"
+		})
+	explain2:setFillColor(0,0,0,1)
+	explain2Group:insert(explain2)
+	postExpGroup:insert(explain2Group)
+	
+	--explanation 3
+	explain3 = display.newText(
+		{
+			text="Normally, the carbon dioxide and carbon monoxide produced by a flame rise because their heat makes them less dense than the surrounding air. However, in micragravity, density is meaningless so the byproducts go nowhere and prevent fuel from reaching the flame, extinguishing it.",
+			x = explanationBkg.x,
+			y = explanationBkg.y,
+			width = explanationBkg.width,
+			font=native.systemFont,
+			fontSize=textSizeH,
+			align="center"
+		})
+	explain3:setFillColor(0,0,0,1)
+	explain3Group:insert(explain3)
+	postExpGroup:insert(explain3Group)
+	
+	hypCorrectGroup.isVisible = false
+	hypIncorrectGroup.isVisible = false
+	explain1Group.isVisible = false
+	explain2Group.isVisible = false
+	explain3Group.isVisible = false
 	postExpGroup.isVisible = false
 	
 	dGroup.isVisible = false
