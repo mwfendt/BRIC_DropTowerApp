@@ -254,9 +254,9 @@ local function netListen( event )
 			--use the placeholder site
 			companionSiteAvailable = false
 			companionSiteGroup.isVisible = true
-		elseif(event.url = "https://www.baylor.edu") then
+		elseif(event.url == "https://www.baylor.edu") then
 			baylorSiteAvailable = false
-		elseif(event.url = "https://www.baylor.edu/bric/") then
+		elseif(event.url == "https://www.baylor.edu/bric/") then
 			bricSiteAvailable = false
 		end
 	else
@@ -266,9 +266,9 @@ local function netListen( event )
 				--use the real site
 				companionSiteGroup.isVisible = true
 				companionSiteAvailable = true
-			elseif(event.url = "https://www.baylor.edu") then
+			elseif(event.url == "https://www.baylor.edu") then
 				baylorSiteAvailable = true
-			elseif(event.url = "https://www.baylor.edu/bric/") then
+			elseif(event.url == "https://www.baylor.edu/bric/") then
 				bricSiteAvailable = true
 			end
 		end
